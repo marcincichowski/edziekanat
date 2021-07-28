@@ -3,7 +3,6 @@
 *.pot
 *.pyc
 __pycache__
-db.sqlite3
 media
 
 # Backup files #
@@ -119,3 +118,7 @@ GitHub.sublime-settings
 .sass-cache/*
 /staticfiles/
 /edziekanat/migrations/
+
+/.idea
+/edziekanat/docs/
+
