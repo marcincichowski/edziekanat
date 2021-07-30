@@ -11,18 +11,8 @@
 {% block header %}
 
 {% endblock %}
-
-<div id="content">
-    {% block content %}Missing content{% endblock %}
-</div>
+{% block content %}Missing content{% endblock %}
 {% block footer %}
-<footer class="footer is-fixed-bottom">
-  <div class="content has-text-centered">
-    <p>
-     Inżynieria oprogramowania {{ time.year }} &copy; Dawid Bryła, Marcin Cichowski, Kacper Jankowski, Jacek Kwieciński
-    </p>
-  </div>
-</footer>
 {% endblock %}
 </body>
 </html>
