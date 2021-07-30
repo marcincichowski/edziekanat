@@ -118,7 +118,5 @@ GitHub.sublime-settings
 .sass-cache/*
 /staticfiles/
 /edziekanat/migrations/
-
-/.idea
 /edziekanat/docs/
-
+.gitignore
