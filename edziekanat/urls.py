@@ -20,7 +20,7 @@ from edziekanat_app import urls
 from django.urls import path, include
 
 urlpatterns = [
-    path('edziekanat_app/', include(edziekanat_app.urls)),
+    path('', include(edziekanat_app.urls)),
     path('admin/', admin.site.urls),
 ]
 
