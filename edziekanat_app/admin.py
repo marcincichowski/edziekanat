@@ -1,5 +1,5 @@
 from django.contrib import admin
-from edziekanat.models import *
+from edziekanat_app.models import *
 
 # Register your models here.
 admin.site.register(Student)

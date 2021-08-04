@@ -60,8 +60,8 @@ class Document(models.Model):
     decision = models.CharField(max_length=200, blank=True)
 
     uploaded = models.BooleanField(editable=False, default=False)
-    file = models.FileField(upload_to="edziekanat/docs")
-    file_location = models.FilePathField(editable=False, path="edziekanat/docs")
+    file = models.FileField(upload_to="edziekanat_app/docs")
+    file_location = models.FilePathField(editable=False, path="edziekanat_app/docs")
 
     def __str__(self):
         return f"[ID: {self.id}] {self.name} ({self.created_by})"

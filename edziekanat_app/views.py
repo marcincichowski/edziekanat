@@ -8,7 +8,7 @@ def index(request, *args, **kwargs):
         "time": datetime.datetime.now(),
         "logged_in": False
     }
-    return render(request, 'edziekanat/index.html', context)
+    return render(request, 'edziekanat_app/index.html', context)
 
 
 def login(request, *args, **kwargs):
@@ -19,11 +19,11 @@ def login(request, *args, **kwargs):
     #t = threading.Thread(target=loop)
     #t.setDaemon(True)
     #t.start()
-    return render(request, 'edziekanat/auth/login.html', context)
+    return render(request, 'edziekanat_app/auth/login.html', context)
 
 
 def register(request, *args, **kwargs):
     context = {
         "time": datetime.datetime.now(),
     }
-    return render(request, 'edziekanat/auth/register.html', context)
+    return render(request, 'edziekanat_app/auth/register.html', context)
