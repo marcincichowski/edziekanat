@@ -1,6 +1,7 @@
-from django.shortcuts import render, HttpResponse
+from django.shortcuts import get_object_or_404, render, HttpResponse
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
+from edziekanat_app.models import Document
 from django.http import HttpResponseRedirect
 from .forms import RegisterForm, LoginForm
 import datetime
@@ -29,8 +30,9 @@ def user_login(request):
             print(user)
             if user is not None:
                 login(request, user)
-
-                return render(request, 'edziekanat_app/index.html')
+                return render(request, 'edziekanat_app/index.html',{'user_count': User.objects.count(),
+                                                                    'document_count': Document.objects.count(),
+                                                                    "time": datetime.datetime.now()})
             else:
                 return render(request, 'edziekanat_app/user/login.html',{
                     'form': form,
@@ -40,7 +42,7 @@ def user_login(request):
     else:
         form = LoginForm()
 
-    return render(request, template, {'form': form})
+    return render(request, template, {'form': form, "time": datetime.datetime.now()})
 
 
 def user_register(request):
@@ -72,8 +74,11 @@ def user_register(request):
                 user.save()
                 print(f"Email:{user.email}\nHasło:{user.password}\nImie:{user.first_name}\nNazwisko:{user.last_name}")
                 login(request, user)
-
-                return HttpResponseRedirect('index.html')
+                return render(request, 'edziekanat_app/index.html', {
+                    'user_count': User.objects.count(),
+                    'document_count': Document.objects.count(),
+                    "time": datetime.datetime.now(),
+                })
 
     else:
         form = RegisterForm()
