@@ -83,7 +83,7 @@ def user_register(request):
                 get_session(request)
                 return render(request, 'edziekanat_app/index.html', {
                     'user_count': User.objects.count(),
-                    'document_count': Document.objects.count(),
+                    'document_count': Invoice.objects.count(),
                     "time": datetime.datetime.now(),
                 })
 
