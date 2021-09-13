@@ -10,7 +10,10 @@ import time
 
 
 def index(request, *args, **kwargs):
+    get_session(request)
+    form = LoginForm(request.POST)
     context = {
+        "form": form,
         "time": datetime.datetime.now(),
         "logged_in": False
     }

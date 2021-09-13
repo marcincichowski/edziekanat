@@ -48,9 +48,20 @@ class Student(User):
     sem = models.IntegerField(default=1)
 
 
-class Document(models.Model):
+class InvoiceCategory(models.Model):
+    name = models.CharField(max_length=70, unique=True)
+    faq = models.URLField()
+    short_desc = models.CharField(max_length=250)
+    docx_template = models.FileField(upload_to="edziekanat_app/invoice_templates")
+    template_location = models.FilePathField(editable=False, path="edziekanat_app/invoice_templates")
+
+    def __str__(self):
+        return self.name
+
+
+class Invoice(models.Model):
     name = models.CharField(max_length=70)
-    category = models.CharField(max_length=70)
+    category = models.ForeignKey(InvoiceCategory, on_delete=models.CASCADE)
 
     create_date = models.DateField(auto_now_add=True, editable=False)
     created_by = models.ForeignKey(Student, on_delete=models.CASCADE)
@@ -64,5 +75,5 @@ class Document(models.Model):
     file_location = models.FilePathField(editable=False, path="edziekanat_app/docs")
 
     def __str__(self):
-        return f"[ID: {self.id}] {self.name} ({self.created_by})"
+        return f"{self.name} ({self.created_by.indexNumber}) - {self.status.lower()}"
 
