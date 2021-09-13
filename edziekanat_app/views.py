@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404, render, HttpResponse
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
-from edziekanat_app.models import Document
+from edziekanat_app.models import Invoice
 from django.http import HttpResponseRedirect
 from .forms import RegisterForm, LoginForm
 import datetime
@@ -17,7 +17,9 @@ def index(request, *args, **kwargs):
         "time": datetime.datetime.now(),
         "logged_in": False
     }
-    return render(request, 'edziekanat_app/index.html', context)
+    return render(request, 'edziekanat_app/index.html', {'user_count': User.objects.count(),
+                                                                    'document_count': Invoice.objects.count(),
+                                                                    "time": datetime.datetime.now()})
 
 
 
@@ -33,8 +35,8 @@ def user_login(request):
             print(user)
             if user is not None:
                 login(request, user)
-                return render(request, 'edziekanat_app/index.html',{'user_count': User.objects.count(),
-                                                                    'document_count': Document.objects.count(),
+                return render(request, 'edziekanat_app/index.html', {'user_count': User.objects.count(),
+                                                                    'document_count': Invoice.objects.count(),
                                                                     "time": datetime.datetime.now()})
             else:
                 return render(request, 'edziekanat_app/user/login.html',{
@@ -77,6 +79,8 @@ def user_register(request):
                 user.save()
                 print(f"Email:{user.email}\nHasło:{user.password}\nImie:{user.first_name}\nNazwisko:{user.last_name}")
                 login(request, user)
+                set_session(request, user)
+                get_session(request)
                 return render(request, 'edziekanat_app/index.html', {
                     'user_count': User.objects.count(),
                     'document_count': Document.objects.count(),
@@ -87,3 +91,12 @@ def user_register(request):
         form = RegisterForm()
 
     return render(request, template, {'form': form})
+
+def set_session(request, user: User):
+    request.session['email'] = user.email
+    print("SESJA SET:" + request.session['email'])
+
+
+def get_session(request):
+    print("SESJA GET:" + request.session['email'])
+    return request.session['email']
