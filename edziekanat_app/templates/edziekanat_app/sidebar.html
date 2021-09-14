@@ -1,0 +1,23 @@
+<div class="column is-3 ">
+    <aside class="menu is-hidden-mobile">
+        <p class="menu-label">
+            Menu
+        </p>
+        <ul class="menu-list">
+            <li><a href="{% url 'edziekanat_app:home' %}">Strona główna</a></li>
+            <li><a href="{% url 'edziekanat_app:applications' %}">Lista wniosków</a></li>
+            <li><a>Other</a></li>
+            <li><a>TODO: write is_admin check</a></li>
+        </ul>
+        {% if not user.is_admin %}
+            <p class="menu-label">
+                Administracja
+            </p>
+            <ul class="menu-list">
+                <li><a href="{% url 'edziekanat_app:settings' %}">Ustawienia</a></li>
+                <li><a href="{% url 'edziekanat_app:dictionaries' %}">Słowniki</a></li>
+                <li><a href="{% url 'edziekanat_app:administrators' %}">Administratorzy</a></li>
+            </ul>
+        {% endif %}
+    </aside>
+</div>

@@ -1,0 +1,25 @@
+{% extends 'edziekanat_app/base.html' %}
+{% block header %}
+{% if user.is_authenticated %}
+    {% include 'edziekanat_app/navbar.html' %}
+{% endif %}
+{% endblock %}
+{% block content %}
+{% if user.is_authenticated %}
+            <div class="column is-9">
+                <section class="hero is-info welcome is-small">
+                    <div class="hero-body">
+                        <div class="container">
+                            <h1 class="title">
+                                Na tej stronie znajduje się lista przypisanych administratorów oraz moderatorów.<br />
+                                TODO: GET ALL ADMINS AND MODERATORS DISPLAY IN TABLE<br />
+                                FEATURE: USE SELECT2 TO SET ADMINS AND MODERATORS
+                            </h1>
+                        </div>
+                    </div>
+                </section>
+            </div>
+{% else %}
+    {% include 'edziekanat_app/user/login.html' %}
+{% endif %}
+{% endblock %}
