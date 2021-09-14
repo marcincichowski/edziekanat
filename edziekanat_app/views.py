@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from edziekanat_app.models import Invoice
 from django.http import HttpResponseRedirect
-from .forms import RegisterForm, LoginForm
+from .forms import RegisterForm, LoginForm, addDictionaryValueCathedral
 import datetime
 import threading
 import time
@@ -35,6 +35,13 @@ def settings(request, *args, **kwargs):
 
 
 def dictionaries(request, *args, **kwargs):
+    if request.method == 'GET':
+        form = addDictionaryValueCathedral()
+        return render(request, 'edziekanat_app/admin/dictionaries.html', {'form': form})
+    elif request.method == 'POST':
+        TODO()
+        #check csrf !!!!
+        return
     return render(request, 'edziekanat_app/admin/dictionaries.html')
 
 
