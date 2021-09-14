@@ -11,7 +11,12 @@
 {% block header %}
 
 {% endblock %}
-{% block content %}Missing content{% endblock %}
+<div class="container container-main">
+        <div class="columns">
+            {% include 'edziekanat_app/sidebar.html' %}
+            {% block content %}Missing content{% endblock %}
+        </div>
+</div>
 {% block footer %}
 {% endblock %}
 </body>

@@ -22,6 +22,21 @@ def index(request, *args, **kwargs):
                                                                     "time": datetime.datetime.now()})
 
 
+def applications(request, *args, **kwargs):
+    return render(request, 'edziekanat_app/user/applications.html')
+
+
+def administrators(request, *args, **kwargs):
+    return render(request, 'edziekanat_app/admin/administrators.html')
+
+
+def settings(request, *args, **kwargs):
+    return render(request, 'edziekanat_app/admin/settings.html')
+
+
+def dictionaries(request, *args, **kwargs):
+    return render(request, 'edziekanat_app/admin/dictionaries.html')
+
 
 def user_login(request):
     template = 'edziekanat_app/user/login.html'
@@ -98,5 +113,7 @@ def set_session(request, user: User):
 
 
 def get_session(request):
+    if 'email' not in request.session:
+        return None
     print("SESJA GET:" + request.session['email'])
     return request.session['email']
