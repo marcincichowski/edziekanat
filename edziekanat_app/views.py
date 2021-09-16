@@ -1,9 +1,9 @@
 from django.shortcuts import get_object_or_404, render, HttpResponse
-from django.contrib.auth import authenticate, login
-from django.contrib.auth.models import User
-from edziekanat_app.models import Invoice
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import get_user_model
+from edziekanat_app.models import Invoice, Student, User
 from django.http import HttpResponseRedirect
-from .forms import RegisterForm, LoginForm, addDictionaryValueCathedral
+from .forms import RegisterForm, LoginForm, AddDictionaryValueCathedral
 import datetime
 import threading
 import time
@@ -12,15 +12,21 @@ import time
 def index(request, *args, **kwargs):
     get_session(request)
     form = LoginForm(request.POST)
+    if '_auth_user_id' not in request.session:
+        return HttpResponseRedirect('login/')
+    uid = request.session['_auth_user_id']
+    user_invoices = get_user_invoices(uid)
     context = {
         "form": form,
-        "time": datetime.datetime.now(),
-        "logged_in": False
+        "invoices": user_invoices,
+        'user_count': User.objects.count(),
+        'document_count': Invoice.objects.count(),
+        "time": datetime.datetime.now()
     }
-    return render(request, 'edziekanat_app/index.html', {'user_count': User.objects.count(),
-                                                                    'document_count': Invoice.objects.count(),
-                                                                    "time": datetime.datetime.now()})
+    return render(request, 'edziekanat_app/index.html', context)
 
+def get_user_invoices(id):
+    return filter(lambda x: x.created_by.id == id, Invoice.objects.all())
 
 def applications(request, *args, **kwargs):
     return render(request, 'edziekanat_app/user/applications.html')
@@ -36,7 +42,7 @@ def settings(request, *args, **kwargs):
 
 def dictionaries(request, *args, **kwargs):
     if request.method == 'GET':
-        form = addDictionaryValueCathedral()
+        form = AddDictionaryValueCathedral()
         return render(request, 'edziekanat_app/admin/dictionaries.html', {'form': form})
     elif request.method == 'POST':
         TODO()
@@ -46,6 +52,9 @@ def dictionaries(request, *args, **kwargs):
 
 
 def user_login(request):
+    if '_auth_user_id' in request.session:
+        return HttpResponseRedirect('/')
+
     template = 'edziekanat_app/user/login.html'
 
     if request.method == 'POST':
@@ -73,6 +82,9 @@ def user_login(request):
 
 
 def user_register(request):
+    if '_auth_user_id' in request.session:
+        return HttpResponseRedirect('/')
+
     template = 'edziekanat_app/user/register.html'
 
     if request.method == 'POST':
@@ -101,8 +113,7 @@ def user_register(request):
                 user.save()
                 print(f"Email:{user.email}\nHasło:{user.password}\nImie:{user.first_name}\nNazwisko:{user.last_name}")
                 login(request, user)
-                set_session(request, user)
-                get_session(request)
+
                 return render(request, 'edziekanat_app/index.html', {
                     'user_count': User.objects.count(),
                     'document_count': Invoice.objects.count(),
@@ -113,6 +124,7 @@ def user_register(request):
         form = RegisterForm()
 
     return render(request, template, {'form': form})
+
 
 def set_session(request, user: User):
     request.session['email'] = user.email
