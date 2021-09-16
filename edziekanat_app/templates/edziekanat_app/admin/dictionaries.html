@@ -1,11 +1,15 @@
 {% extends 'edziekanat_app/base.html' %}
+
 {% block header %}
-{% if user.is_authenticated %}
     {% include 'edziekanat_app/navbar.html' %}
-{% endif %}
 {% endblock %}
+
+{% block sidebar %}
+    {% include 'edziekanat_app/sidebar.html' %}
+{% endblock %}
+
+
 {% block content %}
-{% if user.is_authenticated %}
             <div class="column is-9">
                 <section class="hero is-info welcome is-small">
                     <div class="hero-body">
@@ -61,7 +65,4 @@
             $("#"+id).addClass("is-active");
         }
     </script>
-{% else %}
-    {% include 'edziekanat_app/user/login.html' %}
-{% endif %}
 {% endblock %}

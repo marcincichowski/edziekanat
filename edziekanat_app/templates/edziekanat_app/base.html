@@ -5,23 +5,20 @@
     <link rel="stylesheet" href="{% static 'css/style.min.css' %}">
     <link href="https://use.fontawesome.com/releases/v5.0.4/css/all.css" rel="stylesheet">
     <script
-      src="https://code.jquery.com/jquery-3.6.0.min.js"
-      integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
-      crossorigin="anonymous"></script>
+            src="https://code.jquery.com/jquery-3.6.0.min.js"
+            integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+            crossorigin="anonymous"></script>
     <title>{% block title %}eDziekanat{% endblock %}</title>
 </head>
 
 <body>
-{% block header %}
-
-{% endblock %}
+{% block header %}Empty header{% endblock %}
 <div class="container container-main">
-        <div class="columns">
-            {% include 'edziekanat_app/sidebar.html' %}
-            {% block content %}Missing content{% endblock %}
-        </div>
+    <div class="columns">
+        {% block sidebar %}Empty sidebar{% endblock %}
+        {% block content %}Empty content{% endblock %}
+    </div>
 </div>
-{% block footer %}
-{% endblock %}
+{% block footer %}Empty footer{% endblock %}
 </body>
 </html>

@@ -1,12 +1,15 @@
 {% extends 'edziekanat_app/base.html' %}
+
 {% block header %}
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-{% if user.is_authenticated %}
     {% include 'edziekanat_app/navbar.html' %}
-{% endif %}
 {% endblock %}
+
+{% block sidebar %}
+    {% include 'edziekanat_app/sidebar.html' %}
+{% endblock %}
+
 {% block content %}
-{% if user.is_authenticated %}
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
             <div class="column is-9">
                 <section class="hero is-info welcome is-small">
                     <div class="hero-body">
@@ -72,7 +75,4 @@
         $('.select-multiple').select2();
     });
     </script>
-{% else %}
-    {% include 'edziekanat_app/user/login.html' %}
-{% endif %}
 {% endblock %}

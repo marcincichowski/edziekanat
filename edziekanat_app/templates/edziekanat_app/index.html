@@ -1,139 +1,101 @@
 {% extends 'edziekanat_app/base.html' %}
+
 {% block header %}
-{% if user.is_authenticated %}
-    {% include 'edziekanat_app/navbar.html' %}
-{% endif %}
+{% include 'edziekanat_app/navbar.html' %}
 {% endblock %}
+
+{% block sidebar %}
+{% include 'edziekanat_app/sidebar.html' %}
+{% endblock %}
+
 {% block content %}
-{% if user.is_authenticated %}
-            <div class="column is-9">
-                <section class="hero is-info welcome is-small">
-                    <div class="hero-body">
-                        <div class="container">
-                            <h1 class="title">
-                                Witaj w systemie eDziekanat, {{ user.first_name }} TODO: CHECK IF NOT BLANK.
-                            </h1>
-                        </div>
-                    </div>
-                </section>
-                <section class="info-tiles">
-                    <div class="tile is-ancestor has-text-centered">
-                        <div class="tile is-parent">
-                            <article class="tile is-child box">
-                                <p class="title">{{ user_count }}</p>
-                                <p class="subtitle">Użytkowników</p>
-                            </article>
-                        </div>
-                        <div class="tile is-parent">
-                            <article class="tile is-child box">
-                                <p class="title">{{ document_count }}</p>
-                                <p class="subtitle">Wniosków</p>
-                            </article>
-                        </div>
-                        <div class="tile is-parent">
-                            <article class="tile is-child box">
-                                <p class="title">TODO: GET NEW APPLICATIONS</p>
-                                <p class="subtitle">Nowe zgłoszenia</p>
-                            </article>
-                        </div>
-                    </div>
-                </section>
-                <div class="columns">
-                    <div class="column is-6">
-                        <div class="card events-card">
-                            <header class="card-header">
-                                <p class="card-header-title">
-                                    Ostatnie złożone wnioski TODO: GET LAST APPLICATIONS
-                                </p>
-                            </header>
-                            <div class="card-table">
-                                <div class="content">
-                                    <table class="table is-fullwidth is-striped">
-                                        <tbody>
-                                            <tr>
-                                                <td width="5%"><i class="fa fa-bell-o"></i></td>
-                                                <td>Lorum ipsum dolem aire</td>
-                                                <td class="level-right"><a class="button is-small is-primary" href="#">Action</a></td>
-                                            </tr>
-                                            <tr>
-                                                <td width="5%"><i class="fa fa-bell-o"></i></td>
-                                                <td>Lorum ipsum dolem aire</td>
-                                                <td class="level-right"><a class="button is-small is-primary" href="#">Action</a></td>
-                                            </tr>
-                                            <tr>
-                                                <td width="5%"><i class="fa fa-bell-o"></i></td>
-                                                <td>Lorum ipsum dolem aire</td>
-                                                <td class="level-right"><a class="button is-small is-primary" href="#">Action</a></td>
-                                            </tr>
-                                            <tr>
-                                                <td width="5%"><i class="fa fa-bell-o"></i></td>
-                                                <td>Lorum ipsum dolem aire</td>
-                                                <td class="level-right"><a class="button is-small is-primary" href="#">Action</a></td>
-                                            </tr>
-                                            <tr>
-                                                <td width="5%"><i class="fa fa-bell-o"></i></td>
-                                                <td>Lorum ipsum dolem aire</td>
-                                                <td class="level-right"><a class="button is-small is-primary" href="#">Action</a></td>
-                                            </tr>
-                                            <tr>
-                                                <td width="5%"><i class="fa fa-bell-o"></i></td>
-                                                <td>Lorum ipsum dolem aire</td>
-                                                <td class="level-right"><a class="button is-small is-primary" href="#">Action</a></td>
-                                            </tr>
-                                            <tr>
-                                                <td width="5%"><i class="fa fa-bell-o"></i></td>
-                                                <td>Lorum ipsum dolem aire</td>
-                                                <td class="level-right"><a class="button is-small is-primary" href="#">Action</a></td>
-                                            </tr>
-                                            <tr>
-                                                <td width="5%"><i class="fa fa-bell-o"></i></td>
-                                                <td>Lorum ipsum dolem aire</td>
-                                                <td class="level-right"><a class="button is-small is-primary" href="#">Action</a></td>
-                                            </tr>
-                                            <tr>
-                                                <td width="5%"><i class="fa fa-bell-o"></i></td>
-                                                <td>Lorum ipsum dolem aire</td>
-                                                <td class="level-right"><a class="button is-small is-primary" href="#">Action</a></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            <footer class="card-footer">
-                                <a href="#" class="card-footer-item">Więcej</a>
-                            </footer>
-                        </div>
-                    </div>
-                    <div class="column is-6">
-                        <div class="card">
-                            <header class="card-header">
-                                <p class="card-header-title">
-                                    Opcje
-                                </p>
-                            </header>
-                            <div class="card-content">
-                                <div class="content has-text-centered buttons">
-                                    <a href="#" class="button is-primary">Złóż nowy wniosek</a>
-                                    <a href="#" class="button is-primary">Wnioski do akceptacji</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card">
-                            <header class="card-header">
-                                <p class="card-header-title">
-                                    Opcje administracyjne
-                                </p>
-                            </header>
-                            <div class="card-content">
-                                <div class="content has-text-centered">
-                                    <a href="#" class="button is-primary">Wnioski do weryfikacji</a>
-                                </div>
-                            </div>
-                        </div>
+<div class="column is-9">
+    <section class="hero is-info welcome is-small">
+        <div class="hero-body">
+            <div class="container">
+                <h1 class="title">
+                    Witaj w systemie eDziekanat, {{ user.first_name }}.
+                </h1>
+            </div>
+        </div>
+    </section>
+    <section class="info-tiles">
+        <div class="tile is-ancestor has-text-centered">
+            <div class="tile is-parent">
+                <article class="tile is-child box">
+                    <p class="title">{{ user_count }}</p>
+                    <p class="subtitle">Użytkowników</p>
+                </article>
+            </div>
+            <div class="tile is-parent">
+                <article class="tile is-child box">
+                    <p class="title">{{ document_count }}</p>
+                    <p class="subtitle">Wniosków</p>
+                </article>
+            </div>
+            <div class="tile is-parent">
+                <article class="tile is-child box">
+                    <p class="title">TODO: GET NEW APPLICATIONS</p>
+                    <p class="subtitle">Nowe zgłoszenia</p>
+                </article>
+            </div>
+        </div>
+    </section>
+    <div class="columns">
+        <div class="column is-6">
+            <div class="card events-card">
+                <header class="card-header">
+                    <p class="card-header-title">
+                        Ostatnie złożone wnioski TODO: GET LAST APPLICATIONS
+                    </p>
+                </header>
+                <div class="card-table">
+                    <div class="content">
+                        <table class="table is-fullwidth is-striped">
+                            <tbody>
+                            {% for invoice in invoices %}
+                            <tr>
+                                <td width="5%"><i class="fa fa-bell-o"></i></td>
+                                <td>{{invoice.name}}</td>
+                                <td class="level-right"><a class="button is-small is-primary" href="#">{{invoice.status}}</a></td>
+                            </tr>
+                            {% endfor %}
+                        </table>
                     </div>
                 </div>
+                <footer class="card-footer">
+                    <a href="#" class="card-footer-item">Więcej</a>
+                </footer>
+            </div>
+        </div>
+        <div class="column is-6">
+            <div class="card">
+                <header class="card-header">
+                    <p class="card-header-title">
+                        Opcje
+                    </p>
+                </header>
+                <div class="card-content">
+                    <div class="content has-text-centered buttons">
+                        <a href="#" class="button is-primary">Złóż nowy wniosek</a>
+                        <a href="#" class="button is-primary">Wnioski do akceptacji</a>
+                    </div>
+                </div>
+            </div>
+            <div class="card">
+                <header class="card-header">
+                    <p class="card-header-title">
+                        Opcje administracyjne
+                    </p>
+                </header>
+                <div class="card-content">
+                    <div class="content has-text-centered">
+                        <a href="#" class="button is-primary">Wnioski do weryfikacji</a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-{% else %}
-    {% include 'edziekanat_app/user/login.html' %}
-{% endif %}
+</div>
 {% endblock %}
+

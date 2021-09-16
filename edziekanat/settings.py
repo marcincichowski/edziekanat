@@ -31,13 +31,13 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'edziekanat_app',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'edziekanat_app'
 ]
 
 MIDDLEWARE = [
@@ -128,7 +128,7 @@ STATICFILES_DIRS = (
     ROOT_PATH + '/assets',
 )
 
-
+AUTH_USER_MODEL = 'edziekanat_app.User'
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
