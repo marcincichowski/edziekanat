@@ -1,24 +1,23 @@
-{% extends 'edziekanat_app/base.html' %}
+{% extends 'base.html' %}
+
 {% block header %}
-{% if user.is_authenticated %}
-    {% include 'edziekanat_app/navbar.html' %}
-{% endif %}
+    {% include 'components/navbar.html' %}
 {% endblock %}
+
+{% block sidebar %}
+    {% include 'components/sidebar.html' %}
+{% endblock %}
+
 {% block content %}
-{% if user.is_authenticated %}
             <div class="column is-9">
                 <section class="hero is-info welcome is-small">
                     <div class="hero-body">
                         <div class="container">
                             <h1 class="title">
-                                Na tej stronie znajdują się złożone przez Ciebie wnioski.<br />
-                                TODO: GET ALL APPLICATIONS FROM DB
+                                Panel konfiguracyjny systemu
                             </h1>
                         </div>
                     </div>
                 </section>
             </div>
-{% else %}
-    {% include 'edziekanat_app/user/login.html' %}
-{% endif %}
 {% endblock %}

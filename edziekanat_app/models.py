@@ -54,14 +54,12 @@ class User(AbstractUser):
 
     role = models.CharField(_("Role"), max_length=50, choices=Roles.choices, default=Roles.STUDENT)
 
-    name = models.CharField(max_length=20)
-    surname = models.CharField(max_length=30)
     acc_created_date = models.DateField(auto_now_add=True, editable=False)
     email = models.EmailField(unique=True)
     password = models.CharField(_('password'), max_length=128)
 
     def __str__(self):
-        return f"{self.name} {self.surname} {self.id}"
+        return f"{self.first_name} {self.last_name} {self.id}"
 
 
 class StudentManager(models.Manager):
@@ -159,6 +157,6 @@ class Invoice(models.Model):
     file_location = models.FilePathField(editable=False, path="edziekanat_app/docs")
 
     def __str__(self):
-        return f"{self.name} ({self.created_by.indexNumber}) - {self.status.lower()}"
+        return f"{self.name} - {self.status.lower()}"
 
 

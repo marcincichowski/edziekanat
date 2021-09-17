@@ -1,0 +1,40 @@
+<div class="column is-3 ">
+    <aside class="menu is-hidden-mobile">
+        <p class="menu-label">
+            Menu
+        </p>
+
+        <ul class="menu-list">
+            <li><a href="{% url 'edziekanat_app:home' %}">Strona główna</a></li>
+        </ul>
+
+        <ul class="menu-list">
+            <li><a href="{% url 'edziekanat_app:account' %}">Konto</a></li>
+        </ul>
+
+        <ul class="menu-list">
+            <li><a href="{% url 'edziekanat_app:settings' %}">Ustawienia</a></li>
+        </ul>
+
+
+        <p class="menu-label">
+            Wnioski
+        </p>
+        <ul class="menu-list">
+            <li><a href="{% url 'edziekanat_app:invoices' %}">Twoje wnioski</a></li>
+            <li><a>Stwórz wniosek</a></li>
+            <li><a>Wnioski do weryfikacji</a></li>
+        </ul>
+
+        {% if acc.user.is_staff %}
+            <p class="menu-label">
+                Panel systemu
+            </p>
+            <ul class="menu-list">
+                <li><a href="{% url 'edziekanat_app:config' %}">Konfiguracja</a></li>
+                <li><a href="{% url 'edziekanat_app:dictionaries' %}">Słowniki</a></li>
+                <li><a href="{% url 'edziekanat_app:administrators' %}">Administratorzy</a></li>
+            </ul>
+        {% endif %}
+    </aside>
+</div>
