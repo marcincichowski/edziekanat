@@ -1,9 +1,9 @@
 from django.contrib import admin
-from edziekanat_app.models.role import Role
-from edziekanat_app.models.user import User
-from edziekanat_app.models.invoice_category import InvoiceCategory
-from edziekanat_app.models.invoice import Invoice
-from edziekanat_app.models.institute import Institute
+from edziekanat_app.models.tables.role import Role
+from edziekanat_app.models.tables.user import User
+from edziekanat_app.models.tables.invoice_category import InvoiceCategory
+from edziekanat_app.models.tables.invoice import Invoice
+from edziekanat_app.models.tables.institute import Institute
 
 
 admin.site.register(User)

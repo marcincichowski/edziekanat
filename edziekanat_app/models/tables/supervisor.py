@@ -1,5 +1,5 @@
 from django.db import models
-from edziekanat_app.models.user import User
+from edziekanat_app.models.tables.user import User
 
 
 class SupervisorManager(models.Manager):

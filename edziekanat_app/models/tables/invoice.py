@@ -1,6 +1,6 @@
 from django.db import models
-from edziekanat_app.models.invoice_category import InvoiceCategory
-from edziekanat_app.models.student import Student
+from edziekanat_app.models.tables.invoice_category import InvoiceCategory
+from edziekanat_app.models.tables.student import Student
 
 
 class Invoice(models.Model):

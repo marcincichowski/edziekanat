@@ -1,0 +1,2 @@
+class InvoiceCreator:
+    pass
