@@ -5,11 +5,11 @@ from django.contrib.auth.views import auth_logout
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
-from edziekanat_app.models.account import Account
+from edziekanat_app.models.entities.account import Account
 
 from .forms import RegisterForm, LoginForm, AddDictionaryValueCathedral
-from .models.invoice import Invoice
-from .models.user import User
+from edziekanat_app.models.tables.invoice import Invoice
+from edziekanat_app.models.tables.user import User
 
 
 def index(request, *args, **kwargs):
@@ -61,9 +61,14 @@ def settings(request, *args, **kwargs):
     })
 
 
+def get_invoice_creator(request):
+    pass  # todo
+
+
 def create_invoice(request, *args, **kwargs):
     return render(request, 'user/create_invoice.html', {
         'acc': get_active_account(request),
+        'creator': get_invoice_creator(request),
         "time": datetime.datetime.now(),
     })
 
@@ -77,7 +82,7 @@ def dictionaries(request, *args, **kwargs):
             "time": datetime.datetime.now(),
         })
     elif request.method == 'POST':
-        TODO()
+        raise Exception("Not implemented")
         # check csrf !!!!
         return
     return render(request, 'admin/dictionaries.html', {

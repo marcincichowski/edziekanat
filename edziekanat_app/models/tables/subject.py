@@ -1,6 +1,6 @@
 from django.db import models
 
-from edziekanat_app.models.institute import Institute
+from edziekanat_app.models.tables.institute import Institute
 
 
 class Subject(models.Model):
