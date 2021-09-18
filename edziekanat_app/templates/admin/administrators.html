@@ -9,68 +9,68 @@
 {% endblock %}
 
 {% block content %}
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-            <div class="column is-9">
-                <section class="hero is-info welcome is-small">
-                    <div class="hero-body">
-                        <div class="container">
-                            <h1 class="title">
-                                Zarządzanie użytkownikami systemu eDziekanat
-                            </h1>
-                        </div>
-                    </div>
-                </section>
-                    <div class="columns">
-                        <div class="column">
-                            <div class="card">
-                                <header class="card-header">
-                                    <p class="card-header-title">
-                                        Administratorzy
-                                    </p>
-                                </header>
-                                <div class="card-content">
-                                    <div class="field">
-                                        <div class="control">
-                                            <label class="label" for="admins">Administratorzy systemu</label>
-                                            <div class="select is-fullwidth">
-                                                <select id="admins" name="admins[]" multiple="multiple" class="select-multiple" style="width: 100%;">
-                                                    <option value="marcin">TODO: WRITE ADMIN GETTER/SETTER SELECT2</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                <div class="columns">
-                        <div class="column">
-                            <div class="card">
-                                <header class="card-header">
-                                    <p class="card-header-title">
-                                        Moderatorzy
-                                    </p>
-                                </header>
-                                <div class="card-content">
-                                    <div class="field">
-                                        <div class="control">
-                                            <label class="label" for="moderators">Moderatorzy systemu</label>
-                                            <div class="select is-fullwidth">
-                                                 <select id="moderators" name="moderators[]" multiple="multiple" class="select-multiple" style="width: 100%;">
-                                                    <option value="marcin">TODO: WRITE ADMIN GETTER/SETTER SELECT2</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <div class="column is-9">
+        <section class="hero is-info welcome is-small">
+            <div class="hero-body">
+                <div class="container">
+                    <h1 class="title">
+                        Zarządzanie użytkownikami systemu eDziekanat
+                    </h1>
+                </div>
             </div>
+        </section>
+        <div class="columns">
+            <div class="column">
+                <div class="card">
+                    <header class="card-header">
+                        <p class="card-header-title">
+                            Administratorzy
+                        </p>
+                    </header>
+                    <div class="card-content">
+                        <div class="field">
+                            <div class="control">
+                                <label class="label" for="admins">Administratorzy systemu</label>
+                                <div class="select is-fullwidth">
+                                    <select id="admins" name="admins[]" multiple="multiple" class="select-multiple" style="width: 100%;">
+                                        <option value="marcin">TODO: WRITE ADMIN GETTER/SETTER SELECT2</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="columns">
+            <div class="column">
+                <div class="card">
+                    <header class="card-header">
+                        <p class="card-header-title">
+                            Moderatorzy
+                        </p>
+                    </header>
+                    <div class="card-content">
+                        <div class="field">
+                            <div class="control">
+                                <label class="label" for="moderators">Moderatorzy systemu</label>
+                                <div class="select is-fullwidth">
+                                    <select id="moderators" name="moderators[]" multiple="multiple" class="select-multiple" style="width: 100%;">
+                                        <option value="marcin">TODO: WRITE ADMIN GETTER/SETTER SELECT2</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
     <script>
-    $(document).ready(function() {
-        $('.select-multiple').select2();
-    });
+        $(document).ready(function () {
+            $('.select-multiple').select2();
+        });
     </script>
 {% endblock %}
