@@ -1,3 +1,3 @@
-Konta użytkowników według schematu:
-- email: `imie@nazwisko.pl`
-- hasło: `1`
+> Konta użytkowników bazy danych tworzymy według schematu:
+> - email: `imie@nazwisko.pl`
+> - hasło: `1`
