@@ -1,85 +1,95 @@
-from django.shortcuts import get_object_or_404, render
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth import get_user_model
-from edziekanat_app.models import Invoice, Student, User
-from django.http import HttpResponseRedirect
-from django.contrib.auth.views import auth_logout
-from .forms import RegisterForm, LoginForm, AddDictionaryValueCathedral
 import datetime
-import threading
-import time
+
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.views import auth_logout
+from django.http import HttpResponseRedirect
+from django.shortcuts import render
+
 from edziekanat_app.entity_models.account import Account
-from django.views.decorators.csrf import csrf_exempt
+from edziekanat_app.models import Invoice, User
+from .forms import RegisterForm, LoginForm, AddDictionaryValueCathedral
+
 
 def index(request, *args, **kwargs):
     form = LoginForm(request.POST)
     if '_auth_user_id' not in request.session:
         return HttpResponseRedirect('login/')
 
-
     return render(request, 'index.html', {
-                    'acc': get_active_account(request),
-                    "time": datetime.datetime.now(),
-                })
+        'acc': get_active_account(request),
+        "time": datetime.datetime.now(),
+    })
+
 
 def get_user_invoices(id):
     return filter(lambda x: x.created_by.id == id, Invoice.objects.all())
 
+
 def invoices(request, *args, **kwargs):
     return render(request, 'user/invoices.html', {
-                    'acc': get_active_account(request),
-                    "time": datetime.datetime.now(),
-                })
+        'acc': get_active_account(request),
+        "time": datetime.datetime.now(),
+    })
 
 
 def administrators(request, *args, **kwargs):
     return render(request, 'admin/administrators.html', {
-                    'acc': get_active_account(request),
-                    "time": datetime.datetime.now(),
-                })
+        'acc': get_active_account(request),
+        "time": datetime.datetime.now(),
+    })
 
 
 def account(request, *args, **kwargs):
     return render(request, 'user/account.html', {
-                    'acc': get_active_account(request),
-                    "time": datetime.datetime.now(),
-                })
+        'acc': get_active_account(request),
+        "time": datetime.datetime.now(),
+    })
+
 
 def config(request, *args, **kwargs):
     return render(request, 'admin/config.html', {
-                    'acc': get_active_account(request),
-                    "time": datetime.datetime.now(),
-                })
+        'acc': get_active_account(request),
+        "time": datetime.datetime.now(),
+    })
+
 
 def settings(request, *args, **kwargs):
     return render(request, 'user/settings.html', {
-                    'acc': get_active_account(request),
-                    "time": datetime.datetime.now(),
-                })
+        'acc': get_active_account(request),
+        "time": datetime.datetime.now(),
+    })
+
+
+def create_invoice(request, *args, **kwargs):
+    return render(request, 'user/create_invoice.html', {
+        'acc': get_active_account(request),
+        "time": datetime.datetime.now(),
+    })
+
 
 def dictionaries(request, *args, **kwargs):
     if request.method == 'GET':
         form = AddDictionaryValueCathedral()
         return render(request, 'admin/dictionaries.html', {
-                    'form': form,
-                    'acc': get_active_account(request),
-                    "time": datetime.datetime.now(),
-                })
+            'form': form,
+            'acc': get_active_account(request),
+            "time": datetime.datetime.now(),
+        })
     elif request.method == 'POST':
         TODO()
-        #check csrf !!!!
+        # check csrf !!!!
         return
     return render(request, 'admin/dictionaries.html', {
-                    'acc': get_active_account(request),
-                    "time": datetime.datetime.now(),
-                })
+        'acc': get_active_account(request),
+        "time": datetime.datetime.now(),
+    })
 
 
 def user_login(request):
     if '_auth_user_id' in request.session:
         return HttpResponseRedirect('/')
 
-    template = 'user/login.html'
+    template = 'auth/login.html'
 
     if request.method == 'POST':
         form = LoginForm(request.POST)
@@ -101,7 +111,7 @@ def user_login(request):
                     "time": datetime.datetime.now(),
                 })
             else:
-                return render(request, 'user/login.html',{
+                return render(request, 'user/login.html', {
                     'form': form,
                     "time": datetime.datetime.now(),
                     'error_message': 'Wprowadzono niepoprawne dane.'
@@ -111,16 +121,18 @@ def user_login(request):
 
     return render(request, template, {'form': form, "time": datetime.datetime.now()})
 
+
 def user_logout(request):
     if '_auth_user_id' in request.session:
         auth_logout(request)
     return HttpResponseRedirect('/')
 
+
 def user_register(request):
     if '_auth_user_id' in request.session:
         return HttpResponseRedirect('/')
 
-    template = 'user/register.html'
+    template = 'auth/register.html'
 
     if request.method == 'POST':
         form = RegisterForm(request.POST)

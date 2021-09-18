@@ -1,9 +1,7 @@
-from django.db import models
-from django.conf import settings
-import os
 from django.contrib.auth.models import AbstractUser
+from django.db import models
 from django.utils.translation import gettext_lazy as _
-from django import forms
+
 
 class Institute(models.Model):
     name = models.CharField(max_length=70, unique=True)
@@ -24,6 +22,7 @@ class Subject(models.Model):
 
     class Meta:
         unique_together = ['institution', 'name']
+
 
 class Role(models.Model):
     STUDENT = 1
@@ -66,8 +65,10 @@ class StudentManager(models.Manager):
     def get_queryset(self, *args, **kwargs):
         return super().get_queryset(*args, **kwargs).filter(role=User.Roles.STUDENT)
 
+
 class StudentMore(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+
 
 class Student(User):
     objects = StudentManager()
@@ -79,6 +80,7 @@ class Student(User):
         if not self.pk:
             self.role = User.Roles.STUDENT
         return super().save()
+
 
 class EmployeeManager(models.Manager):
     def get_queryset(self, *args, **kwargs):
@@ -120,7 +122,6 @@ class AdminManager(models.Manager):
 
 
 class Admin(User):
-
     class Meta:
         proxy = True
 
@@ -158,5 +159,3 @@ class Invoice(models.Model):
 
     def __str__(self):
         return f"{self.name} - {self.status.lower()}"
-
-
