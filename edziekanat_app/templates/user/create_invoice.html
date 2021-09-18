@@ -16,8 +16,22 @@
                     <h1 class="title">
                         Kreator wniosku
                     </h1>
+                    <progress class="progress is-success" value="45" max="50"></progress>
                 </div>
             </div>
         </section>
+        {% include 'components/invoice_creator/category.html' %}
+
     </div>
+    <script>
+        $("#category_select").change(function () {
+            if ($(this).val()) {
+                $('#invoice_select_div').show();
+            } else {
+                $('#invoice_select_div').hide();
+            }
+        });
+        $("#category_select").trigger("change");
+    </script>
 {% endblock %}
+

@@ -61,6 +61,16 @@
                         <p class="card-header-title">
                             Wszystkie wnioski
                         </p>
+                        {% if acc.invoices %}
+                        <div class="panel-block">
+                            <p class="control has-icons-left">
+                                <input class="input" type="text" placeholder="Filtruj wnioski">
+                                <span class="icon is-left">
+                                    <i class="fas fa-search" aria-hidden="true"></i>
+                                </span>
+                            </p>
+                        </div>
+                        {% endif %} 
                     </header>
                     <div class="card-table">
                         <div class="content">
@@ -83,7 +93,8 @@
                                         <td>{{ invoice.create_date }}</td>
                                         <td>{{ invoice.category.name }}</td>
                                         <td>{{ invoice.status }}</td>
-                                        <td class="level-right"><a class="button is-small is-primary" href="#">Podgląd</a></td>
+                                        <td class="level-right"><a class="button is-small is-primary"
+                                                                   href="#">Podgląd</a></td>
                                     </tr>
                                 {% endfor %}
                             </table>
@@ -91,7 +102,7 @@
                     </div>
                     <footer class="card-footer-item">
                         {% if not acc.invoices %}
-                            Brak wniosków
+                            Brak wniosków do wyświetlenia
                         {% endif %}
                     </footer>
                 </div>
