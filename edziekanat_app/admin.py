@@ -1,8 +1,11 @@
 from django.contrib import admin
+from edziekanat_app.models.role import Role
+from edziekanat_app.models.user import User
+from edziekanat_app.models.invoice_category import InvoiceCategory
+from edziekanat_app.models.invoice import Invoice
+from edziekanat_app.models.institute import Institute
 
-from edziekanat_app.models import *
 
-# Register your models here.
 admin.site.register(User)
 admin.site.register(Institute)
 admin.site.register(InvoiceCategory)

@@ -5,13 +5,14 @@ from django.contrib.auth.views import auth_logout
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
-from edziekanat_app.entity_models.account import Account
-from edziekanat_app.models import Invoice, User
+from edziekanat_app.models.account import Account
+
 from .forms import RegisterForm, LoginForm, AddDictionaryValueCathedral
+from .models.invoice import Invoice
+from .models.user import User
 
 
 def index(request, *args, **kwargs):
-    form = LoginForm(request.POST)
     if '_auth_user_id' not in request.session:
         return HttpResponseRedirect('login/')
 
@@ -111,10 +112,10 @@ def user_login(request):
                     "time": datetime.datetime.now(),
                 })
             else:
-                return render(request, 'user/login.html', {
+                return render(request, 'auth/login.html', {
                     'form': form,
                     "time": datetime.datetime.now(),
-                    'error_message': 'Wprowadzono niepoprawne dane.'
+                    'message': 'Wprowadzono niepoprawne dane.'
                 })
     else:
         form = LoginForm()
@@ -141,13 +142,13 @@ def user_register(request):
                 return render(request, template, {
                     'form': form,
                     "time": datetime.datetime.now(),
-                    "error_message": 'Konto z takim adresem e-mail już istnieje.'
+                    "message": 'Konto z takim adresem e-mail już istnieje.'
                 })
             elif form.cleaned_data['password'] != form.cleaned_data['password_repeat']:
                 return render(request, template, {
                     'form': form,
                     "time": datetime.datetime.now(),
-                    'error_message': 'Hasła nie zgadzają się.'
+                    'message': 'Hasła nie zgadzają się.'
                 })
             else:
                 user = User.objects.create_user(
