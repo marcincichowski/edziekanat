@@ -18,10 +18,17 @@ class InvoiceCategory(models.Model):
     docx_template = models.FileField(upload_to="edziekanat_app/invoice_templates",
                                      verbose_name=_('Plik wzorcowy'))
 
+    fields = dict()
+
     def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        self.fields = document_parse(self.docx_template)
 
     class Meta:
         db_table = "edziekanat_app_invoices_categories"
         verbose_name = "Kategoria wniosku"
         verbose_name_plural = "Kategorie wniosków"
+

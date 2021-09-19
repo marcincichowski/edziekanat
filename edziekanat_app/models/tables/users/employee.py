@@ -9,7 +9,6 @@ class EmployeeManager(models.Manager):
         return super().get_queryset(*args, **kwargs).filter(role=User.Roles.EMPLOYEE)
 
 
-
 class EmployeeMore(models.Model):
     user = models.OneToOneField(User,
                                 verbose_name=_('Użytkownik'),

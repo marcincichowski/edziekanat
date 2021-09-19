@@ -49,9 +49,13 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'edziekanat_app.middlewares.login_required.LoginRequiredMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+AUTH_EXEMPT_ROUTES = ('user_register', 'user_login')
+AUTH_LOGIN_ROUTE = '/login'
 
 ROOT_URLCONF = 'edziekanat.urls'
 
