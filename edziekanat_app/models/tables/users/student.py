@@ -1,8 +1,8 @@
 from django.db import models
 from django.utils.translation import gettext as _
 
-from edziekanat_app.models.tables.user import User
 from edziekanat_app.models.tables.course import Course
+from edziekanat_app.models.tables.users.base_user import User
 
 
 class StudentManager(models.Manager):
@@ -35,17 +35,26 @@ class StudentMore(models.Model):
 
     class Meta:
         db_table = "edziekanat_app_students"
+        verbose_name = "Student"
+        verbose_name_plural = "Studenci"
 
 
 class Student(User):
+    base_type = User.Roles.STUDENT
     objects = StudentManager()
 
     class Meta:
         proxy = True
-        verbose_name = "Student"
-        verbose_name_plural = "Studenci"
 
-    def save(self):
+    @property
+    def more(self):
+        return self.studentmore
+
+    def save(self, *args, **kwargs):
         if not self.pk:
             self.role = User.Roles.STUDENT
         return super().save()
+
+    def __str__(self):
+        return f"{self.user.__str__()} {self.more.index}"
+

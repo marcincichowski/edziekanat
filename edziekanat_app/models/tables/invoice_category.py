@@ -18,10 +18,6 @@ class InvoiceCategory(models.Model):
     docx_template = models.FileField(upload_to="edziekanat_app/invoice_templates",
                                      verbose_name=_('Plik wzorcowy'))
 
-    template_location = models.FilePathField(editable=True,
-                                             path="edziekanat_app/invoice_templates",
-                                             verbose_name=_('Lokalizacja pliku wzorcowego'))
-
     def __str__(self):
         return self.name
 

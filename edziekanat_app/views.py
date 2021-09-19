@@ -7,8 +7,7 @@ from django.shortcuts import render
 from formtools.wizard.views import SessionWizardView
 
 from edziekanat_app.models.entities.account import Account
-from edziekanat_app.models.tables.invoice import Invoice
-from edziekanat_app.models.tables.user import User
+from edziekanat_app.models.tables.users.base_user import User
 from .forms import RegisterForm, LoginForm, AddDictionaryValueCathedral
 
 
@@ -161,3 +160,4 @@ def session_context_processor(request):
         "time": datetime.datetime.now(),
         'acc': get_active_account(request)
     }
+

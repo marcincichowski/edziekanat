@@ -2,7 +2,7 @@ from django.db import models
 from django.utils.translation import gettext as _
 
 from edziekanat_app.models.tables.university_structure.structure_unit import StructureUnit
-from edziekanat_app.models.tables.user import User
+from edziekanat_app.models.tables.users.base_user import User
 
 
 class Chair(StructureUnit):
