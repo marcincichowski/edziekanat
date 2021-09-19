@@ -14,9 +14,6 @@ from edziekanat_app.models.tables.users.base_user import User
 
 # Accounts
 admin.site.register(User)
-admin.site.register(StudentMore)
-admin.site.register(EmployeeMore)
-admin.site.register(AdminMore)
 
 # University Structure
 admin.site.register(Department)
