@@ -23,25 +23,25 @@
             <div class="tile is-ancestor has-text-centered">
                 <div class="tile is-parent">
                     <article class="tile is-child box">
-                        <p class="title">{{ acc.get_open_invoices.count }}</p>
+                        <p class="title">{{ open_invoices.count }}</p>
                         <p class="subtitle">Otwarte wnioski</p>
                     </article>
                 </div>
                 <div class="tile is-parent">
                     <article class="tile is-child box">
-                        <p class="title">{{ acc.get_new_invoices.count }}</p>
+                        <p class="title">{{ new_invoices.count }}</p>
                         <p class="subtitle">Nowe decyzje</p>
                     </article>
                 </div>
                 <div class="tile is-parent">
                     <article class="tile is-child box">
-                        <p class="title">{{ acc.get_closed_invoices.count }}</p>
+                        <p class="title">{{ closed_invoices.count }}</p>
                         <p class="subtitle">Zamknięte wnioski</p>
                     </article>
                 </div>
                 <div class="tile is-parent">
                     <article class="tile is-child box">
-                        <p class="title">{{ acc.invoices.count }}</p>
+                        <p class="title">{{ all_invoices.count }}</p>
                         <p class="subtitle">Wszystkie wnioski</p>
                     </article>
                 </div>
@@ -61,7 +61,7 @@
                         <p class="card-header-title">
                             Wszystkie wnioski
                         </p>
-                        {% if acc.invoices %}
+                        {% if all_invoices %}
                         <div class="panel-block">
                             <p class="control has-icons-left">
                                 <input class="input" type="text" placeholder="Filtruj wnioski">
@@ -76,7 +76,7 @@
                         <div class="content">
                             <table class="table is-fullwidth is-striped">
                                 <tbody>
-                                {% if acc.invoices %}
+                                {% if all_invoices %}
                                     <thead>
                                     <tr>
                                         <th>Tytuł</th>
@@ -87,7 +87,7 @@
                                     </tr>
                                     </thead>
                                 {% endif %}
-                                {% for invoice in acc.invoices %}
+                                {% for invoice in all_invoices %}
                                     <tr>
                                         <td>{{ invoice.name }}</td>
                                         <td>{{ invoice.create_date }}</td>
@@ -101,7 +101,7 @@
                         </div>
                     </div>
                     <footer class="card-footer-item">
-                        {% if not acc.invoices %}
+                        {% if not all_invoices %}
                             Brak wniosków do wyświetlenia
                         {% endif %}
                     </footer>

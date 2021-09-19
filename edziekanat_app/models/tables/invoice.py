@@ -48,3 +48,4 @@ class Invoice(models.Model):
         verbose_name = "Wniosek"
         verbose_name_plural = "Wnioski"
         unique_together = ['created_by', 'category', 'created_date']
+

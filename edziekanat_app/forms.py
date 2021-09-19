@@ -16,8 +16,10 @@ class LoginForm(forms.Form):
     password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'input is-medium', 'placeholder': 'Hasło'}))
 
 
+
 class CategoryPickForm(forms.Form):
-    category = forms.ModelChoiceField(queryset=InvoiceCategory.objects.all()) # , widget=forms.Select(attrs={'class': 'input'})
+    category = forms.ModelChoiceField(queryset=InvoiceCategory.objects.all())
+
 
 
 class InvoicePickForm(forms.ModelForm):

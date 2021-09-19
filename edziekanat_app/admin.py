@@ -1,11 +1,8 @@
 from django.contrib import admin
 
-from edziekanat_app.models.tables.users.admin import AdminMore
 from edziekanat_app.models.tables.course import Course
-from edziekanat_app.models.tables.users.employee import EmployeeMore
 from edziekanat_app.models.tables.invoice import Invoice
 from edziekanat_app.models.tables.invoice_category import InvoiceCategory
-from edziekanat_app.models.tables.users.student import StudentMore
 from edziekanat_app.models.tables.subject import Subject
 from edziekanat_app.models.tables.university_structure.chair import Chair
 from edziekanat_app.models.tables.university_structure.department import Department

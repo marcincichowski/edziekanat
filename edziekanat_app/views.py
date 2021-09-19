@@ -3,19 +3,22 @@ import datetime
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.views import auth_logout
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from formtools.wizard.views import SessionWizardView
 
-from edziekanat_app.models.entities.account import Account
+from edziekanat_app.models.tables.invoice import Invoice
 from edziekanat_app.models.tables.users.base_user import User
 from .forms import RegisterForm, LoginForm, AddDictionaryValueCathedral
 
 
 def index(request, *args, **kwargs):
-    if '_auth_user_id' not in request.session:
-        return HttpResponseRedirect('login/')
-
-    return render(request, 'index.html')
+    context = {
+        'open_invoices': get_open_invoices(request.user),
+        'closed_invoices': get_closed_invoices(request.user),
+        'new_invoices': get_new_invoices(request.user),
+        'all_invoices': get_user_invoices(request.user)
+    }
+    return render(request, 'index.html', context=context)
 
 
 def invoices(request, *args, **kwargs):
@@ -54,9 +57,6 @@ def dictionaries(request, *args, **kwargs):
 
 
 def user_login(request):
-    if '_auth_user_id' in request.session:
-        return HttpResponseRedirect('/')
-
     template = 'auth/login.html'
 
     if request.method == 'POST':
@@ -74,7 +74,7 @@ def user_login(request):
                       f"Imie:{user.first_name}\n"
                       f"Nazwisko:{user.last_name}")
 
-                return render(request, 'index.html')
+                return redirect('/')
             else:
                 return render(request, 'auth/login.html', {
                     'form': form,
@@ -87,8 +87,7 @@ def user_login(request):
 
 
 def user_logout(request):
-    if '_auth_user_id' in request.session:
-        auth_logout(request)
+    auth_logout(request)
     return HttpResponseRedirect('/')
 
 
@@ -121,7 +120,8 @@ def user_register(request):
                     "message": 'Konto z takim adresem e-mail już istnieje.'
                 })
             elif form.cleaned_data['password'] != form.cleaned_data['password_repeat']:
-                return render(request, template, {'message': 'Hasła nie zgadzają się.'})
+                return render(request, template, {'form': form,
+                                                  'message': 'Hasła nie zgadzają się.'})
             else:
                 user = User.objects.create_user(
                     password=form.cleaned_data['password'],
@@ -147,17 +147,25 @@ def user_register(request):
 
 
 def get_active_account(request):
-    if '_auth_user_id' in request.session:
-        uid = request.session['_auth_user_id']
-        user = User.objects.get(id=uid)
-        return Account(user)
+    if request.user.is_authenticated:
+        return Account(request.user)
     else:
         return None
 
 
 def session_context_processor(request):
     return {
-        "time": datetime.datetime.now(),
-        'acc': get_active_account(request)
+        "time": datetime.datetime.now()
     }
 
+
+def get_open_invoices(user: User): return Invoice.objects.filter(status="W trakcie", created_by=user)
+
+
+def get_closed_invoices(user: User): return Invoice.objects.filter(status="Zamknięte", created_by=user)
+
+
+def get_new_invoices(user: User): return Invoice.objects.filter(status="Nowy", created_by=user)
+
+
+def get_user_invoices(user: User): return Invoice.objects.filter(created_by=user)

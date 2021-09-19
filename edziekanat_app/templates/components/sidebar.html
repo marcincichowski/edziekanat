@@ -21,12 +21,12 @@
             Wnioski
         </p>
         <ul class="menu-list">
+            <li><a href="{% url 'edziekanat_app:invoices' %}">Spis wniosków</a></li>
             <li><a href="{% url 'edziekanat_app:invoices' %}">Twoje wnioski</a></li>
             <li><a href="{% url 'edziekanat_app:create_invoice' %}">Stwórz wniosek</a></li>
-            <li><a>Wnioski do weryfikacji</a></li>
         </ul>
 
-        {% if acc.user.is_staff %}
+        {% if user.user.is_staff %}
             <p class="menu-label">
                 Panel systemu
             </p>
