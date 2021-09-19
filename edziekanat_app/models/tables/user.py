@@ -1,6 +1,8 @@
-from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.db import models
 from django.utils.translation import gettext as _
+
+from edziekanat_app.models.entities.user_manager import UserManager
 
 
 class User(AbstractUser):
@@ -10,11 +12,31 @@ class User(AbstractUser):
         SUPERVISOR = "Supervisor"
         ADMIN = "Admin"
 
-    role = models.CharField(_("Role"), max_length=50, choices=Roles.choices, default=Roles.STUDENT)
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
 
-    acc_created_date = models.DateField(auto_now_add=True, editable=False)
-    email = models.EmailField(unique=True)
-    password = models.CharField(_('password'), max_length=128)
+    role = models.CharField(_("Rola"),
+                            max_length=50,
+                            choices=Roles.choices,
+                            default=Roles.STUDENT)
+
+    acc_created_date = models.DateField(auto_now_add=True,
+                                        editable=False)
+
+    email = models.EmailField(_('Adres e-mail'),
+                              unique=True)
+
+    password = models.CharField(_('Hasło'),
+                                max_length=128)
+
+    username = None
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} {self.id}"
+
+    objects = UserManager()
+
+    class Meta:
+        db_table = "edziekanat_app_users"
+        verbose_name = "Użytkownik"
+        verbose_name_plural = "Użytkownicy"
