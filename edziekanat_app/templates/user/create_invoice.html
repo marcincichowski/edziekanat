@@ -10,28 +10,40 @@
 
 {% block content %}
     <div class="column is-9">
-        <section class="hero is-info welcome is-small">
-            <div class="hero-body">
-                <div class="container">
-                    <h1 class="title">
-                        Kreator wniosku
-                    </h1>
-                    <progress class="progress is-success" value="45" max="50"></progress>
-                </div>
+    <section class="hero is-info welcome is-small">
+        <div class="hero-body">
+            <div class="container">
+                <h1 class="title">
+                    Kreator wniosku
+                </h1>
+                <progress class="progress is-success" value={{ wizard.steps.current }} max={{ wizard.steps.count }}></progress>
             </div>
-        </section>
-        {% include 'components/invoice_creator/category.html' %}
+        </div>
+    </section>
+    <form method="post">
+    {% csrf_token %}
+    <table>
+        {{ wizard.management_form }}
+        {% if wizard.form.forms %}
+            {{ wizard.form.management_form }}
+            {% for form in wizard.form.forms %}
+                {{ form }}
+            {% endfor %}
+        {% else %}
+            {% for field in wizard.form %}
+                <label for="{{ field.id_for_label }}"> {{ field.label }} </label>
+                <div class="select">{{ field }}</div>
 
-    </div>
-    <script>
-        $("#category_select").change(function () {
-            if ($(this).val()) {
-                $('#invoice_select_div').show();
-            } else {
-                $('#invoice_select_div').hide();
-            }
-        });
-        $("#category_select").trigger("change");
-    </script>
+                <span class="message">{{ field.errors }}</span>
+            {% endfor %}
+        {% endif %}
+    </table>
+
+    {% if wizard.steps.prev %}
+        <button name="wizard_goto_step" value="{{ wizard.steps.first }}" type="submit" class="button is-danger">Od nowa</button>
+        <button name="wizard_goto_step"  value="{{ wizard.steps.prev }}" class="button is-warning">Poprzedni krok</button>
+    {% endif %}
+    <input type="submit" value="Dalej" class="button is-primary"/>
+
 {% endblock %}
 

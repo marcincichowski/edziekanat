@@ -19,3 +19,8 @@ class Role(models.Model):
 
     def __str__(self):
         return self.get_id_display()
+
+    class Meta:
+        db_table = "edziekanat_app_roles"
+        verbose_name = "Rola"
+        verbose_name_plural = "Role"
