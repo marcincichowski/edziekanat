@@ -1,6 +1,28 @@
 @import 'colors';
 @import "../bulma/css/bulma.css";
 @import url(https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css);
+
+.navbar{
+    background-color: $footer-background-color;
+}
+.image{
+    height: 50px;
+    width: auto;
+}
+.navbar-burger{
+    color: $base-color;
+    &:hover{
+        color: $base-hover
+    }
+}
+
+.navbar-item{
+    color: $base-color;
+    @media only screen and (max-width: 1008px){
+        color: invert($base-color);
+    }
+}
+
 .footer {
     position: fixed;
     left: 0;
