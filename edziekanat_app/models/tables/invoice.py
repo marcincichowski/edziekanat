@@ -1,9 +1,9 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from edziekanat_app.models.tables.employee import Employee
+from edziekanat_app.models.tables.users.employee import Employee
 from edziekanat_app.models.tables.invoice_category import InvoiceCategory
-from edziekanat_app.models.tables.student import Student
+from edziekanat_app.models.tables.users.student import Student
 
 
 class Invoice(models.Model):
@@ -17,6 +17,9 @@ class Invoice(models.Model):
                                    related_name="authors",
                                    editable=False)
 
+    invoice_file = models.FileField(verbose_name=_('Plik wniosku'),
+                                    upload_to="edziekanat_app/docs")
+
     created_date = models.DateField(verbose_name=_('Data utworzenia'),
                                     auto_now=True,
                                     editable=False)
@@ -25,29 +28,17 @@ class Invoice(models.Model):
                               max_length=20,
                               default="W trakcie")
 
-    decision = models.CharField(verbose_name=_('Decyzja'),
-                                max_length=200,
-                                blank=True, )
-
-    decision_file = models.FileField(verbose_name=_('Plik decyzji'),
-                                     upload_to="edziekanat_app/docs")
-
-    decision_file_location = models.FilePathField(verbose_name=_('Lokalizacja pliku decyzji'),
-                                                  editable=True,
-                                                  path="edziekanat_app/invoice_decisions")
-
     decision_author = models.ForeignKey(Employee,
                                         verbose_name=_('Osoba wyznaczona do dokonania decyzji'),
                                         on_delete=models.PROTECT,
                                         related_name="decision_authors")
 
-    invoice_file = models.FileField(verbose_name=_('Plik wniosku'),
-                                    upload_to="edziekanat_app/docs",
-                                    editable=False)
+    decision = models.CharField(verbose_name=_('Decyzja'),
+                                max_length=200,
+                                blank=True)
 
-    invoice_file_location = models.FilePathField(verbose_name=_('Lokalizacja wniosku'),
-                                                 editable=False,
-                                                 path="edziekanat_app/docs")
+    decision_file = models.FileField(verbose_name=_('Plik decyzji'),
+                                     upload_to="edziekanat_app/docs")
 
     def __str__(self):
         return f"{self.name} - {self.status.lower()}"

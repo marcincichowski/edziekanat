@@ -1,5 +1,5 @@
 from edziekanat_app.models.tables.invoice import Invoice
-from edziekanat_app.models.tables.user import User
+from edziekanat_app.models.tables.users.base_user import User
 
 
 class Account:
