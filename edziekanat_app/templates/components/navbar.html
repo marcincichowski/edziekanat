@@ -1,31 +1,51 @@
 {% load static %}
-<nav class="navbar" role="navigation" aria-label="main navigation">
-  <div class="navbar-brand">
-    <a class="navbar-item" href="{% url 'edziekanat_app:home' %}">
-      <img src="{% static 'images/put_logo_text.png' %}" class="image">
-    </a>
-
-    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
-      <span aria-hidden="true"></span>
-      <span aria-hidden="true"></span>
-      <span aria-hidden="true"></span>
-    </a>
-  </div>
-
-  <div id="navbarBasicExample" class="navbar-menu">
-    <div class="navbar-end">
-      <div class="navbar-item">
-        <div class="navbar-item">
-          Zalogowano jako {{request.user}} ({{ request.user.role.name }})
+<nav class="navbar">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="{% url 'edziekanat_app:home' %}">
+        <img src="{% static 'images/put_logo_text.png' %}" class="image">
+      </a>
+        <div class="navbar-burger" data-target="navbar-data-toggle">
+          <span></span>
+          <span></span>
+          <span></span>
         </div>
-        <div class="buttons">
-          <a class="button is-primary" href="{% url 'edziekanat_app:logout' %}">
-            Wyloguj
-          </a>
-        </div>
-      </div>
     </div>
-  </div>
+
+    <div class="navbar-menu" id="navbar-data-toggle">
+        <div class="navbar-end">
+            <a class="navbar-item is-tab is-hidden-tablet" href="{% url 'edziekanat_app:home' %}">
+                Strona główna
+            </a>
+            <a class="navbar-item is-tab is-hidden-tablet" href="{% url 'edziekanat_app:account' %}">
+                Konto
+            </a>
+            <a class="navbar-item is-tab is-hidden-tablet" href="{% url 'edziekanat_app:settings' %}">
+                Ustawienia
+            </a>
+            <a class="navbar-item is-tab is-hidden-tablet"  href="{% url 'edziekanat_app:invoices' %}">
+                Spis wniosków
+            </a>
+            <a class="navbar-item is-tab is-hidden-tablet" href="{% url 'edziekanat_app:invoices' %}">
+                Twoje wnioski
+            </a>
+            <a class="navbar-item is-tab is-hidden-tablet" href="{% url 'edziekanat_app:create_invoice' %}">
+                Stwórz wniosek
+            </a>
+            {% if request.user.is_staff %}
+                <a class="navbar-item is-tab is-hidden-tablet" href="{% url 'edziekanat_app:config' %}">Konfiguracja</a>
+                <a class="navbar-item is-tab is-hidden-tablet" href='/admin'>Panel administracyjny</a>
+                <a class="navbar-item is-tab is-hidden-tablet" href="{% url 'edziekanat_app:dictionaries' %}">Słowniki</a>
+                <a class="navbar-item is-tab is-hidden-tablet" href="{% url 'edziekanat_app:administrators' %}">Administratorzy</a>
+            {% endif %}
+            <a class="navbar-item is-tab is-active has-text-centered" style="white-space: nowrap; min-width: 150px;">
+                <span class="icon"><i class="fa fa-user"></i></span>&nbsp;{{request.user}}
+            </a>
+            <a class="navbar-item is-tab has-text-centered" href="{% url 'edziekanat_app:logout' %}">
+                <span class="icon"><i class="fa fa-sign-out"></i></span>Wyloguj
+            </a>
+        </div>
+
+    </div>
 </nav>
 <script>
   document.addEventListener('DOMContentLoaded', () => {

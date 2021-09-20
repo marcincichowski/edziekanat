@@ -16,18 +16,51 @@
     }
 }
 
-.navbar-item{
-    color: $base-color;
-    @media only screen and (max-width: 1008px){
-        color: invert($base-color);
+.icon-button{
+    text-align: center;
+    i{
+        margin: 0 auto;
     }
 }
 
+.navbar-item, .navbar-item.is-tab.is-active, .navbar-item.is-tab {
+    color: $base-color;
+    @media only screen and (max-width: 768px){
+        color: invert($base-color);
+        &:hover{
+            color: invert($base-color, 70%) !important;
+        }
+    }
+    &:hover{
+        color: invert($base-color, 10%);
+    }
+}
+.navbar-item.is-tab.is-active{
+    border-bottom-color: $base-color;
+    &:hover{
+        border-bottom-color: invert($base-color, 10%);
+    }
+}
 .footer {
     position: fixed;
+    background-color: $footer-background-color;
+    color: $base-color;
     left: 0;
     bottom: 0;
-    width: 100%
+    width: 100%;
+    a{
+        color: $base-color;
+        &:hover{
+            color: invert($base-color, 20%)
+        }
+    }
+     @media only screen and (max-width: 768px){
+        padding-top: 20px;
+        padding-bottom: 20px;
+    }
+    @media only screen and (max-height: 500px) {
+            position: static;
+    }
 }
 .container-main {
     margin: 0 auto;
@@ -137,4 +170,10 @@ input:focus {
 
 .fade{
   animation: 0.7s linear fadeEffect;
+}
+
+@media screen and (max-width: 768px) {
+  #menu-toggle:checked + .navbar-menu {
+    display: block;
+  }
 }

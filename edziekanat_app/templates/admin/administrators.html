@@ -9,7 +9,8 @@
 {% endblock %}
 
 {% block content %}
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bm/dt-1.11.2/r-2.2.9/sl-1.3.3/datatables.min.css"/>
+    <script type="text/javascript" src="https://cdn.datatables.net/v/bm/dt-1.11.2/r-2.2.9/sl-1.3.3/datatables.min.js"></script>
     <div class="column is-9">
         <section class="hero is-info welcome is-small">
             <div class="hero-body">
@@ -29,48 +30,60 @@
                         </p>
                     </header>
                     <div class="card-content">
-                        <div class="field">
-                            <div class="control">
-                                <label class="label" for="admins">Administratorzy systemu</label>
-                                <div class="select is-fullwidth">
-                                    <select id="admins" name="admins[]" multiple="multiple" class="select-multiple" style="width: 100%;">
-                                        <option value="marcin">TODO: WRITE ADMIN GETTER/SETTER SELECT2</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
+                        <table id="datatable-example" class="table is-fullwidth is-striped is-hoverable" style="width: 100%;">
+                            <thead>
+                                <tr>
+                                    <th>Email</th>
+                                    <th>Data założenia</th>
+                                    <th>Rola</th>
+                                    <th>Opcje</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for user in users %}
+                                    <tr>
+                                        <td>{{ user.email }}</td>
+                                        <td>{{ user.acc_created_date }}</td>
+                                        <td>{{ user.role }}</td>
+                                        <td><button class="button is-small icon-button" onclick="userModal()"><i class="fas fa-edit"></i></button></td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="columns">
-            <div class="column">
-                <div class="card">
-                    <header class="card-header">
-                        <p class="card-header-title">
-                            Moderatorzy
-                        </p>
-                    </header>
-                    <div class="card-content">
-                        <div class="field">
-                            <div class="control">
-                                <label class="label" for="moderators">Moderatorzy systemu</label>
-                                <div class="select is-fullwidth">
-                                    <select id="moderators" name="moderators[]" multiple="multiple" class="select-multiple" style="width: 100%;">
-                                        <option value="marcin">TODO: WRITE ADMIN GETTER/SETTER SELECT2</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
     </div>
     <script>
-        $(document).ready(function () {
-            $('.select-multiple').select2();
+    $(document).ready(function() {
+        $('#datatable-example').DataTable({
+            responsive: true,
+            language:{
+                "decimal":        "",
+                "emptyTable":     "Brak dostępnych danych w tabeli",
+                "info":           "Pokazywanie _START_ do _END_ z _TOTAL_ wpisów",
+                "infoEmpty":      "Pokazywanie 0 do 0 z 0 wpisów",
+                "infoFiltered":   "(wszystkie wpisy odfiltrowane z _MAX_)",
+                "infoPostFix":    "",
+                "thousands":      ",",
+                "lengthMenu":     "Pokaż wpisy _MENU_",
+                "loadingRecords": "Ładowanie...",
+                "processing":     "Przetwarzanie...",
+                "search":         "Wyszukaj:",
+                "zeroRecords":    "Nie znaleziono odpowiadających dokumentów.",
+                "paginate": {
+                    "first":      "Pierwszy",
+                    "last":       "Ostatni",
+                    "next":       "Następny",
+                    "previous":   "Poprzedni"
+                },
+                "aria": {
+                    "sortAscending":  ": Aktywuj aby posortować kolumnę rosnąco",
+                    "sortDescending": ": Aktywuj aby posortować kolumnę malejąco"
+                }
+            }
         });
+    } );
     </script>
 {% endblock %}

@@ -22,11 +22,13 @@ def index(request, *args, **kwargs):
 
 
 def invoices(request, *args, **kwargs):
-    return render(request, 'user/invoices.html')
+    invoices = User.objects.all()
+    return render(request, 'user/invoices.html', context={'invoices': invoices})
 
 
 def administrators(request, *args, **kwargs):
-    return render(request, 'admin/administrators.html')
+    users = User.objects.all()
+    return render(request, 'admin/administrators.html',  context={'users': users})
 
 
 def account(request, *args, **kwargs):
