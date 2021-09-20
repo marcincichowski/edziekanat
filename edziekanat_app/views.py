@@ -7,7 +7,7 @@ from django.shortcuts import render, redirect
 from formtools.wizard.views import SessionWizardView
 
 from edziekanat_app.models.tables.invoice import Invoice
-from edziekanat_app.models.tables.users.base_user import User
+from edziekanat_app.models.tables.users.user import User
 from .forms import RegisterForm, LoginForm, AddDictionaryValueCathedral
 
 
@@ -125,7 +125,8 @@ def user_register(request):
             else:
                 user = User.objects.create_user(
                     password=form.cleaned_data['password'],
-                    email=form.cleaned_data['email']
+                    email=form.cleaned_data['email'],
+                    role=form.cleaned_data['role']
                 )
                 user.first_name = form.cleaned_data['first_name']
                 user.last_name = form.cleaned_data['last_name']

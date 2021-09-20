@@ -1,21 +1,15 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from edziekanat_app.models.tables.users.employee import Employee
-from edziekanat_app.models.tables.invoice_category import InvoiceCategory
-from edziekanat_app.models.tables.users.student import Student
-
-
 class Invoice(models.Model):
-    category = models.ForeignKey(InvoiceCategory,
+    category = models.ForeignKey(to='edziekanat_app.InvoiceCategory',
                                  verbose_name=_('Kategoria'),
                                  on_delete=models.CASCADE)
 
-    created_by = models.ForeignKey(Student,
+    created_by = models.ForeignKey(to='edziekanat_app.User',
                                    verbose_name=_('Wnioskodawca'),
                                    on_delete=models.CASCADE,
-                                   related_name="authors",
-                                   editable=False)
+                                   related_name="authors")
 
     invoice_file = models.FileField(verbose_name=_('Plik wniosku'),
                                     upload_to="edziekanat_app/docs")
@@ -28,7 +22,7 @@ class Invoice(models.Model):
                               max_length=20,
                               default="W trakcie")
 
-    decision_author = models.ForeignKey(Employee,
+    decision_author = models.ForeignKey(to='edziekanat_app.User',
                                         verbose_name=_('Osoba wyznaczona do dokonania decyzji'),
                                         on_delete=models.PROTECT,
                                         related_name="decision_authors")

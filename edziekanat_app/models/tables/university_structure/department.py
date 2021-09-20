@@ -2,15 +2,14 @@ from django.db import models
 from django.utils.translation import gettext as _
 
 from edziekanat_app.models.tables.university_structure.structure_unit import StructureUnit
-from edziekanat_app.models.tables.users.base_user import User
 
 
 class Department(StructureUnit):
-    head = models.ForeignKey(User,
+    head = models.ForeignKey('edziekanat_app.User',
                              verbose_name=_('Kierownik instytutu'),
                              on_delete=models.PROTECT)
 
-    contact_user = models.ForeignKey(User,
+    contact_user = models.ForeignKey('edziekanat_app.User',
                                      verbose_name=_('Osoba decyzyjna'),
                                      on_delete=models.PROTECT,
                                      related_name="department_decision_user")

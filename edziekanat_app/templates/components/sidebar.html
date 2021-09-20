@@ -26,12 +26,13 @@
             <li><a href="{% url 'edziekanat_app:create_invoice' %}">Stwórz wniosek</a></li>
         </ul>
 
-        {% if user.user.is_staff %}
+        {% if request.user.is_staff %}
             <p class="menu-label">
                 Panel systemu
             </p>
             <ul class="menu-list">
                 <li><a href="{% url 'edziekanat_app:config' %}">Konfiguracja</a></li>
+                <li><a href='/admin'>Panel administracyjny</a></li>
                 <li><a href="{% url 'edziekanat_app:dictionaries' %}">Słowniki</a></li>
                 <li><a href="{% url 'edziekanat_app:administrators' %}">Administratorzy</a></li>
             </ul>

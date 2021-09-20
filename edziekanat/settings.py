@@ -54,7 +54,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-AUTH_EXEMPT_ROUTES = ('user_register', 'user_login')
+AUTH_EXEMPT_ROUTES = ('user_register', 'user_login', 'admin')
 AUTH_LOGIN_ROUTE = '/login'
 
 ROOT_URLCONF = 'edziekanat.urls'

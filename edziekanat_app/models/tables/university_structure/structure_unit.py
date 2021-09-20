@@ -1,9 +1,5 @@
 from django.db import models
 from django.utils.translation import gettext as _
-
-from edziekanat_app.models.tables.users.base_user import User
-
-
 # wydział > instytut > katedra
 # faculty > department > chair
 
@@ -16,7 +12,7 @@ class StructureUnit(models.Model):
     location = models.CharField(_('Adres'),
                                 max_length=100)
 
-    contact_user = models.ForeignKey(User,
+    contact_user = models.ForeignKey('edziekanat_app.User',
                                      verbose_name=_('Osoba decyzyjna'),
                                      on_delete=models.PROTECT,
                                      related_name="decision_user")
