@@ -4,6 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 from edziekanat_app.models.tables.users.student import Student
 from edziekanat_app.models.tables.users.admin import Admin
 from edziekanat_app.models.tables.users.employee import Employee
+from edziekanat_app.models.tables.users.role import Role
 
 
 class UserManager(BaseUserManager):
@@ -32,7 +33,7 @@ class UserManager(BaseUserManager):
         extra_fields.setdefault('is_active', True)
         extra_fields.setdefault('first_name', "Administrator")
         extra_fields.setdefault('last_name', "eDziekanat")
-        extra_fields.setdefault('role', "Admin")
+        extra_fields.setdefault('role', Role.objects.filter(name=Admin.base_role).first())
 
         if extra_fields.get('is_staff') is not True:
             raise ValueError(_('Superuser must have is_staff=True.'))
