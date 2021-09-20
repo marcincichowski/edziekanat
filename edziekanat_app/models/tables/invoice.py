@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+
 class Invoice(models.Model):
     category = models.ForeignKey(to='edziekanat_app.InvoiceCategory',
                                  verbose_name=_('Kategoria'),

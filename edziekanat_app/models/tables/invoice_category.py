@@ -8,6 +8,10 @@ class InvoiceCategory(models.Model):
                             unique=True,
                             verbose_name=_('Nazwa'))
 
+    field = models.ForeignKey(to='edziekanat_app.InvoiceField',
+                              verbose_name=_('Dziedzina'),
+                              on_delete=models.CASCADE, default=None, null=None)
+
     faq_link = models.URLField(blank=True,
                                help_text="Link do regulaminu",
                                verbose_name=_('Regulamin'))
@@ -25,10 +29,10 @@ class InvoiceCategory(models.Model):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        self.fields = document_parse(self.docx_template)
+        #self.fields = document_parse(self.docx_template)
 
     class Meta:
-        db_table = "edziekanat_app_invoices_categories"
+        db_table = "edziekanat_app_invoice_categories"
         verbose_name = "Kategoria wniosku"
         verbose_name_plural = "Kategorie wniosków"
 

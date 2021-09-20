@@ -97,6 +97,9 @@ class InvoiceCreator(SessionWizardView):
     def get_form_kwargs(self, step=None):
         kwargs = {}
         if step == '1':
+            field = self.get_cleaned_data_for_step('0')['field']
+            kwargs.update({'field': field, })
+        if step == '2':
             category = self.get_cleaned_data_for_step('0')['category']
             kwargs.update({'category': category, })
         return kwargs

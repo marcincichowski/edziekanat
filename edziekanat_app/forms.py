@@ -2,6 +2,7 @@ from django import forms
 
 from edziekanat_app.models.tables.invoice import Invoice
 from edziekanat_app.models.tables.invoice_category import InvoiceCategory
+from edziekanat_app.models.tables.invoice_field import InvoiceField
 from edziekanat_app.models.tables.users.role import Role
 
 
@@ -10,9 +11,10 @@ class RegisterForm(forms.Form):
     last_name = forms.CharField(widget=forms.TextInput(attrs={'class': 'input is-medium', 'placeholder': 'Nazwisko'}))
     email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'input is-medium', 'placeholder': 'Adres e-mail'}))
     password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'input is-medium', 'placeholder': 'Hasło'}))
-    password_repeat = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'input is-medium', 'placeholder': 'Powtórz hasło'}))
+    password_repeat = forms.CharField(
+        widget=forms.PasswordInput(attrs={'class': 'input is-medium', 'placeholder': 'Powtórz hasło'}))
     role = forms.ModelChoiceField(queryset=Role.objects.all(), widget=forms.Select(attrs={'class': 'select'}))
-    
+
     def __init__(self, *args, **kwargs):
         super(RegisterForm, self).__init__(*args, **kwargs)
 
@@ -22,22 +24,22 @@ class LoginForm(forms.Form):
     password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'input is-medium', 'placeholder': 'Hasło'}))
 
 
-class CategoryPickForm(forms.Form):
-    category = forms.ModelChoiceField(queryset=InvoiceCategory.objects.all())
+class InvoiceFieldPickForm(forms.Form):
+    field = forms.ModelChoiceField(queryset=InvoiceField.objects.all(), widget=forms.Select(attrs={'placeholder':'Dziedzina wniosku'}))
 
-
-class InvoicePickForm(forms.ModelForm):
+class InvoiceCategoryPickForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
-        self.category = kwargs.pop('category')
-        super(InvoicePickForm, self).__init__(*args, **kwargs)
-        self.fields['invoice'].queryset = Invoice.objects.filter(category=self.category)
+        self.field = kwargs.pop('field')
+        super(InvoiceCategoryPickForm, self).__init__(*args, **kwargs)
+        self.fields['category'].queryset = InvoiceCategory.objects.filter(field=self.field)
+        self.fields['category'].widget = forms.Select(attrs={'placeholder': 'Wniosek'})
 
     class Meta:
-        model = Invoice
-        fields = ['invoice']
+        model = InvoiceCategory
+        fields = ['category']
 
-    invoice = forms.ChoiceField()
+    category = forms.ChoiceField()
 
 
 class AddDictionaryValueCathedral(forms.Form):
