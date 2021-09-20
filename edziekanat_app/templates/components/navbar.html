@@ -16,7 +16,7 @@
     <div class="navbar-end">
       <div class="navbar-item">
         <div class="navbar-item">
-          Zalogowano jako {{request.user}}
+          Zalogowano jako {{request.user}} ({{ request.user.role.name }})
         </div>
         <div class="buttons">
           <a class="button is-primary" href="{% url 'edziekanat_app:logout' %}">

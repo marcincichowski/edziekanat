@@ -1,6 +1,8 @@
 from django import forms
-from edziekanat_app.models.tables.invoice_category import InvoiceCategory
+
 from edziekanat_app.models.tables.invoice import Invoice
+from edziekanat_app.models.tables.invoice_category import InvoiceCategory
+from edziekanat_app.models.tables.users.role import Role
 
 
 class RegisterForm(forms.Form):
@@ -9,6 +11,10 @@ class RegisterForm(forms.Form):
     email = forms.EmailField(widget=forms.EmailInput(attrs={'class': 'input is-medium', 'placeholder': 'Adres e-mail'}))
     password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'input is-medium', 'placeholder': 'Hasło'}))
     password_repeat = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'input is-medium', 'placeholder': 'Powtórz hasło'}))
+    role = forms.ModelChoiceField(queryset=Role.objects.all(), widget=forms.Select(attrs={'class': 'select'}))
+    
+    def __init__(self, *args, **kwargs):
+        super(RegisterForm, self).__init__(*args, **kwargs)
 
 
 class LoginForm(forms.Form):
@@ -16,10 +22,8 @@ class LoginForm(forms.Form):
     password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'input is-medium', 'placeholder': 'Hasło'}))
 
 
-
 class CategoryPickForm(forms.Form):
     category = forms.ModelChoiceField(queryset=InvoiceCategory.objects.all())
-
 
 
 class InvoicePickForm(forms.ModelForm):
@@ -37,7 +41,8 @@ class InvoicePickForm(forms.ModelForm):
 
 
 class AddDictionaryValueCathedral(forms.Form):
-    value = forms.CharField(widget=forms.TextInput(attrs={'class': 'input is-primary is-fullwidth', 'placeholder': 'Nazwa katedry'}))
+    value = forms.CharField(
+        widget=forms.TextInput(attrs={'class': 'input is-primary is-fullwidth', 'placeholder': 'Nazwa katedry'}))
 
     def __init__(self, *args, **kwargs):
         super(AddDictionaryValueCathedral, self).__init__(*args, **kwargs)

@@ -7,10 +7,14 @@ from edziekanat_app.models.tables.subject import Subject
 from edziekanat_app.models.tables.university_structure.chair import Chair
 from edziekanat_app.models.tables.university_structure.department import Department
 from edziekanat_app.models.tables.university_structure.faculty import Faculty
-from edziekanat_app.models.tables.users.base_user import User
+from edziekanat_app.models.tables.users.user import User
+from edziekanat_app.models.tables.users.student import Student
+from edziekanat_app.models.tables.users.employee import Employee
 
 # Accounts
 admin.site.register(User)
+admin.site.register(Student)
+admin.site.register(Employee)
 
 # University Structure
 admin.site.register(Department)
