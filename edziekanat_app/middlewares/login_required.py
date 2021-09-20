@@ -18,12 +18,13 @@ class LoginRequiredMiddleware(MiddlewareMixin):
         The Login Required middleware needs to be after AuthenticationMiddleware.
         Also make sure to include the template context_processor:
         'django.contrib.auth.context_processors.auth'."""
+        current_route_name = str(resolve(request.path_info).route).strip('^').strip('/$')
         if not request.user.is_authenticated:
-            current_route_name = str(resolve(request.path_info).route).strip('^').strip('/$')
             if current_route_name == 'admin/login': return
             if not current_route_name in settings.AUTH_EXEMPT_ROUTES:
                 return redirect(settings.AUTH_LOGIN_ROUTE)
 
         elif resolve(request.path_info).url_name in settings.AUTH_EXEMPT_ROUTES:
+            if current_route_name == 'admin/login': return
             return HttpResponseRedirect('/')
 
