@@ -8,7 +8,7 @@ from formtools.wizard.views import SessionWizardView
 
 from edziekanat_app.models.tables.invoice import Invoice
 from edziekanat_app.models.tables.users.user import User
-from .forms import RegisterForm, LoginForm, AddDictionaryValueCathedral
+from .forms import RegisterForm, LoginForm, AddDictionaryValueCathedral, EditUserForm
 from .models.tables.invoice_category import InvoiceCategory
 
 
@@ -29,6 +29,10 @@ def invoices(request, *args, **kwargs):
 
 def administrators(request, *args, **kwargs):
     users = User.objects.all()
+    if request.method == 'GET':
+        edit_form = EditUserForm()
+        return render(request, 'admin/administrators.html', context={'users': users, 'form': edit_form})
+
     return render(request, 'admin/administrators.html',  context={'users': users})
 
 
