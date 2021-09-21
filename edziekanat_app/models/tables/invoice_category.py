@@ -23,9 +23,9 @@ class InvoiceCategory(models.Model):
     def __str__(self):
         return self.name
 
-    def save(self, *args, **kwargs):
+    """def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        self.fields = document_parse(self.docx_template)
+        self.fields = document_parse(self.docx_template)"""
 
     class Meta:
         db_table = "edziekanat_app_invoices_categories"
