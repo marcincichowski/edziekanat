@@ -35,4 +35,4 @@ class Student(models.Model):
 
 
     def __str__(self):
-        return f"{self.user.__str__()} {self.more.index}"
+        return f"{self.user.__str__()} {self.index}"

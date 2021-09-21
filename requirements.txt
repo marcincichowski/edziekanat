@@ -1,3 +1,7 @@
 Django~=3.2.6
 django-ckeditor>=1.2.2
 django-formtools>=2.3
+python-docx
+django-braces~=1.14.0
+docx~=0.2.4
+regex

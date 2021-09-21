@@ -105,9 +105,10 @@ class InvoiceCreator(SessionWizardView):
         kwargs = {}
         if step == '1':
             field = self.get_cleaned_data_for_step('0')['field']
-            kwargs.update({'field': field, })
+            queryset = InvoiceCategory.objects.filter(field=field)
+            kwargs.update({'categories': queryset, })
         if step == '2':
-            category = self.get_cleaned_data_for_step('0')['category']
+            category = self.get_cleaned_data_for_step('1')['category']
             kwargs.update({'category': category, })
         return kwargs
 
