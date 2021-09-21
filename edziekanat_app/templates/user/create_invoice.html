@@ -46,10 +46,10 @@
         </table>
 
         {% if wizard.steps.prev %}
-            <button name="wizard_goto_step" value="{{ wizard.steps.first }}" type="submit" class="button is-danger">Od
+            <button formnovalidate="formnovalidate" name="wizard_goto_step" value="{{ wizard.steps.first }}" type="submit" class="button is-danger">Od
                 nowa
             </button>
-            <button name="wizard_goto_step" value="{{ wizard.steps.prev }}" class="button is-warning">Poprzedni krok
+            <button formnovalidate="formnovalidate" name="wizard_goto_step" value="{{ wizard.steps.prev }}" class="button is-warning">Poprzedni krok
             </button>
         {% endif %}
         <input type="submit" value="Dalej" class="button is-primary"/>
