@@ -19,5 +19,61 @@
                 </div>
             </div>
         </section>
+    <div class="columns">
+            <div class="column">
+            {% if invoices %}
+                {% for invoice in invoices %}
+                <div class="card">
+                    <header class="card-header">
+                        <p class="card-header-title">
+                            {{ invoice.name }}
+                        </p>
+                        <button class="card-header-icon" aria-label="more options" onclick="hide('{{ invoice.id }}')">
+                          <span class="icon">
+                            <i class="fas fa-angle-down" id="icon{{ invoice.id }}" aria-hidden="true"></i>
+                          </span>
+                        </button>
+                    </header>
+                    <div class="card-content is-hidden" id="{{ invoice.id }}">
+                        <p>
+                            {% autoescape off %}
+                                {{ invoice.description }}
+                            {% endautoescape %}
+                        </p>
+                        <p>
+                             FAQ Link: <a href="{{ invoice.faq_link }}" target="_blank">{{ invoice.faq_link }}</a>
+                        </p>
+                        <p>
+                            TEMPLATE FILE NAME: {{ invoice.docx_template.name }}
+                        </p>
+
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+             <div class="card">
+                 <header class="card-header">
+                     <p class="card-header-title">
+                         Brak utworzonych kategorii wniosków
+                     </p>
+                 </header>
+             </div>
+            {% endif %}
+            </div>
+        </div>
     </div>
+    <script>
+    function hide(id){
+        if($('#'+id).hasClass('is-hidden')){
+            $('#'+id).removeClass('is-hidden');
+            $('#icon'+id).removeClass('fa-angle-down');
+            $('#icon'+id).addClass('fa-angle-up');
+        }
+        else{
+            $('#'+id).addClass('is-hidden');
+            $('#icon'+id).removeClass('fa-angle-up');
+            $('#icon'+id).addClass('fa-angle-down');
+        }
+    }
+    </script>
 {% endblock %}
