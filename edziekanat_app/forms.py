@@ -62,14 +62,26 @@ class InvoiceFillForm(UserKwargModelFormMixin, Form):
         category = kwargs.pop('category')
         super(InvoiceFillForm, self).__init__(*args, **kwargs)
         invoice_fields = json.loads(category.field_types)
-        self.set_up_fields(invoice_fields)
 
-    def set_up_fields(self, invoice_fields):
-        for type, fields in invoice_fields.items():
-            for i in range(0, len(invoice_fields[type.upper()])):
-                label = fields[f"field_{i}"]
-                self.fields[f"{type.lower()}_field_{i}"] = CharField(
-                    widget=TextInput(attrs={'class': 'input is-medium', 'label': label}))
+        for i in range(0, len(invoice_fields['TEXT'])):
+            placeholder = invoice_fields['TEXT'][f"field_{i}"]
+            self.fields["text_field_%d" % i] = CharField(
+                widget=TextInput(attrs={'class': 'input is-medium', 'label': placeholder}))
+
+        for i in range(0, len(invoice_fields['DATE'])):
+            placeholder = invoice_fields['DATE'][f"field_{i}"]
+            self.fields["date_field_%d" % i] = CharField(
+                widget=TextInput(attrs={'class': 'input is-medium', 'label': placeholder}))
+
+        for i in range(0, len(invoice_fields['PHONE'])):
+            placeholder = invoice_fields['PHONE'][f"field_{i}"]
+            self.fields["phone_field_%d" % i] = CharField(
+                widget=TextInput(attrs={'class': 'input is-medium', 'label': placeholder}))
+
+        for i in range(0, len(invoice_fields['VALUE'])):
+            placeholder = invoice_fields['VALUE'][f"field_{i}"]
+            self.fields["phone_field_%d" % i] = CharField(
+                widget=TextInput(attrs={'class': 'input is-medium', 'label': placeholder}))
 
 
 class AddDictionaryValueCathedral(Form):
