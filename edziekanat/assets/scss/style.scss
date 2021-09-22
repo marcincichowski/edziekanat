@@ -65,18 +65,14 @@
 .container-main {
     margin: 0 auto;
     margin-top: 1rem;
-}
-:root {
-    --brandColor: hsl(197, 100%, 28%);
-    --background: rgb(247, 247, 247);
-    --textDark: hsla(0, 0%, 0%, 0.66);
-    --textLight: hsla(0, 0%, 0%, 0.33);
-}
+    min-height: calc(100vh - 52px - 191px);
+    @media only screen and (max-height: 500px) {
+        height: auto;
+    }
+    @media only screen and (max-width: 768px){
+        min-height: calc(100vh - 52px - 87px);
+    }
 
-body {
-    background: var(--background);
-    height: 100vh;
-    color: var(--textDark);
 }
 
 .field:not(:last-child) {
