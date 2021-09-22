@@ -36,7 +36,7 @@ class Invoice(models.Model):
                                      upload_to="edziekanat_app/docs")
 
     def __str__(self):
-        return f"{self.name} - {self.status.lower()}"
+        return f"{self.status}"
 
     class Meta:
         db_table = "edziekanat_app_invoices"

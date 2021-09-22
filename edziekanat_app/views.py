@@ -1,8 +1,10 @@
 import datetime
+import json
 
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.views import auth_logout
-from django.http import HttpResponseRedirect
+from django.core.serializers import serialize
+from django.http import HttpResponseRedirect, Http404, JsonResponse
 from django.shortcuts import render, redirect
 from formtools.wizard.views import SessionWizardView
 
@@ -27,13 +29,26 @@ def invoices(request, *args, **kwargs):
     return render(request, 'user/invoices.html', context={'invoices': invoices})
 
 
+def invoices_list_details(request, *args, **kwargs):
+    if request.method == 'GET' and request.is_ajax():
+        id = request.GET.get('id', None)
+        if Invoice.objects.filter(id=id).exists():
+            return JsonResponse({'Valid': True, 'data': serialize('json', Invoice.objects.filter(id=id))}, status=200)
+        else:
+            return JsonResponse({'Valid': False}, status=200)
+
+    return JsonResponse({}, status=400)
+
+
+def invoices_list(request, *args, **kwargs):
+    invoices = Invoice.objects.filter(created_by=request.user)
+    return render(request, 'user/invoices_list.html', context={'invoices': invoices})
+
+
 def administrators(request, *args, **kwargs):
     users = User.objects.all()
-    if request.method == 'GET':
-        edit_form = EditUserForm()
-        return render(request, 'admin/administrators.html', context={'users': users, 'form': edit_form})
-
-    return render(request, 'admin/administrators.html',  context={'users': users})
+    edit_form = EditUserForm()
+    return render(request, 'admin/administrators.html', context={'users': users, 'form': edit_form})
 
 
 def account(request, *args, **kwargs):
