@@ -22,6 +22,7 @@
                                 </div>
                             </div>
                         {% endfor %}
+                    {{ form.errors }}
                         <button class="button is-block is-primary is-fullwidth is-medium">Zaloguj</button>
                         <br/>
                         <small>Jeśli nie posiadasz konta - <a href="{% url 'edziekanat_app:user_register' %}">Rejestracja</a></small>

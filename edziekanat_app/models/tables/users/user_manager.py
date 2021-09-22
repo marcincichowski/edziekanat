@@ -8,7 +8,7 @@ from edziekanat_app.models.tables.users.role import Role
 
 
 class UserManager(BaseUserManager):
-    def create_user(self, email, password, role, **extra_fields):
+    def create_user(self, email, password, role, extra, **extra_fields):
         if not email:
             raise ValueError(_('E-mail nie może być pusty'))
         email = self.normalize_email(email)
@@ -18,7 +18,7 @@ class UserManager(BaseUserManager):
         user.save()
 
         if role.name == Student.base_role:
-            self.create_student(user)
+            self.create_student(user, extra)
         if role.name == Admin.base_role:
             user.is_staff = True
             self.create_admin(user)
@@ -41,8 +41,10 @@ class UserManager(BaseUserManager):
             raise ValueError(_('Superuser must have is_superuser=True.'))
         return self.create_user(email, password, **extra_fields)
 
-    def create_student(self, user):
-        Student(user=user, index=f'{user.id:06d}').save()
+    def create_student(self, user, extra_fields):
+        Student(user=user,
+                course=extra_fields['course'],
+                index=f'{user.id:06d}').save()
 
     def create_admin(self, user):
         Admin(user=user).save()
