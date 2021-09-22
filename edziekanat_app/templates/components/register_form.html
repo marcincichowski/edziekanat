@@ -12,35 +12,36 @@
                 <div class="column right has-text-centered">
                     <h1 class="title is-3">Rejestracja</h1>
 
-                    <form method='POST' action=''> {% csrf_token %}
-                        {% for field in form %}
-                            {{ field.error_message }}
-                            {% if field.field.widget.input_type == "select" %}
-                                <div class="field is-horizontal">
-                                    <div class="field-label">
-                                        <label class="label">Kim jesteś?</label>
-                                    </div>
-                                    <div class="field-body">
-                                        <div class="field">
-                                            <div class="select">
-                                                {{ field.error_message }}
-                                                {{ field.placeholder }}
+                    <form method='POST' action=''>
+                        {% csrf_token %}
+                        {{ wizard.management_form }}
+                        {% if wizard.form.forms %}
+                            {{ wizard.form.management_form }}
+                            {% for form in wizard.form.forms %}
+                                {{ form }}
+                            {% endfor %}
+                        {% else %}
+                            {{ wizard.form.media }}
+                            {% for field in wizard.form %}
+                                {% if field.field.widget.input_type == 'select' %}
+                                    <div class="field">
+                                        <label class="label">{{ field.field.widget.attrs.label }}</label>
+                                        <div class="control">
+                                            <div class="select is-fullwidth">
                                                 {{ field }}
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            {% else %}
-                                <div class="field">
-                                    <div class="control">
-                                        {{ field.error_message }}
-                                        {{ field.placeholder }}
-                                        {{ field }}
+                                {% else %}
+                                    <div class="field">
+                                        <div class="control">
+                                            {{ field }}
+                                        </div>
                                     </div>
-                                </div>
-                            {% endif %}
-                        {% endfor %}
-                        <button class="button is-block is-primary is-fullwidth is-medium">Załóż konto</button>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                        <button class="button is-block is-primary is-fullwidth is-medium">{% if wizard.step  %}</button>
                         <br/>
                         <small>Jeśli posiadasz konto - <a href="{% url 'edziekanat_app:user_login' %}">Zaloguj
                             się</a></small>

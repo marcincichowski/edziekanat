@@ -1,34 +1,52 @@
 <form method="post">
     {% csrf_token %}
-    <table>
-        {{ wizard.management_form }}
-        {% if wizard.form.forms %}
-            {{ wizard.form.management_form }}
-            {% for form in wizard.form.forms %}
-                {{ form }}
-            {% endfor %}
-        {% else %}
-            {{ wizard.form.media }}
-            {% for field in wizard.form %}
-                {% if field.field.widget.input_type == 'select' %}
-                    <label for="{{ field.id_for_label }}"> {{ field.field.widget.attrs.label }} </label>
-                    <div class="select">{{ field }}</div>
-                    <span class="help is-error">{{ field.errors }}</span>
-                {% else %}
-                    <label for="{{ field.id_for_label }}"> {{ field.field.widget.attrs.label }} </label>
-                    <div class="control">{{ field }}</div>
-                {% endif %}
-            {% endfor %}
-        {% endif %}
-    </table>
+    <div class="card">
+        <div class="card-content">
+            <p class="title is-spaced is-4">{{ title }}</p>
 
-    {% if wizard.steps.prev %}
-        <button formnovalidate="formnovalidate" name="wizard_goto_step" value="{{ wizard.steps.first }}" type="submit"
-                class="button is-danger">Od nowa
-        </button>
-        <button formnovalidate="formnovalidate" name="wizard_goto_step" value="{{ wizard.steps.prev }}"
-                class="button is-warning">Poprzedni krok
-        </button>
-    {% endif %}
-    <input type="submit" value="Dalej" class="button is-primary"/>
+            {% if category_name %}
+                <p class="subtitle is-6">
+                    Wypełniasz wniosek: <span class="is-uppercase">{{ category_name }}</span>
+                </p>
+            {% endif %}
+        </div>
+    <hr class="m-0">
+        <div class="card-content">
+            <div class="content">
+                <table>
+                    {{ wizard.management_form }}
+                    {% if wizard.form.forms %}
+                        {{ wizard.form.management_form }}
+                        {% for form in wizard.form.forms %}
+                            {{ form }}
+                        {% endfor %}
+                    {% else %}
+                        {{ wizard.form.media }}
+                        {% for field in wizard.form %}
+                            {% if field.field.widget.input_type == 'select' %}
+                                <label for="{{ field.id_for_label }}"> {{ field.field.widget.attrs.label }} </label>
+                                <div class="select">{{ field }}</div>
+                                <span class="help is-error">{{ field.errors }}</span>
+                            {% else %}
+                                <label for="{{ field.id_for_label }}"> {{ field.field.widget.attrs.label }} </label>
+                                <div class="control">{{ field }}</div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                </table>
+            </div>
+        </div>
+        <footer class="card-footer buttons p-5 is-centered is-justify-content-space-around">
+            {% if wizard.steps.prev %}
+                <button formnovalidate="formnovalidate" name="wizard_goto_step" value="{{ wizard.steps.first }}"
+                        type="submit"
+                        class="button is-danger">Od nowa
+                </button>
+                <button formnovalidate="formnovalidate" name="wizard_goto_step" value="{{ wizard.steps.prev }}"
+                        class="button is-warning">Poprzedni krok
+                </button>
+            {% endif %}
+            <input type="submit" value="Dalej" class="button is-primary"/>
+        </footer>
+    </div>
 </form>

@@ -6,7 +6,6 @@ from edziekanat_app.models.tables.users.role import Role
 
 class Student(models.Model):
     base_role = 'Student'
-
     user = models.OneToOneField(to='edziekanat_app.User',
                                 verbose_name=_('Użytkownik'),
                                 on_delete=models.CASCADE,
