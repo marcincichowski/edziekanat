@@ -155,6 +155,7 @@ class UserCreator(SessionWizardView):
         last_name = self.get_cleaned_data_for_step('0')['last_name']
         address = self.get_cleaned_data_for_step('1')['address']
         phone = self.get_cleaned_data_for_step('1')['phone']
+        allow_email_send = self.get_cleaned_data_for_step('1')['allow_email_send']
 
         if User.objects.filter(email=email).exists():
             raise ValidationError('Użytkownik o takim adresie e-mail już istnieje.')
@@ -177,6 +178,7 @@ class UserCreator(SessionWizardView):
                 role=role,
                 phone=phone,
                 address=address,
+                allow_email_send=allow_email_send,
                 extra=extra
             )
             user.first_name = first_name

@@ -8,13 +8,14 @@ from edziekanat_app.models.tables.users.role import Role
 
 
 class UserManager(BaseUserManager):
-    def create_user(self, email, password, role, phone, address, extra=None, **extra_fields):
+    def create_user(self, email, password, role, phone, address, allow_email_send=None, extra=None, **extra_fields):
         if not email:
             raise ValueError(_('E-mail nie może być pusty'))
         email = self.normalize_email(email)
         extra_fields.setdefault('role', role)
         extra_fields.setdefault('phone', phone)
         extra_fields.setdefault('address', address)
+        extra_fields.setdefault('allow_email_send', allow_email_send)
         user = self.model(email=email, **extra_fields)
         user.set_password(password)
         user.save()

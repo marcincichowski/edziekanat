@@ -102,7 +102,8 @@ class RegisterExtraForm(UserKwargModelFormMixin, Form):
     phone = CharField(widget=TextInput(attrs={'class': 'input is-medium', 'placeholder': 'Telefon kontaktowy'}),
                       min_length=9,
                       max_length=9)
-
+    allow_email_send = BooleanField(widget=CheckboxInput(attrs={'class': 'required checkbox form-control', 'label': "Zgoda na korespondencję"}),
+                                    initial=True)
     def __init__(self, *args, **kwargs):
         role = kwargs.pop('role')
         super(RegisterExtraForm, self).__init__(*args, **kwargs)

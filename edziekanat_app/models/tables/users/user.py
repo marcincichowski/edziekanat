@@ -26,6 +26,9 @@ class User(AbstractUser):
     email = EmailField(_('Adres e-mail'),
                        unique=True)
 
+    allow_email_send = BooleanField(verbose_name=_('Zgoda na korespondencje'),
+                                    default=True)
+
     password = CharField(_('Hasło'),
                          max_length=128)
 
