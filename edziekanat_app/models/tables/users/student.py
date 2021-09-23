@@ -20,8 +20,6 @@ class Student(Model):
     year = IntegerField(verbose_name=_('Rok'),
                         default=1)
 
-    degree = IntegerField(verbose_name=_('Stopień'),
-                          default=1)
 
     course = ForeignKey(to='edziekanat_app.Course',
                         verbose_name=_('Kierunek'),

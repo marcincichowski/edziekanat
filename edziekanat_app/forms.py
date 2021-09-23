@@ -2,7 +2,7 @@ import json
 
 from braces.forms import UserKwargModelFormMixin
 from django.forms import *
-
+from django.core.exceptions import ValidationError
 from edziekanat_app.models.tables.course import Course
 from edziekanat_app.models.tables.invoice_category import InvoiceCategory
 from edziekanat_app.models.tables.invoice_field import InvoiceField
@@ -99,7 +99,9 @@ class RegisterForm(Form):
 
 class RegisterExtraForm(UserKwargModelFormMixin, Form):
     address = CharField(widget=TextInput(attrs={'class': 'input is-medium', 'placeholder': 'Adres zamieszkania'}))
-    phone = CharField(widget=TextInput(attrs={'class': 'input is-medium', 'placeholder': 'Telefon kontaktowy'}))
+    phone = CharField(widget=TextInput(attrs={'class': 'input is-medium', 'placeholder': 'Telefon kontaktowy'}),
+                      min_length=9,
+                      max_length=9)
 
     def __init__(self, *args, **kwargs):
         role = kwargs.pop('role')

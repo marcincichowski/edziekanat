@@ -6,6 +6,7 @@ from edziekanat_app.models.tables.invoice_category import InvoiceCategory
 from edziekanat_app.models.tables.invoice_field import InvoiceField
 from edziekanat_app.models.tables.job import Job
 from edziekanat_app.models.tables.subject import Subject
+from edziekanat_app.models.tables.mode import Mode
 from edziekanat_app.models.tables.specialization import Specialization
 from edziekanat_app.models.tables.university_structure.chair import Chair
 from edziekanat_app.models.tables.university_structure.department import Department
@@ -20,6 +21,7 @@ admin.site.register(User)
 admin.site.register(Admin)
 admin.site.register(Student)
 admin.site.register(Employee)
+admin.site.register(Mode)
 
 # University Structure
 admin.site.register(Department)

@@ -1,18 +1,31 @@
-from ckeditor.fields import RichTextField
-from django.db import models
+from django.core.validators import MaxValueValidator, MinValueValidator
+from django.db.models import *
 from django.utils.translation import gettext as _
 
-class Course(models.Model):
-    name = models.CharField(max_length=100,
-                            unique=True,
-                            verbose_name=_('Nazwa'))
 
-    deanery = models.ForeignKey(to='edziekanat_app.Faculty',
-                                verbose_name=_('Wydział'),
-                                on_delete=models.CASCADE)
+class Course(Model):
+    name = CharField(max_length=100,
+                     unique=True,
+                     verbose_name=_('Nazwa'))
+
+    deanery = ForeignKey(to='edziekanat_app.Faculty',
+                         verbose_name=_('Wydział'),
+                         on_delete=CASCADE,
+                         related_name="deaneries")
+
+    degree = IntegerField(verbose_name=_('Stopień'),
+                          default=1,
+                          validators=[
+                              MaxValueValidator(2),
+                              MinValueValidator(1)
+                          ])
+
+    mode = ForeignKey(to='edziekanat_app.Mode',
+                      verbose_name=_('tryb'),
+                      on_delete=CASCADE)
 
     def __str__(self):
-        return self.name
+        return f"{self.name} st. {self.degree}. tryb: {self.mode.name}"
 
     class Meta:
         db_table = "edziekanat_app_courses"

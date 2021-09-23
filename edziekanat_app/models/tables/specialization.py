@@ -4,7 +4,7 @@ from django.utils.translation import gettext as _
 
 class Specialization(models.Model):
     course = models.ForeignKey(to='edziekanat_app.Course',
-                               verbose_name=_('Specjalizacja'),
+                               verbose_name=_('Kierunek'),
                                on_delete=models.CASCADE,
                                default=None, null=True)
 
