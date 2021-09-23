@@ -12,7 +12,7 @@ from edziekanat_app.models.tables.invoice import Invoice
 from edziekanat_app.models.tables.users.student import Student
 from edziekanat_app.models.tables.users.employee import Employee
 from edziekanat_app.models.tables.users.user import User
-from .forms import RegisterForm, LoginForm, AddDictionaryValueCathedral, EditUserForm
+from .forms import RegisterForm, LoginForm, AddDictionaryValueCathedral, EditUserForm, AddInvoiceCategory
 from .models.tables.invoice_category import InvoiceCategory
 
 
@@ -223,3 +223,8 @@ def get_new_invoices(user: User): return Invoice.objects.filter(status="Nowy", c
 
 
 def get_user_invoices(user: User): return Invoice.objects.filter(created_by=user)
+
+
+def create_invoice_category(request):
+    form = AddInvoiceCategory()
+    return render(request, 'user/create_invoice_category.html', context={'form': form})

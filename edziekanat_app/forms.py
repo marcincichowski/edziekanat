@@ -1,6 +1,8 @@
 import json
 
 from braces.forms import UserKwargModelFormMixin
+from ckeditor.fields import RichTextField
+from ckeditor.widgets import CKEditorWidget
 from django.forms import *
 from django.core.exceptions import ValidationError
 from edziekanat_app.models.tables.course import Course
@@ -149,3 +151,10 @@ class AddDictionaryValueCathedral(Form):
     def __init__(self, *args, **kwargs):
         super(AddDictionaryValueCathedral, self).__init__(*args, **kwargs)
         self.fields['value'].label = ""
+
+
+class AddInvoiceCategory(Form):
+    name = CharField(widget=TextInput(attrs={'class': 'input', 'placeholder': 'Nazwa kategorii'}))
+    faq_link = CharField(widget=TextInput(attrs={'class': 'input', 'placeholder': 'FAQ link'}))
+    description = CharField(widget=CKEditorWidget(attrs={'placeholder': 'Opis'}))
+    docx_template = FileField(widget=ClearableFileInput(attrs={'class': 'file-input'}))
