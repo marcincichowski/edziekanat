@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'phonenumber_field',
     'ckeditor',
     'formtools'
 ]
@@ -56,7 +57,6 @@ AUTH_EXEMPT_ROUTES = ('register', 'login', 'admin')
 AUTH_LOGIN_ROUTE = '/login'
 
 ROOT_URLCONF = 'edziekanat.urls'
-
 
 TEMPLATES = [
     {

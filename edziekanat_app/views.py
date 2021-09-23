@@ -1,16 +1,16 @@
 import datetime
-import json
 
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.views import auth_logout
 from django.core.serializers import serialize
-from django.http import HttpResponseRedirect, Http404, JsonResponse
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, redirect
 from formtools.wizard.views import SessionWizardView
 
 from edziekanat_app.models.tables.invoice import Invoice
-from edziekanat_app.models.tables.users.user import User
 from edziekanat_app.models.tables.users.student import Student
+from edziekanat_app.models.tables.users.employee import Employee
+from edziekanat_app.models.tables.users.user import User
 from .forms import RegisterForm, LoginForm, AddDictionaryValueCathedral, EditUserForm
 from .models.tables.invoice_category import InvoiceCategory
 
@@ -127,8 +127,8 @@ class InvoiceCreator(SessionWizardView):
             self.extra_context.update({'title': "Wybierz kategorię wniosku"})
         if step == '2':
             category = self.get_cleaned_data_for_step('1')['category']
-            kwargs.update({'category': category,'user': self.request.user})
-            self.extra_context.update({'title': "Wybrany wniosek", 'category_name': category.name })
+            kwargs.update({'category': category, 'user': self.request.user})
+            self.extra_context.update({'title': "Wybrany wniosek", 'category_name': category.name})
         return kwargs
 
     def done(self, form_list, **kwargs):
@@ -142,7 +142,7 @@ class UserCreator(SessionWizardView):
         kwargs = {}
         if step == '1':
             role = self.get_cleaned_data_for_step('0')['role']
-            kwargs.update({'role': role,})
+            kwargs.update({'role': role, })
         return kwargs
 
     def done(self, form_list, **kwargs):
@@ -152,6 +152,8 @@ class UserCreator(SessionWizardView):
         role = self.get_cleaned_data_for_step('0')['role']
         first_name = self.get_cleaned_data_for_step('0')['first_name']
         last_name = self.get_cleaned_data_for_step('0')['last_name']
+        address = self.get_cleaned_data_for_step('1')['address']
+        phone = self.get_cleaned_data_for_step('1')['phone']
 
         if User.objects.filter(email=email).exists():
             raise ValidationError('Użytkownik o takim adresie e-mail już istnieje.')
@@ -160,11 +162,20 @@ class UserCreator(SessionWizardView):
         else:
             extra = {}
             if role.name == Student.base_role:
-                extra['course'] = self.get_cleaned_data_for_step('1')['course']
+                extra = {
+                    'course': self.get_cleaned_data_for_step('1')['course'],
+                    'specialization': self.get_cleaned_data_for_step('1')['specialization'],
+                }
+            if role.name == Employee.base_role:
+                extra = {
+                    'job': self.get_cleaned_data_for_step('1')['job']
+                }
             user = User.objects.create_user(
                 password=password,
                 email=email,
                 role=role,
+                phone=phone,
+                address=address,
                 extra=extra
             )
             user.first_name = first_name

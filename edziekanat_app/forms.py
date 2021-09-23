@@ -6,8 +6,11 @@ from django.forms import *
 from edziekanat_app.models.tables.course import Course
 from edziekanat_app.models.tables.invoice_category import InvoiceCategory
 from edziekanat_app.models.tables.invoice_field import InvoiceField
+from edziekanat_app.models.tables.specialization import Specialization
+from edziekanat_app.models.tables.users.employee import Employee
 from edziekanat_app.models.tables.users.role import Role
 from edziekanat_app.models.tables.users.student import Student
+from edziekanat_app.models.tables.job import Job
 from edziekanat_app.models.tables.users.user import User
 
 
@@ -86,7 +89,8 @@ class RegisterForm(Form):
     password = CharField(widget=PasswordInput(attrs={'class': 'input is-medium', 'placeholder': 'Hasło'}))
     password_repeat = CharField(
         widget=PasswordInput(attrs={'class': 'input is-medium', 'placeholder': 'Powtórz hasło'}))
-    role = ModelChoiceField( queryset=Role.objects.all(), widget=Select(attrs={'class': 'select', 'label': 'Kim jesteś?'}))
+    role = ModelChoiceField(queryset=Role.objects.all(),
+                            widget=Select(attrs={'class': 'select', 'label': 'Kim jesteś?'}))
 
     def clean(self):
         if self.cleaned_data['password'] != self.cleaned_data['password_repeat']:
@@ -95,14 +99,24 @@ class RegisterForm(Form):
 
 class RegisterExtraForm(UserKwargModelFormMixin, Form):
     address = CharField(widget=TextInput(attrs={'class': 'input is-medium', 'placeholder': 'Adres zamieszkania'}))
+    phone = CharField(widget=TextInput(attrs={'class': 'input is-medium', 'placeholder': 'Telefon kontaktowy'}))
 
     def __init__(self, *args, **kwargs):
         role = kwargs.pop('role')
         super(RegisterExtraForm, self).__init__(*args, **kwargs)
         if role.name == Student.base_role:
-            print('STUDENT!')
             self.fields['course'] = ModelChoiceField(queryset=Course.objects.all(),
-                                                     widget=Select(attrs={'class': 'select', 'label': "Kierunek studiów"}))
+                                                     widget=Select(
+                                                         attrs={'class': 'select', 'label': "Kierunek studiów"}))
+            self.fields['specialization'] = ModelChoiceField(queryset=Specialization.objects.all(),
+                                                             widget=Select(
+                                                                 attrs={'class': 'select', 'label': "Specjalizacja"}),
+                                                             required=False)
+        if role.name == Employee.base_role:
+            self.fields['job'] = ModelChoiceField(queryset=Job.objects.all(),
+                                                  widget=Select(
+                                                      attrs={'class': 'select', 'label': "Stanowisko"}),
+                                                  required=False)
 
 
 def get_query(queries: str, user: User):

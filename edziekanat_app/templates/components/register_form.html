@@ -41,7 +41,13 @@
                                 {% endif %}
                             {% endfor %}
                         {% endif %}
-                        <button class="button is-block is-primary is-fullwidth is-medium">{% if wizard.step  %}</button>
+                        <button class="button is-block is-primary is-fullwidth is-medium">
+                            {% if wizard.steps.current != wizard.steps.last %}
+                                Dalej
+                            {% else %}
+                                Zakończ rejestracje
+                            {% endif %}
+                        </button>
                         <br/>
                         <small>Jeśli posiadasz konto - <a href="{% url 'edziekanat_app:user_login' %}">Zaloguj
                             się</a></small>
