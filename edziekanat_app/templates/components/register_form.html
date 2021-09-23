@@ -32,6 +32,11 @@
                                             </div>
                                         </div>
                                     </div>
+                                {% elif field.field.widget.input_type == 'checkbox' %}
+                                    <label class="checkbox">
+                                        {{ field }}
+                                        {{ field.field.widget.attrs.label }}
+                                    </label>
                                 {% else %}
                                     <div class="field">
                                         <div class="control">
