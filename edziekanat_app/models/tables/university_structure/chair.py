@@ -6,11 +6,11 @@ from edziekanat_app.models.tables.users.user import User
 
 
 class Chair(StructureUnit):
-    head = models.ForeignKey(User,
+    head = models.ForeignKey('edziekanat_app.Employee',
                              verbose_name=_('Kierownik katedry'),
                              on_delete=models.CASCADE)
 
-    contact_user = models.ForeignKey(User,
+    contact_user = models.ForeignKey('edziekanat_app.Employee',
                                      verbose_name=_('Osoba decyzyjna'),
                                      on_delete=models.PROTECT,
                                      related_name="chair_decision_user")

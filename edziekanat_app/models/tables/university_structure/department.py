@@ -14,12 +14,12 @@ def user_validator(user_id):
 
 
 class Department(StructureUnit):
-    head = models.ForeignKey('edziekanat_app.User',
+    head = models.ForeignKey('edziekanat_app.Employee',
                              verbose_name=_('Dyrektor instytutu'),
                              on_delete=models.PROTECT,
                              validators=[user_validator])
 
-    contact_user = models.ForeignKey('edziekanat_app.User',
+    contact_user = models.ForeignKey('edziekanat_app.Employee',
                                      verbose_name=_('Osoba decyzyjna'),
                                      on_delete=models.PROTECT,
                                      related_name="department_decision_user",
