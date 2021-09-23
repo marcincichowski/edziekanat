@@ -8,8 +8,8 @@ from edziekanat_app.models.tables.users.employee import Employee
 class Subject(models.Model):
     def user_validator(user_id):
         user = Employee.objects.filter(id=user_id).first()
-        if user.job.name not in ["Wykładowca"]:
-            raise ValidationError(u'Użytkownik musi być pracownikiem dziekanatu!')
+        if user.job.name not in ["Wykładowca", "Dyrektor instytutu"]:
+            raise ValidationError(u'Użytkownik musi być wykładowcą!')
 
     department = models.ForeignKey('edziekanat_app.Department',
                                    verbose_name=_('Instytut'),

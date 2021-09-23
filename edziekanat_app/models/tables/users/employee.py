@@ -9,7 +9,7 @@ class Employee(Model):
                      verbose_name=_('Stanowisko'),
                      on_delete=CASCADE, default=None, null=True)
 
-    boss = OneToOneField(to='edziekanat_app.User',
+    boss = ForeignKey(to='edziekanat_app.User',
                          verbose_name=_('Przełożony'),
                          on_delete=CASCADE,
                          related_name="bosses", default=None, null=True)
