@@ -8,10 +8,10 @@ class Course(Model):
                      unique=True,
                      verbose_name=_('Nazwa'))
 
-    deanery = ForeignKey(to='edziekanat_app.Faculty',
+    department = ForeignKey(to='edziekanat_app.Faculty',
                          verbose_name=_('Wydział'),
                          on_delete=CASCADE,
-                         related_name="deaneries")
+                         related_name="facultiess", default=None, null=True)
 
     degree = IntegerField(verbose_name=_('Stopień'),
                           default=1,
