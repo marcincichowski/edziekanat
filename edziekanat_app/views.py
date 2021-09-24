@@ -6,7 +6,6 @@ from django.core.exceptions import ValidationError
 from django.core.files import File
 from django.core.files.storage import FileSystemStorage
 from django.core.serializers import serialize
-from django.db.models import *
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, redirect
 from docx import Document
@@ -140,7 +139,7 @@ class InvoiceCreator(SessionWizardView):
 
     def done(self, form_list, **kwargs):
         category = self.get_cleaned_data_for_step('1')['category']
-        doc = Document(category.docx_template.path)
+
         result = form_list[2].cleaned_data
         attachement = None  # not handling attachements yet
 
@@ -149,19 +148,20 @@ class InvoiceCreator(SessionWizardView):
                 attachement = result[key]
                 result[key] = result[key].name
 
-        context = {value: key for (key, value) in result.items()}
 
         inv = Invoice.objects.create(category=category,
                                      created_by=self.request.user,
                                      created_date=datetime.datetime.now(),
                                      decision_author=self.request.user)  # todo
-
-        replace_document_tags(doc, context,
-                              f"edziekanat_app/invoices/{category.name.replace(' ', '_')}_ID_{inv.id}.docx",
-                              final=True)
-        file = File(open(category.docx_template.path, 'rb'))
-
-        inv.invoice_file.save(name=attachement.name, content=file)
+        try:
+            doc = Document(category.docx_template.path)
+            new_invoice_file_path = f"edziekanat_app/invoices/{category.name.replace(' ', '_')}_ID_{inv.id}.docx"
+            replace_document_tags(doc, result, init=False).save(new_invoice_file_path)
+            file = File(open(new_invoice_file_path, 'rb'))
+            inv.invoice_file.save(name=attachement.name, content=file)
+        except Exception as e:
+            inv.delete()
+            raise Exception(e.__str__())
 
         return HttpResponseRedirect('/')
 

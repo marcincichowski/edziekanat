@@ -49,8 +49,15 @@ class InvoiceCategoryPickForm(UserKwargModelFormMixin, ModelForm):
 
     category = ModelChoiceField(queryset=InvoiceCategory.objects.all())
 
+def get_subjects(user_id):
+    pass
+
+def execute():
+    pass
 
 class InvoiceFillForm(UserKwargModelFormMixin, Form):
+    methods = {'get_subjects': get_subjects}
+
 
     def __init__(self, *args, **kwargs):
         category = kwargs.pop('category')
@@ -91,7 +98,8 @@ class InvoiceFillForm(UserKwargModelFormMixin, Form):
                                                    widget=RadioSelect())
                 else:
                     checkboxes[key] = value[3:]
-
+            elif key.startswith('execution'):
+                choices = execute()
             elif key.startswith('file'):
                 self.fields[key] = FileField(
                     widget=FileInput(

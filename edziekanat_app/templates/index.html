@@ -62,15 +62,15 @@
                             Wszystkie wnioski
                         </p>
                         {% if all_invoices %}
-                        <div class="panel-block">
-                            <p class="control has-icons-left">
-                                <input class="input" type="text" placeholder="Filtruj wnioski">
-                                <span class="icon is-left">
+                            <div class="panel-block">
+                                <p class="control has-icons-left">
+                                    <input class="input" type="text" placeholder="Filtruj wnioski">
+                                    <span class="icon is-left">
                                     <i class="fas fa-search" aria-hidden="true"></i>
                                 </span>
-                            </p>
-                        </div>
-                        {% endif %} 
+                                </p>
+                            </div>
+                        {% endif %}
                     </header>
                     <div class="card-table">
                         <div class="content">
@@ -79,9 +79,8 @@
                                 {% if all_invoices %}
                                     <thead>
                                     <tr>
-                                        <th>Tytuł</th>
-                                        <th>Data utworzenia</th>
                                         <th>Kategoria</th>
+                                        <th>Data utworzenia</th>
                                         <th>Status</th>
                                         <th></th>
                                     </tr>
@@ -89,12 +88,11 @@
                                 {% endif %}
                                 {% for invoice in all_invoices %}
                                     <tr>
-                                        <td>{{ invoice.name }}</td>
-                                        <td>{{ invoice.create_date }}</td>
-                                        <td>{{ invoice.category.name }}</td>
-                                        <td>{{ invoice.status }}</td>
-                                        <td class="level-right"><a class="button is-small is-primary"
-                                                                   href="#">Podgląd</a></td>
+                                    <td>{{ invoice.category.name }}</td>
+                                    <td>{{ invoice.created_date }}</td>
+                                    <td>{{ invoice.status }}</td>
+                                    <td class="level-right"><a class="button is-small is-primary"
+                                                               href="#">Podgląd</a></td>
                                     </tr>
                                 {% endfor %}
                             </table>

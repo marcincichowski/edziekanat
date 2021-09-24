@@ -1,6 +1,6 @@
 import json
 import re
-import jinja2
+
 from ckeditor.fields import RichTextField
 from django.core.exceptions import ValidationError
 from django.db.models import *
@@ -8,23 +8,11 @@ from django.utils.translation import gettext as _
 from docx import Document
 
 BASE_PATTERN = r'(?s)(?<={{).*?(?=}})'
-PATTERNS = {
-    'TEXT': 'TEX',
-    'AREATEXT': 'ARE',
-    'DATE': 'DAT',
-    'PHONE': 'PHO',
-    'VALUE': 'VAL',
-    'CHECK': 'CHE',
-    'SELECT': 'SEL',
-    'FILE': 'FIL',
-    'QUERY': 'QUE'
-}
-
 
 def regex_result_to_dict(lst):
     result = dict()
     for i in range(len(lst)):
-        field_type = get_field_type(lst[i])
+        field_type = match_field_type(lst[i][0:3].lower())
         result[f'{field_type}_field_{i}'] = lst[i]
     return result
 
@@ -32,17 +20,17 @@ def regex_result_to_dict(lst):
 def find_pattern(text, pattern): return re.findall(pattern, text)
 
 
-def get_field_type(item: str):
+def match_field_type(item: str):
     return {
-        PATTERNS['TEXT']: 'text',
-        PATTERNS['AREATEXT']: 'areatext',
-        PATTERNS['DATE']: 'text',
-        PATTERNS['PHONE']: 'text',
-        PATTERNS['VALUE']: 'text',
-        PATTERNS['CHECK']: 'check',
-        PATTERNS['FILE']: 'file',
-        PATTERNS['QUERY']: 'query'
-    }[item[0:3]]
+        'tex': 'text',
+        'are': 'areatext',
+        'dat': 'text',
+        'pho': 'text',
+        'val': 'text',
+        'che': 'check',
+        'fil': 'file',
+        'que': 'query'
+    }[item]
 
 
 class InvoiceCategory(Model):
@@ -108,15 +96,15 @@ class InvoiceCategory(Model):
         matches = find_pattern(concatted_text, BASE_PATTERN)
         result = regex_result_to_dict(matches)
         self.set_field_types(result)
-        replace_document_tags(doc, result, self.docx_template.path)
+        replace_document_tags(doc, result, self.docx_template.path).save(self.docx_template.path)
 
 
-def replace_document_tags(doc: Document, dictionary: dict, save_path: str, final: bool = False):
+def replace_document_tags(doc: Document, dictionary: dict, init: bool = True):
     for i in dictionary:
         for p in doc.paragraphs:
-            test =  '{{' + f"{dictionary[i]}" + '}}' if final else dictionary[i]
-            matches = p.text.find(test)
+            match = '{{' + i + '}}'
+            matches = p.text.find(match)
             if matches >= 0:
-                p.text = p.text.replace(test, "{{" + i + "}}")
-    doc.save(save_path)
-
+                to_replace = "{{" + dictionary[i] + "}}" if init else dictionary[i]
+                p.text = p.text.replace(match, to_replace)
+    return doc
