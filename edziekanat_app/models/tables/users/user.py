@@ -36,6 +36,11 @@ class User(AbstractUser):
     password = CharField(_('Hasło'),
                          max_length=128)
 
+    inbox = OneToOneField(to='edziekanat_app.Inbox',
+                          verbose_name=_('Skrzynka pocztowa'),
+                          on_delete=CASCADE,
+                          related_name="inboxes")
+
     def __str__(self):
         return f"{self.first_name} {self.last_name}"
 
