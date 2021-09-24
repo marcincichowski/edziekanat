@@ -157,11 +157,11 @@ class InvoiceCreator(SessionWizardView):
                                      decision_author=self.request.user)  # todo
 
         replace_document_tags(doc, context,
-                              f"edziekanat_app/invoices/{category.name.replace(' ', '_')}_ID_{inv.id}.docx")
+                              f"edziekanat_app/invoices/{category.name.replace(' ', '_')}_ID_{inv.id}.docx",
+                              final=True)
+        file = File(open(category.docx_template.path, 'rb'))
 
-        file = FileField()
-        file = doc
-        inv.invoice_file.save(name=attachement.name, content=File(doc))
+        inv.invoice_file.save(name=attachement.name, content=file)
 
         return HttpResponseRedirect('/')
 

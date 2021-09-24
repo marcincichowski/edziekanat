@@ -111,10 +111,10 @@ class InvoiceCategory(Model):
         replace_document_tags(doc, result, self.docx_template.path)
 
 
-def replace_document_tags(doc: Document, dictionary: dict, save_path: str):
+def replace_document_tags(doc: Document, dictionary: dict, save_path: str, final: bool = False):
     for i in dictionary:
         for p in doc.paragraphs:
-            test = '{{' + f"{dictionary[i]}" + '}}'
+            test =  '{{' + f"{dictionary[i]}" + '}}' if final else dictionary[i]
             matches = p.text.find(test)
             if matches >= 0:
                 p.text = p.text.replace(test, "{{" + i + "}}")
