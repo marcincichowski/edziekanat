@@ -1,3 +1,5 @@
+import datetime
+
 from django.contrib.auth.models import AbstractUser
 from django.db.models import *
 from django.utils.translation import gettext as _
@@ -22,6 +24,8 @@ class User(AbstractUser):
                         max_length=100, default="Brak danych")
     acc_created_date = DateField(auto_now_add=True,
                                  editable=False)
+    birth_date = DateField(verbose_name=_('Data urodzenia'),
+                           default=datetime.date.today)
 
     email = EmailField(_('Adres e-mail'),
                        unique=True)

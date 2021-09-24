@@ -1,7 +1,6 @@
-import datetime
 import json
 import re
-
+import jinja2
 from ckeditor.fields import RichTextField
 from django.core.exceptions import ValidationError
 from django.db.models import *
@@ -10,13 +9,15 @@ from docx import Document
 
 BASE_PATTERN = r'(?s)(?<={{).*?(?=}})'
 PATTERNS = {
-    'TEXT': '??-',
-    'DATE': '?-?',
-    'PHONE': '-?-',
-    'VALUE': '-??',
-    'CHECK': '--?',
-    'SELECT': '?--',
-    'QUERY': '?>?',
+    'TEXT': 'TEX',
+    'AREATEXT': 'ARE',
+    'DATE': 'DAT',
+    'PHONE': 'PHO',
+    'VALUE': 'VAL',
+    'CHECK': 'CHE',
+    'SELECT': 'SEL',
+    'FILE': 'FIL',
+    'QUERY': 'QUE'
 }
 
 
@@ -34,10 +35,12 @@ def find_pattern(text, pattern): return re.findall(pattern, text)
 def get_field_type(item: str):
     return {
         PATTERNS['TEXT']: 'text',
+        PATTERNS['AREATEXT']: 'areatext',
         PATTERNS['DATE']: 'text',
         PATTERNS['PHONE']: 'text',
         PATTERNS['VALUE']: 'text',
         PATTERNS['CHECK']: 'check',
+        PATTERNS['FILE']: 'file',
         PATTERNS['QUERY']: 'query'
     }[item[0:3]]
 
@@ -49,23 +52,27 @@ class InvoiceCategory(Model):
             raise ValidationError(u'Plik musi mieć rozszerzenie .docx')
 
     name = CharField(max_length=100,
-                            unique=True,
-                            verbose_name=_('Nazwa'))
+                     unique=True,
+                     verbose_name=_('Nazwa'))
+
+    decision_query = CharField(max_length=100,
+                               default="NONE",
+                               verbose_name=_('Query osoby wyznaczającej'))
 
     field = ForeignKey(to='edziekanat_app.InvoiceField',
-                              verbose_name=_('Dziedzina'),
-                              on_delete=CASCADE, default=None, null=None)
+                       verbose_name=_('Dziedzina'),
+                       on_delete=CASCADE, default=None, null=None)
 
     faq_link = URLField(blank=True,
-                               help_text="Link do regulaminu",
-                               verbose_name=_('Regulamin'))
+                        help_text="Link do regulaminu",
+                        verbose_name=_('Regulamin'))
 
     description = RichTextField(verbose_name=_('Opis'),
                                 blank=True)
 
     docx_template = FileField(upload_to="edziekanat_app/invoice_templates",
-                                     verbose_name=_('Plik wzorcowy'),
-                                     validators=[validate_file_extension])
+                              verbose_name=_('Plik wzorcowy'),
+                              validators=[validate_file_extension])
 
     dynamic_fields = {}
 
@@ -82,7 +89,8 @@ class InvoiceCategory(Model):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
-        self.document_parse(self.docx_template.path)
+        self.document_parse()
+
         super(InvoiceCategory, self).save()
 
     class Meta:
@@ -90,8 +98,8 @@ class InvoiceCategory(Model):
         verbose_name = "Kategoria wniosku"
         verbose_name_plural = "Kategorie wniosków"
 
-    def document_parse(self, path):
-        doc = Document(path)
+    def document_parse(self):
+        doc = Document(self.docx_template.path)
         text = []
         for para in doc.paragraphs:
             text.append(para.text)
@@ -100,3 +108,15 @@ class InvoiceCategory(Model):
         matches = find_pattern(concatted_text, BASE_PATTERN)
         result = regex_result_to_dict(matches)
         self.set_field_types(result)
+        replace_document_tags(doc, result, self.docx_template.path)
+
+
+def replace_document_tags(doc: Document, dictionary: dict, save_path: str):
+    for i in dictionary:
+        for p in doc.paragraphs:
+            test = '{{' + f"{dictionary[i]}" + '}}'
+            matches = p.text.find(test)
+            if matches >= 0:
+                p.text = p.text.replace(test, "{{" + i + "}}")
+    doc.save(save_path)
+

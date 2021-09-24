@@ -3,14 +3,19 @@ import datetime
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.views import auth_logout
 from django.core.exceptions import ValidationError
+from django.core.files import File
+from django.core.files.storage import FileSystemStorage
 from django.core.serializers import serialize
+from django.db.models import *
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, redirect
+from docx import Document
 from formtools.wizard.views import SessionWizardView
 
 from edziekanat_app.models.tables.invoice import Invoice
-from edziekanat_app.models.tables.users.student import Student
+from edziekanat_app.models.tables.invoice_category import replace_document_tags
 from edziekanat_app.models.tables.users.employee import Employee
+from edziekanat_app.models.tables.users.student import Student
 from edziekanat_app.models.tables.users.user import User
 from .forms import RegisterForm, LoginForm, AddDictionaryValueCathedral, EditUserForm
 from .models.tables.invoice_category import InvoiceCategory
@@ -117,6 +122,7 @@ def user_logout(request):
 
 class InvoiceCreator(SessionWizardView):
     template_name = "user/create_invoice.html"
+    file_storage = FileSystemStorage(location='invoices/')
 
     def get_form_kwargs(self, step=None):
         self.extra_context = {'title': 'Wybierz dziedzinę wniosku'}
@@ -133,6 +139,30 @@ class InvoiceCreator(SessionWizardView):
         return kwargs
 
     def done(self, form_list, **kwargs):
+        category = self.get_cleaned_data_for_step('1')['category']
+        doc = Document(category.docx_template.path)
+        result = form_list[2].cleaned_data
+        attachement = None  # not handling attachements yet
+
+        for key in result:
+            if key.startswith('file'):
+                attachement = result[key]
+                result[key] = result[key].name
+
+        context = {value: key for (key, value) in result.items()}
+
+        inv = Invoice.objects.create(category=category,
+                                     created_by=self.request.user,
+                                     created_date=datetime.datetime.now(),
+                                     decision_author=self.request.user)  # todo
+
+        replace_document_tags(doc, context,
+                              f"edziekanat_app/invoices/{category.name.replace(' ', '_')}_ID_{inv.id}.docx")
+
+        file = FileField()
+        file = doc
+        inv.invoice_file.save(name=attachement.name, content=File(doc))
+
         return HttpResponseRedirect('/')
 
 
@@ -155,6 +185,7 @@ class UserCreator(SessionWizardView):
         last_name = self.get_cleaned_data_for_step('0')['last_name']
         address = self.get_cleaned_data_for_step('1')['address']
         phone = self.get_cleaned_data_for_step('1')['phone']
+        birth_date = self.get_cleaned_data_for_step('1')['birth_date']
         allow_email_send = self.get_cleaned_data_for_step('1')['allow_email_send']
 
         if User.objects.filter(email=email).exists():
@@ -178,6 +209,7 @@ class UserCreator(SessionWizardView):
                 role=role,
                 phone=phone,
                 address=address,
+                birth_date=birth_date,
                 allow_email_send=allow_email_send,
                 extra=extra
             )
