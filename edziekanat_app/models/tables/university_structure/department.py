@@ -1,8 +1,9 @@
-from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import gettext as _
 
 from edziekanat_app.models.tables.university_structure.structure_unit import StructureUnit
+from django.core.exceptions import ValidationError
+
 from edziekanat_app.models.tables.users.employee import Employee
 
 
@@ -17,11 +18,6 @@ class Department(StructureUnit):
                              verbose_name=_('Dyrektor instytutu'),
                              on_delete=models.PROTECT,
                              validators=[user_validator])
-
-    faculty = models.ForeignKey('edziekanat_app.Faculty',
-                                verbose_name=_('Wydział'),
-                                on_delete=models.CASCADE,
-                                related_name="faculties", default=None, null=True)
 
     contact_user = models.ForeignKey('edziekanat_app.Employee',
                                      verbose_name=_('Osoba decyzyjna'),

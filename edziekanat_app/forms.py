@@ -99,7 +99,12 @@ class InvoiceFillForm(UserKwargModelFormMixin, Form):
                 else:
                     checkboxes[key] = value[3:]
             elif key.startswith('execution'):
-                choices = execute()
+                splitted = value[3:].split('.')
+                method = splitted[0]
+                context = {}
+                for item in splitted:
+                    params = item.split('')
+                choices = execute(method, context)
             elif key.startswith('file'):
                 self.fields[key] = FileField(
                     widget=FileInput(
