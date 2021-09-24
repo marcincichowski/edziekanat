@@ -11,9 +11,9 @@ class Subject(models.Model):
         if user.job.name not in ["Wykładowca", "Dyrektor instytutu"]:
             raise ValidationError(u'Użytkownik musi być wykładowcą!')
 
-    department = models.ForeignKey('edziekanat_app.Department',
-                                   verbose_name=_('Instytut'),
-                                   on_delete=models.CASCADE)
+    course = models.ForeignKey('edziekanat_app.Course',
+                                   verbose_name=_('Kierunek'),
+                                   on_delete=models.CASCADE, default=None, null=True)
 
     teacher = models.ForeignKey('edziekanat_app.Employee',
                                 verbose_name=_('Prowadzący'),
@@ -29,6 +29,5 @@ class Subject(models.Model):
 
     class Meta:
         db_table = "edziekanat_app_subjects"
-        unique_together = ['department', 'name']
         verbose_name = "Przedmiot"
         verbose_name_plural = "Przedmioty"

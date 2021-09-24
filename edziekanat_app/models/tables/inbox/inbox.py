@@ -6,12 +6,10 @@ from django.utils.translation import gettext as _
 class Inbox(Model):
     messages = CharField(max_length=10000)
 
-
-
-    def set_Message(self, x):
+    def set_message(self, x):
         self.foo = json.dumps(x)
 
-    def get_Message(self):
+    def get_message(self):
         return json.loads(self.messages)
 
     class Meta:

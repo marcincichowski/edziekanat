@@ -110,19 +110,6 @@ class InvoiceFillForm(UserKwargModelFormMixin, Form):
                 self.fields[key] = CharField(widget=HiddenInput(), initial=value)
 
 
-PATTERNS = {
-    'TEXT': '??-',
-    'DATE': '?-?',
-    'PHONE': '-?-',
-    'VALUE': '-??',
-    'CHECK': '--?',
-    'SELECT': '?--',
-    'CHECK_LABEL': '---',
-    'FILE': '???',
-    'QUERY': '?>?'
-}
-
-
 class RegisterForm(Form):
     first_name = CharField(widget=TextInput(attrs={'class': 'input is-medium', 'placeholder': 'Imię'}))
     last_name = CharField(widget=TextInput(attrs={'class': 'input is-medium', 'placeholder': 'Nazwisko'}))
