@@ -8,7 +8,7 @@ class Course(Model):
                      unique=True,
                      verbose_name=_('Nazwa'))
 
-    faculty = ForeignKey(to='edziekanat_app.Faculty',
+    department = ForeignKey(to='edziekanat_app.Faculty',
                          verbose_name=_('Wydział'),
                          on_delete=CASCADE,
                          related_name="facultiess", default=None, null=True)
