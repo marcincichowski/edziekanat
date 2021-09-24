@@ -1,16 +1,17 @@
+import datetime
 import json
 
 from braces.forms import UserKwargModelFormMixin
 from django.forms import *
-from django.core.exceptions import ValidationError
+
 from edziekanat_app.models.tables.course import Course
 from edziekanat_app.models.tables.invoice_category import InvoiceCategory
 from edziekanat_app.models.tables.invoice_field import InvoiceField
+from edziekanat_app.models.tables.job import Job
 from edziekanat_app.models.tables.specialization import Specialization
 from edziekanat_app.models.tables.users.employee import Employee
 from edziekanat_app.models.tables.users.role import Role
 from edziekanat_app.models.tables.users.student import Student
-from edziekanat_app.models.tables.job import Job
 from edziekanat_app.models.tables.users.user import User
 
 
@@ -58,10 +59,16 @@ class InvoiceFillForm(UserKwargModelFormMixin, Form):
 
         user = kwargs.pop('user')
 
+        checkboxes = {}
+        label = ""
+
         for key, value in dynamic_fields.items():
             if key.startswith('text'):
                 self.fields[key] = CharField(
-                    widget=PasswordInput(attrs={'class': 'input is-medium', 'label': value[3:]}))
+                    widget=TextInput(attrs={'class': 'textarea is-hovered', 'label': value[3:]}))
+            elif key.startswith('areatext'):
+                self.fields[key] = CharField(
+                    widget=Textarea(attrs={'class': 'textarea', 'label': value[3:]}))
             elif key.startswith('date'):
                 self.fields[key] = CharField(
                     widget=TextInput(attrs={'class': 'input is-medium', 'label': value[3:]}))
@@ -75,11 +82,37 @@ class InvoiceFillForm(UserKwargModelFormMixin, Form):
                 self.fields[key] = CharField(
                     widget=TextInput(attrs={'class': 'input is-medium', 'label': value[3:]}))
             elif key.startswith('select'):
-                self.fields[key] = CharField(
-                    widget=TextInput(attrs={'class': 'input is-medium', 'label': value[3:]}))
+                if len(checkboxes) == 0:
+                    splitted = value[3:].split('|')
+                    label = splitted[0]
+                    checkboxes[key] = splitted[1]
+                    self.fields[key] = ChoiceField(choices=checkboxes,
+                                                   label=label,
+                                                   widget=RadioSelect())
+                else:
+                    checkboxes[key] = value[3:]
+
+            elif key.startswith('file'):
+                self.fields[key] = FileField(
+                    widget=FileInput(
+                        attrs={'class': 'file-input', 'type': 'file', 'label': value[3:], 'name': 'resume'}),
+                    required=True)
             elif key.startswith('query'):
                 value = get_query(value[3:], user)
                 self.fields[key] = CharField(widget=HiddenInput(), initial=value)
+
+
+PATTERNS = {
+    'TEXT': '??-',
+    'DATE': '?-?',
+    'PHONE': '-?-',
+    'VALUE': '-??',
+    'CHECK': '--?',
+    'SELECT': '?--',
+    'CHECK_LABEL': '---',
+    'FILE': '???',
+    'QUERY': '?>?'
+}
 
 
 class RegisterForm(Form):
@@ -102,8 +135,12 @@ class RegisterExtraForm(UserKwargModelFormMixin, Form):
     phone = CharField(widget=TextInput(attrs={'class': 'input is-medium', 'placeholder': 'Telefon kontaktowy'}),
                       min_length=9,
                       max_length=9)
-    allow_email_send = BooleanField(widget=CheckboxInput(attrs={'class': 'required checkbox form-control', 'label': "Zgoda na korespondencję"}),
-                                    initial=True)
+    birth_date = DateField(widget=DateInput(attrs={'type': 'date', 'label': 'Data urodzenia'}))
+
+    allow_email_send = BooleanField(
+        widget=CheckboxInput(attrs={'class': 'required checkbox form-control', 'label': "Zgoda na korespondencję"}),
+        initial=True)
+
     def __init__(self, *args, **kwargs):
         role = kwargs.pop('role')
         super(RegisterExtraForm, self).__init__(*args, **kwargs)
@@ -130,6 +167,9 @@ def get_query(queries: str, user: User):
         result.append(user)
     elif single_queries[0] == 'student':
         result.append(Student.objects.filter(user=user).first())
+    elif single_queries[0] == 'system':
+        if single_queries[1] == 'today':
+            return datetime.datetime.today().strftime('%d.%m.%Y') + " r."
     else:
         raise Exception("Invalid base_object request!")
 

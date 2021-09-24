@@ -6,3 +6,6 @@ django-braces~=1.14.0
 docx~=0.2.4
 regex
 django-phonenumber-field[phonenumbers]
+jinja2
+docxtpl
+django-cleanup
