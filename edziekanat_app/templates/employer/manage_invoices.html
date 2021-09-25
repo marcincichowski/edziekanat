@@ -28,7 +28,7 @@
                 <div class="card">
                     <header class="card-header">
                         <p class="card-header-title">
-                            Twoje wnioski
+                            Twoje wnioski do akceptacji
                         </p>
                     </header>
                     <div class="card-content">
@@ -61,9 +61,22 @@
                                             {% endif %}
                                         </td>
                                         <td>
-                                            <button class="button is-small icon-button"
-                                                    onclick="getInvoiceDetails({{ invoice.id }})"><i
-                                                    class="fas fa-download"></i></button>
+                                            {% if invoice.status != 'Zaakceptowany' and invoice.status != 'Odrzucony' %}
+                                                <button class="button is-small icon-button"
+                                                        onclick="getRejectModal({{ invoice.id }})"><i
+                                                        class="fas fa-times"></i></button>
+                                                <button class="button is-small icon-button"
+                                                        onclick="getAcceptModal({{ invoice.id }})"><i
+                                                        class="fas fa-check"></i></button>
+                                            {% endif %}
+                                            {% if invoice.status == 'Odrzucony' %}
+                                                <button class="button is-small icon-button"
+                                                        onclick="getRejectInfo({{ invoice.id }})"><i
+                                                        class="fas fa-search"></i></button>
+                                            {% endif %}
+                                        <button class="button is-small icon-button"
+                                                        onclick="getInvoiceFile({{ invoice.id }})"><i
+                                                        class="fas fa-download"></i></button>
                                         </td>
                                     </tr>
                                 {% endfor %}
@@ -76,26 +89,67 @@
         </div>
     </div>
 
-    <div class="modal">
+    <div class="modal" id="reject-form-modal">
       <div class="modal-background"></div>
       <div class="modal-card">
         <header class="modal-card-head">
-          <p class="modal-card-title">Właściwości wniosku</p>
+          <p class="modal-card-title">Odrzuć wniosek</p>
+          <button class="delete" aria-label="close" onclick="closeModal()"></button>
+        </header>
+          <form method="post">
+            <section class="modal-card-body">
+                {% csrf_token %}
+                {{ form_reject }}
+            </section>
+            <footer class="modal-card-foot">
+              <button type="submit" class="button is-success">Zapisz</button>
+              <button class="button" onclick="closeModal()">Anuluj</button>
+            </footer>
+          </form>
+      </div>
+    </div>
+    <div class="modal" id="accept-form-modal">
+      <div class="modal-background"></div>
+      <div class="modal-card">
+        <header class="modal-card-head">
+          <p class="modal-card-title">Zaakceptuj wniosek</p>
+          <button class="delete" aria-label="close" onclick="closeModal()"></button>
+        </header>
+          <form method="post">
+            <section class="modal-card-body">
+                {% csrf_token %}
+                {{ form_accept }}
+                Czy chcesz zaakceptować wniosek?
+            </section>
+            <footer class="modal-card-foot">
+              <button type="submit" class="button is-success">Zapisz</button>
+              <button class="button" onclick="closeModal()">Anuluj</button>
+            </footer>
+          </form>
+      </div>
+    </div>
+    <div class="modal" id="reject-modal">
+      <div class="modal-background"></div>
+      <div class="modal-card">
+        <header class="modal-card-head">
+          <p class="modal-card-title">Wniosek odrzucony</p>
           <button class="delete" aria-label="close" onclick="closeModal()"></button>
         </header>
         <section class="modal-card-body">
-            {{ form_reject }}
+
         </section>
         <footer class="modal-card-foot">
-          <button class="button is-success">Zapisz</button>
-          <button class="button" onclick="closeModal()">Anuluj</button>
+          <button class="button" onclick="closeModal()">Zamknij</button>
         </footer>
       </div>
     </div>
+
+
     <script>
 $(document).ready(function() {
         $('#invoice-datatable').DataTable({
             responsive: true,
+            "order": [[ 3, "desc" ]],
             language:{
                 "decimal":        "",
                 "emptyTable":     "Brak dostępnych danych w tabeli",
@@ -123,10 +177,33 @@ $(document).ready(function() {
         });
 }
 );
-function getInvoiceDetails(id){
-console.log(id);
+
+function getRejectModal(id){
+        $('#reject-form-modal.modal').addClass('is-active');
+        $('#id_id').attr('value', id);
+}
+
+function getAcceptModal(id){
+        $('#accept-form-modal.modal').addClass('is-active');
+        $('#id_id_accept').attr('value', id);
+}
+
+function getInvoiceFile(id){
         $.ajax({
-            url: {% url 'edziekanat_app:invoices_list_detail' %},
+            url: {% url 'edziekanat_app:invoice_download' %},
+            type: "get",
+            data:{
+                "id": id,
+            },
+            error: function (response) {
+                console.log(response)
+            }
+        });
+       }
+
+function getRejectInfo(id){
+        $.ajax({
+            url: {% url 'edziekanat_app:get_reject_info' %},
             type: "get",
             data:{
                 "id": id,
@@ -136,13 +213,9 @@ console.log(id);
                     let data = JSON.parse(response.data)
                     data = data[0].fields
                     $(".modal-card-body").empty();
-                    let message = "<table class='table is-fullwidth is-hoverable is-stripped'>"+
-                    "<tr><td>Kategoria</td><td>"+data.category+"</td></tr>"+
-                    "<tr><td>Autor</td><td>"+data.created_by+"</td></tr>"+
-                    "<tr><td>Data złożenia</td><td>"+data.created_date+"</td></tr>"+
-                    "<tr><td>Status</td><td>"+data.status+"</td></tr></table>";
+                    let message = "TUTAJ BEDZIE INFO";
                     $(".modal-card-body").html(message);
-                    $('.modal').addClass('is-active');
+                    $('#reject-modal.modal').addClass('is-active');
                 }
                 else
                     alert("Brak podanego id wniosku");
@@ -152,6 +225,8 @@ console.log(id);
             }
         });
        }
+
+
     function closeModal(){
         $('.modal').removeClass('is-active');
     }

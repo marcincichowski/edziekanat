@@ -92,7 +92,7 @@ body{
 .container-main {
     margin: 0 auto;
     margin-top: 1rem;
-    min-height: calc(100vh - 52px - 191px);
+    min-height: calc(100vh - 108px);
     @media only screen and (max-height: 500px) {
         height: auto;
     }
