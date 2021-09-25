@@ -46,10 +46,10 @@
                     </article>
                 </div>
                 <div class="tile is-parent">
-                    <article class="tile is-child box">
-                        <a href="{% url 'edziekanat_app:create_invoice' %}">
-                            <p class="subtitle is">Wypełnij nowy wniosek</p>
-                        </a>
+                    <article class="tile is-child box is-vcentered">
+                            <a href="{% url 'edziekanat_app:create_invoice' %}">
+                                <p class="title is-4"><strong>Wypełnij nowy wniosek</strong></p>
+                            </a>
                     </article>
                 </div>
             </div>
@@ -89,11 +89,12 @@
                                 {% endif %}
                                 {% for invoice in all_invoices %}
                                     <tr>
-                                    <td>{{ invoice.id }}</td>
-                                    <td>{{ invoice.category.name }}</td>
-                                    <td>{{ invoice.created_date }}</td>
-                                    <td>{{ invoice.status }}</td>
-                                    <td class="level-right"><a class="button is-small icon-button" href="#"><i class="fas fa-search"></i></a></td>
+                                        <td>{{ invoice.id }}</td>
+                                        <td>{{ invoice.category.name }}</td>
+                                        <td>{{ invoice.created_date }}</td>
+                                        <td>{{ invoice.status }}</td>
+                                        <td class="level-right"><a class="button is-small icon-button" href="#"><i
+                                                class="fas fa-search"></i></a></td>
                                     </tr>
                                 {% endfor %}
                             </table>
