@@ -6,14 +6,18 @@
     background-color: $footer-background-color;
 }
 .image{
-    height: 50px;
+    min-height: 3rem;
     width: auto;
+}
+.navbar-brand{
+    min-height: 5rem;
 }
 .navbar-burger{
     color: $base-color;
     &:hover{
         color: $base-hover
     }
+    min-height: 5rem;
 }
 .notification.is-primary {
   position: absolute;
@@ -28,16 +32,23 @@
 
 .navbar-item, .navbar-item.is-tab.is-active, .navbar-item.is-tab {
     color: $base-color;
-    @media only screen and (max-width: 768px){
+    @media only screen and (max-width: 1023px){
         color: invert($base-color);
         &:hover{
             color: invert($base-color, 70%) !important;
         }
     }
+
     &:hover{
         color: invert($base-color, 10%);
     }
 }
+
+
+.navbar {
+    min-height: 5rem;
+}
+
 .navbar-item.is-tab.is-active{
     border-bottom-color: $base-color;
     &:hover{
@@ -56,6 +67,8 @@
     left: 0;
     bottom: 0;
     width: 100%;
+    padding-top: 30px;
+    padding-bottom: 30px;
     a{
         color: $base-color;
         &:hover{

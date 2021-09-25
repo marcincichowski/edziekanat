@@ -15,7 +15,7 @@
 
 <body>
 {% block header %}{% endblock %}
-<div class="container container-main">
+<div class="container container-main is-fluid">
     <div class="columns">
         {% block sidebar %}{% endblock %}
         {% include 'components/notification.html' %}
@@ -28,46 +28,36 @@
             {% for message in messages %}
                 <li>
                     {% if message.tags %}
-                        <div class="alert alert-{{ message.tags }} msg fade show" role="alert">{{ message }}</div>
+                        <div class="columns is-justify-content-center">
+                            <div class="column is-8">
+                                <div class="notification is-{{ message.tags }} is-fullwidth msg fade show" role="alert">
+                                    <button class="delete"></button>
+                                    {{ message }}
+                                </div>
+                            </div>
+                        </div>
                     {% else %}
-                        <div class="alert alert-info msg fade show" role="alert">{{ message }}</div>
+                        <div class="notification is-info msg fade show" role="alert">{{ message }}</div>
                     {% endif %}
                 </li>
             {% endfor %}
         {% endif %}
     </ul>
     <script>
-        document.body.addEventListener('click', function (event) {
-            if (event.target.className === 'unique_class_name') {
-                const form = event.target.form;
-                const data = new FormData(form);
+        document.addEventListener('DOMContentLoaded', () => {
+            (document.querySelectorAll('.notification .delete') || []).forEach(($delete) => {
+                const $notification = $delete.parentNode;
 
-                const request = new XMLHttpRequest();
-                request.open(form.method, form.action, true);
-                request.send(data);
-
-                // logFormData(data);
-
-                request.addEventListener("load", function () {
-                    if (this.readyState === 4 && this.status === 200) {
-
-                        // catch JsonResponse from Django
-                        const response = JSON.parse(this.responseText);
-
-                        // display message
-                        const messages = document.getElementById("messages-list");
-                        messages.innerHTML += response.msg;
-                        fade_alerts();
-                    }
+                $delete.addEventListener('click', () => {
+                    $notification.parentNode.removeChild($notification);
                 });
-            }
-
+            });
         });
     </script>
 {% endblock %}
-<!--{% block footer %}-->
-    <!--    {% include 'components/footer.html' %}-->
-    <!--{% endblock %}-->
+{% block footer %}
+{% include 'components/footer.html' %}
+{% endblock %}
 
 </body>
 
