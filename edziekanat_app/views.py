@@ -178,7 +178,7 @@ class InvoiceCreator(SessionWizardView):
             inv.delete()
             messages.error(self.request, f"Wystąpił błąd podczas tworzenia wniosku.")
             raise e
-        messages.success(self.request, f"Pomyślnie utworzono wniosek {category.name}")
+        messages.success(self.request, f"Pomyślnie utworzono {category.name.lower()}")
         return redirect('edziekanat_app:home')
 
 

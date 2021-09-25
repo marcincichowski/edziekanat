@@ -17,9 +17,7 @@ class Invoice(Model):
                              null=True,
                              blank=True)
 
-    created_date = DateField(verbose_name=_('Data utworzenia'),
-                             auto_now=True,
-                             editable=False)
+    created_date = DateTimeField(verbose_name=_('Data utworzenia'), auto_now=True)
 
     status = CharField(verbose_name=_('Status wniosku'),
                        max_length=20,
@@ -39,7 +37,7 @@ class Invoice(Model):
                               blank=True)
 
     def __str__(self):
-        return f"{self.status}"
+        return f"{self.category} Wnioskodawca: {self.created_by} Status: {self.status}"
 
     class Meta:
         db_table = "edziekanat_app_invoices"

@@ -31,6 +31,8 @@ class Student(Model):
                                 on_delete=CASCADE,
                                 default=None, null=True)
 
+
+
     class Meta:
         db_table = "edziekanat_app_students"
         verbose_name = "Student"

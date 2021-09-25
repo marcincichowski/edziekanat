@@ -91,7 +91,7 @@
                                     <tr>
                                         <td>{{ invoice.id }}</td>
                                         <td>{{ invoice.category.name }}</td>
-                                        <td>{{ invoice.created_date }}</td>
+                                        <td>{{ invoice.created_date|date:'h:m d.m.Y' }}</td>
                                         <td>{{ invoice.status }}</td>
                                         <td class="level-right"><a class="button is-small icon-button" href="#"><i
                                                 class="fas fa-search"></i></a></td>
