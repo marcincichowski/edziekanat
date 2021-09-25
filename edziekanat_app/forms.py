@@ -7,6 +7,7 @@ from ckeditor.widgets import CKEditorWidget
 from django.forms import *
 
 from edziekanat_app.models.tables.course import Course
+from edziekanat_app.models.tables.university_structure import *
 from edziekanat_app.models.tables.invoice_category import InvoiceCategory
 from edziekanat_app.models.tables.invoice_field import InvoiceField
 from edziekanat_app.models.tables.job import Job
@@ -222,7 +223,7 @@ class AddInvoiceCategory(Form):
 
 
 class SystemTools(Form):
-    smtp_address = CharField(widget=TextInput(attrs={'class': 'input', 'placeholder': '10.124.14.1:25', 'label': 'Adres IP serwera SMTP'}))
+    smtp_address = CharField(widget=TextInput(attrs={'class': 'input', 'placeholder': '10.124.14.1:25', 'label': 'Adres IP serwera SMTP'}), initial='')
     broadcast = CharField(widget=Textarea(attrs={'class': 'textarea', 'label': 'Wyślij komunikat do wszystkich użytkowników'}))
 
 
@@ -233,7 +234,49 @@ class AddChair(Form):
 
     head = ModelChoiceField(queryset=Employee.objects.all(),
                             widget=Select(attrs={'class': 'select', 'label': "Kierownik katedry"}),
-                            required=False)
+                            required=True)
+
+    contact_user = ModelChoiceField(queryset=Employee.objects.all(),
+                            widget=Select(attrs={'class': 'select', 'label': "Osoba kontaktowa"}),
+                            required=True)
+
+class AddDepartment(Form):
+    name = CharField(widget=TextInput(attrs={'class': 'input', 'label': 'Nazwa instytutu'}))
+    location = models.CharField(widget=TextInput(attrs={'class': 'input', 'label': 'Adres instytutu'}))
+
+    head = ModelChoiceField(queryset=Employee.objects.all(),
+                            widget=Select(attrs={'class': 'select', 'label': "Dyrektor instytutu"}),
+                            required=True)
+
+    contact_user = ModelChoiceField(queryset=Employee.objects.all(),
+                            widget=Select(attrs={'class': 'select', 'label': "Osoba kontaktowa"}),
+                            required=True)
+
+
+class AddFaculty(Form):
+    name = CharField(widget=TextInput(attrs={'class': 'input', 'label': 'Nazwa wydziału'}))
+    location = models.CharField(widget=TextInput(attrs={'class': 'input', 'label': 'Adres wydziału'}))
+
+    head = ModelChoiceField(queryset=Employee.objects.all(),
+                            widget=Select(attrs={'class': 'select', 'label': "Dziekan"}),
+                            required=True)
+
+    contact_user = ModelChoiceField(queryset=Employee.objects.all(),
+                            widget=Select(attrs={'class': 'select', 'label': "Osoba kontaktowa"}),
+                            required=True)
+
+class AddCourse(Form):
+    name = CharField(widget=TextInput(attrs={'class': 'input', 'label': 'Nazwa kierunku'}))
+
+    department = ModelChoiceField(queryset=Faculty.objects.all(),
+                            widget=Select(attrs={'class': 'select', 'label': "Wydział"}),
+                            required=True)
+
+    location = models.CharField(widget=TextInput(attrs={'class': 'input', 'label': 'Adres wydziału'}))
+
+    head = ModelChoiceField(queryset=Faculty.objects.all(),
+                            widget=Select(attrs={'class': 'select', 'label': "Dziekan"}),
+                            required=True)
 
     contact_user = ModelChoiceField(queryset=Employee.objects.all(),
                             widget=Select(attrs={'class': 'select', 'label': "Osoba kontaktowa"}),

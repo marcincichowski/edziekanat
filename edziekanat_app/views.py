@@ -4,7 +4,6 @@ import os
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.views import auth_logout
-from django.core.exceptions import ValidationError
 from django.core.files import File
 from django.core.files.storage import FileSystemStorage
 from django.core.serializers import serialize
@@ -264,6 +263,7 @@ def get_new_invoices(user: User): return Invoice.objects.filter(status="Nowy", c
 
 
 def get_user_invoices(user: User): return Invoice.objects.filter(created_by=user)
+
 
 def create_invoice_category(request):
     form = AddInvoiceCategory()
