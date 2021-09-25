@@ -212,3 +212,29 @@ class RegisterExtraForm(UserKwargModelFormMixin, Form):
                                                   widget=Select(
                                                       attrs={'class': 'select', 'label': "Stanowisko"}),
                                                   required=False)
+
+
+class AddInvoiceCategory(Form):
+    name = CharField(widget=TextInput(attrs={'class': 'input', 'placeholder': 'Nazwa kategorii'}))
+    faq_link = CharField(widget=TextInput(attrs={'class': 'input', 'placeholder': 'FAQ link'}))
+    description = CharField(widget=CKEditorWidget(attrs={'placeholder': 'Opis'}))
+    docx_template = FileField(widget=ClearableFileInput(attrs={'class': 'file-input'}))
+
+
+class SystemTools(Form):
+    smtp_address = CharField(widget=TextInput(attrs={'class': 'input', 'placeholder': '10.124.14.1:25', 'label': 'Adres IP serwera SMTP'}))
+    broadcast = CharField(widget=Textarea(attrs={'class': 'textarea', 'label': 'Wyślij komunikat do wszystkich użytkowników'}))
+
+
+
+class AddChair(Form):
+    name = CharField(widget=TextInput(attrs={'class': 'input', 'label': 'Nazwa katedry'}))
+    location = models.CharField(widget=TextInput(attrs={'class': 'input', 'label': 'Adres katedry'}))
+
+    head = ModelChoiceField(queryset=Employee.objects.all(),
+                            widget=Select(attrs={'class': 'select', 'label': "Kierownik katedry"}),
+                            required=False)
+
+    contact_user = ModelChoiceField(queryset=Employee.objects.all(),
+                            widget=Select(attrs={'class': 'select', 'label': "Osoba kontaktowa"}),
+                            required=False)

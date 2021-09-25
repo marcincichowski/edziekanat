@@ -209,9 +209,11 @@ class UserCreator(SessionWizardView):
         allow_email_send = self.get_cleaned_data_for_step('1')['allow_email_send']
 
         if User.objects.filter(email=email).exists():
-            raise ValidationError('Użytkownik o takim adresie e-mail już istnieje.')
+            messages.error(self.request, 'Użytkownik o takim adresie e-mail już istnieje.')
+            return redirect('edziekanat_app:user_register')
         elif password != password_repeat:
-            raise ValidationError('Hasła nie zgadzają się.')
+            messages.error(self.request, 'Hasła nie zgadzają się.')
+            return redirect('edziekanat_app:user_register')
         else:
             extra = {}
             if role.name == Student.base_role:
@@ -242,7 +244,7 @@ class UserCreator(SessionWizardView):
                   f"Imie:{user.first_name}\n"
                   f"Nazwisko:{user.last_name}")
             login(self.request, user)
-            messages.success(request, 'Pomyślnie zarejestrowano!')
+            messages.success(self.request, 'Pomyślnie zarejestrowano!')
         return redirect('edziekanat_app:home')
 
 
@@ -262,3 +264,7 @@ def get_new_invoices(user: User): return Invoice.objects.filter(status="Nowy", c
 
 
 def get_user_invoices(user: User): return Invoice.objects.filter(created_by=user)
+
+def create_invoice_category(request):
+    form = AddInvoiceCategory()
+    return render(request, 'user/create_invoice_category.html', context={'form': form})
