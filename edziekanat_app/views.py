@@ -19,7 +19,7 @@ from edziekanat_app.models.tables.invoice_category import replace_document_tags
 from edziekanat_app.models.tables.users.employee import Employee
 from edziekanat_app.models.tables.users.student import Student
 from edziekanat_app.models.tables.users.user import User
-from .forms import LoginForm, AddDictionaryValueCathedral, EditUserForm
+from .forms import LoginForm, AddDictionaryValueCathedral, EditUserForm, AddInvoiceCategory
 from .models.tables.invoice_category import InvoiceCategory
 
 

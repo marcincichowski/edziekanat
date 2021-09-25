@@ -2,6 +2,8 @@ import datetime
 import json
 
 from braces.forms import UserKwargModelFormMixin
+from ckeditor.fields import RichTextField
+from ckeditor.widgets import CKEditorWidget
 from django.forms import *
 
 from edziekanat_app.models.tables.course import Course

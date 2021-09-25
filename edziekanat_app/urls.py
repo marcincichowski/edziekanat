@@ -16,6 +16,7 @@ urlpatterns = [
 
     url(r'^account/$', views.account, name='account'),
     url(r'^invoices/$', views.invoices, name='invoices'),
+    url(r'^create_invoice_category/$', views.create_invoice_category, name='create_invoice_category'),
     url(r'^inbox/$', views.inbox, name='inbox'),
     url(r'^invoices_list/$', views.invoices_list, name='invoices_list'),
     url(r'^invoices_list_detail/$', views.invoices_list_details, name='invoices_list_detail'),
