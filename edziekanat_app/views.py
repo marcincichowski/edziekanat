@@ -1,22 +1,25 @@
 import datetime
+import os
 
+from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.views import auth_logout
 from django.core.exceptions import ValidationError
 from django.core.files import File
 from django.core.files.storage import FileSystemStorage
 from django.core.serializers import serialize
-from django.http import HttpResponseRedirect, JsonResponse
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from docx import Document
 from formtools.wizard.views import SessionWizardView
 
+from edziekanat_app.forms import get_query
 from edziekanat_app.models.tables.invoice import Invoice
 from edziekanat_app.models.tables.invoice_category import replace_document_tags
 from edziekanat_app.models.tables.users.employee import Employee
 from edziekanat_app.models.tables.users.student import Student
 from edziekanat_app.models.tables.users.user import User
-from .forms import RegisterForm, LoginForm, AddDictionaryValueCathedral, EditUserForm
+from .forms import LoginForm, AddDictionaryValueCathedral, EditUserForm
 from .models.tables.invoice_category import InvoiceCategory
 
 
@@ -101,12 +104,13 @@ def user_login(request):
                       f"Hasło:{user.password}\n"
                       f"Imie:{user.first_name}\n"
                       f"Nazwisko:{user.last_name}")
+                messages.success(request, "Pomyślnie zalogowano!")
 
                 return redirect('/')
             else:
+                messages.error(request, 'Podano nieprawidłowe dane logowania.')
                 return render(request, 'auth/login.html', {
                     'form': form,
-                    'message': 'Wprowadzono niepoprawne dane.'
                 })
     else:
         form = LoginForm()
@@ -116,7 +120,8 @@ def user_login(request):
 
 def user_logout(request):
     auth_logout(request)
-    return HttpResponseRedirect('/')
+    messages.success(request, "Pomyślnie wylogowano.")
+    return redirect('edziekanat_app:home')
 
 
 class InvoiceCreator(SessionWizardView):
@@ -143,11 +148,18 @@ class InvoiceCreator(SessionWizardView):
         result = form_list[2].cleaned_data
         attachement = None  # not handling attachements yet
 
+        last_result_field = None
         for key in result:
+            if key.startswith('select'):
+                last_result_field = result[key]
+                result[key] = result[key].name
             if key.startswith('file'):
                 attachement = result[key]
                 result[key] = result[key].name
+            if key.startswith('result'):
+                result[key] = get_query(result[key], self.request.user, base=last_result_field)
 
+        result = result.__class__(map(reversed, result.items()))
 
         inv = Invoice.objects.create(category=category,
                                      created_by=self.request.user,
@@ -155,15 +167,23 @@ class InvoiceCreator(SessionWizardView):
                                      decision_author=self.request.user)  # todo
         try:
             doc = Document(category.docx_template.path)
-            new_invoice_file_path = f"edziekanat_app/invoices/{category.name.replace(' ', '_')}_ID_{inv.id}.docx"
+            new_invoice_file_name = f"{category.name.replace(' ', '_')}_ID_{inv.id}.docx"
+            new_invoice_file_path = f"edziekanat_app/invoices/{new_invoice_file_name}"
             replace_document_tags(doc, result, init=False).save(new_invoice_file_path)
             file = File(open(new_invoice_file_path, 'rb'))
-            inv.invoice_file.save(name=attachement.name, content=file)
+            inv.invoice_file.save(name=new_invoice_file_name, content=file)
+            file.close()
+            os.remove(new_invoice_file_path)
         except Exception as e:
             inv.delete()
-            raise Exception(e.__str__())
+            messages.error(requests, f"Wystąpił błąd podczas tworzenia wniosku.")
+            raise e
+        messages.success(request, f"Pomyślnie utworzono wniosek {category.name}")
+        return redirect('edziekanat_app:home')
 
-        return HttpResponseRedirect('/')
+
+def inbox(request):
+    return render(request, 'user/inbox.html')
 
 
 class UserCreator(SessionWizardView):
@@ -222,23 +242,8 @@ class UserCreator(SessionWizardView):
                   f"Imie:{user.first_name}\n"
                   f"Nazwisko:{user.last_name}")
             login(self.request, user)
-        return HttpResponseRedirect('/')
-
-
-def user_register(request):
-    if '_auth_user_id' in request.session:
-        return HttpResponseRedirect('/')
-
-    template = 'auth/register.html'
-
-    if request.method == 'POST':
-        form = RegisterForm(request.POST)
-
-
-    else:
-        form = RegisterForm()
-
-    return render(request, template, {'form': form})
+            messages.success(request, 'Pomyślnie zarejestrowano!')
+        return redirect('edziekanat_app:home')
 
 
 def session_context_processor(request):

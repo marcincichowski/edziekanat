@@ -13,7 +13,7 @@ class Invoice(Model):
                             related_name="authors")
 
     invoice_file = FileField(verbose_name=_('Plik wniosku'),
-                             upload_to="edziekanat_app/docs",
+                             upload_to="edziekanat_app/invoices",
                              null=True,
                              blank=True)
 

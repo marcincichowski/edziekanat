@@ -79,6 +79,7 @@
                                 {% if all_invoices %}
                                     <thead>
                                     <tr>
+                                        <th>ID</th>
                                         <th>Kategoria</th>
                                         <th>Data utworzenia</th>
                                         <th>Status</th>
@@ -88,6 +89,7 @@
                                 {% endif %}
                                 {% for invoice in all_invoices %}
                                     <tr>
+                                    <td>{{ invoice.id }}</td>
                                     <td>{{ invoice.category.name }}</td>
                                     <td>{{ invoice.created_date }}</td>
                                     <td>{{ invoice.status }}</td>

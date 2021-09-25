@@ -9,6 +9,7 @@ from edziekanat_app.models.tables.invoice_category import InvoiceCategory
 from edziekanat_app.models.tables.invoice_field import InvoiceField
 from edziekanat_app.models.tables.job import Job
 from edziekanat_app.models.tables.specialization import Specialization
+from edziekanat_app.models.tables.subject import Subject
 from edziekanat_app.models.tables.users.employee import Employee
 from edziekanat_app.models.tables.users.role import Role
 from edziekanat_app.models.tables.users.student import Student
@@ -49,15 +50,19 @@ class InvoiceCategoryPickForm(UserKwargModelFormMixin, ModelForm):
 
     category = ModelChoiceField(queryset=InvoiceCategory.objects.all())
 
-def get_subjects(user_id):
-    pass
-
-def execute():
-    pass
 
 class InvoiceFillForm(UserKwargModelFormMixin, Form):
-    methods = {'get_subjects': get_subjects}
 
+    def execute(self, method, **parameters):
+
+        def get_subjects(user_id):
+            student = Student.objects.filter(user_id=user_id).first()
+            return Subject.objects.filter(course_id=student.course.id, sem=student.sem)
+
+        methods = {'get_subjects': get_subjects}
+        if parameters['user_id'] is not None:
+            parameters['user_id'] = self.user.id
+        return methods[method](**parameters)
 
     def __init__(self, *args, **kwargs):
         category = kwargs.pop('category')
@@ -83,12 +88,12 @@ class InvoiceFillForm(UserKwargModelFormMixin, Form):
                 self.fields[key] = CharField(
                     widget=TextInput(attrs={'class': 'input is-medium', 'label': value[3:]}))
             elif key.startswith('value'):
-                self.fields[key] = CharField(
-                    widget=TextInput(attrs={'class': 'input is-medium', 'label': value[3:]}))
+                self.fields[key] = IntegerField(
+                    widget=NumberInput(attrs={'class': 'input is-medium', 'label': value[3:]}))
             elif key.startswith('check'):
                 self.fields[key] = CharField(
                     widget=TextInput(attrs={'class': 'input is-medium', 'label': value[3:]}))
-            elif key.startswith('select'):
+            elif key.startswith('radio'):
                 if len(checkboxes) == 0:
                     splitted = value[3:].split('|')
                     label = splitted[0]
@@ -98,21 +103,69 @@ class InvoiceFillForm(UserKwargModelFormMixin, Form):
                                                    widget=RadioSelect())
                 else:
                     checkboxes[key] = value[3:]
-            elif key.startswith('execution'):
-                splitted = value[3:].split('.')
+            elif key.startswith('select'):
+                splitted = value[3:].split(',')
                 method = splitted[0]
                 context = {}
-                for item in splitted:
-                    params = item.split('')
-                choices = execute(method, context)
+                self.select_field = key
+                for item in splitted[1:]:
+                    params = item.split('?')
+                    for param in params:
+                        pairs = param.split('=')
+                        context[pairs[0]] = pairs[1]
+                choices = self.execute(method, **context)
+                self.fields[key] = ModelChoiceField(queryset=choices,
+                                                    widget=Select(
+                                                        attrs={'class': 'select', 'placeholder': 'Przedmiot',
+                                                               'label': 'Wybierz przedmiot'}))
+                self.last_select_field = key
             elif key.startswith('file'):
                 self.fields[key] = FileField(
                     widget=FileInput(
                         attrs={'class': 'file-input', 'type': 'file', 'label': value[3:], 'name': 'resume'}),
                     required=True)
+            elif key.startswith('result'):
+                value = f"{self.last_select_field}.{value[3:]}"
+                self.fields[key] = CharField(widget=HiddenInput(), initial=value)
             elif key.startswith('query'):
                 value = get_query(value[3:], user)
                 self.fields[key] = CharField(widget=HiddenInput(), initial=value)
+
+
+def get_query(queries: str, user: User, base=None):
+    single_queries = queries.split('.')
+    result = []
+
+    if base is None:
+        if single_queries[0] == 'user':
+            result.append(user)
+        elif single_queries[0] == 'student':
+            result.append(Student.objects.filter(user=user).first())
+        elif single_queries[0] == 'system':
+            if single_queries[1] == 'today':
+                return datetime.datetime.today().strftime('%d.%m.%Y') + " r."
+        else:
+            raise Exception(f"Invalid base_object request: {single_queries[0]}")
+    else:
+        result.append(base)
+
+    single_queries = single_queries[1:]
+    for request, i in zip(single_queries, range(len(single_queries))):
+        base_object = result[i]
+        response = getattr(base_object, request)
+        if response is None:
+            raise Exception(f"Unable to get response. Object: {base_object} Query: {request}")
+        result.append(response)
+    return result[-1]
+
+
+class AddDictionaryValueCathedral(Form):
+    value = CharField(
+        widget=TextInput(attrs={'class': 'input is-primary is-fullwidth', 'placeholder': 'Nazwa katedry'}))
+
+    def __init__(self, *args, **kwargs):
+        super(AddDictionaryValueCathedral, self).__init__(*args, **kwargs)
+        self.fields['value'].label = ""
 
 
 class RegisterForm(Form):
@@ -157,36 +210,3 @@ class RegisterExtraForm(UserKwargModelFormMixin, Form):
                                                   widget=Select(
                                                       attrs={'class': 'select', 'label': "Stanowisko"}),
                                                   required=False)
-
-
-def get_query(queries: str, user: User):
-    single_queries = queries.split('.')
-    result = []
-
-    if single_queries[0] == 'user':
-        result.append(user)
-    elif single_queries[0] == 'student':
-        result.append(Student.objects.filter(user=user).first())
-    elif single_queries[0] == 'system':
-        if single_queries[1] == 'today':
-            return datetime.datetime.today().strftime('%d.%m.%Y') + " r."
-    else:
-        raise Exception("Invalid base_object request!")
-
-    single_queries = single_queries[1:]
-    for request, i in zip(single_queries, range(len(single_queries))):
-        base_object = result[i]
-        response = getattr(base_object, request)
-        if response is None:
-            raise Exception(f"Unable to get response. Object: {base_object} Query: {request}")
-        result.append(response)
-    return result[-1]
-
-
-class AddDictionaryValueCathedral(Form):
-    value = CharField(
-        widget=TextInput(attrs={'class': 'input is-primary is-fullwidth', 'placeholder': 'Nazwa katedry'}))
-
-    def __init__(self, *args, **kwargs):
-        super(AddDictionaryValueCathedral, self).__init__(*args, **kwargs)
-        self.fields['value'].label = ""

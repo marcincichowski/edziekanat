@@ -15,15 +15,29 @@
         <ul class="menu-list">
             <li><a href="{% url 'edziekanat_app:settings' %}">Ustawienia</a></li>
         </ul>
-
-        <p class="menu-label">
-            Wnioski
-        </p>
         <ul class="menu-list">
-            <li><a href="{% url 'edziekanat_app:invoices' %}">Spis wniosków</a></li>
-            <li><a href="{% url 'edziekanat_app:invoices_list' %}">Twoje wnioski</a></li>
-            <li><a href="{% url 'edziekanat_app:create_invoice' %}">Stwórz wniosek</a></li>
+            <li><a href="{% url 'edziekanat_app:inbox' %}">Wiadomości</a></li>
         </ul>
+        {% if request.user.role.name == "Student" %}
+            <p class="menu-label">
+                Wnioski
+            </p>
+            <ul class="menu-list">
+                <li><a href="{% url 'edziekanat_app:invoices' %}">Spis wniosków</a></li>
+                <li><a href="{% url 'edziekanat_app:invoices_list' %}">Twoje wnioski</a></li>
+                <li><a href="{% url 'edziekanat_app:create_invoice' %}">Stwórz nowy wniosek</a></li>
+            </ul>
+        {% endif %}
+
+        {% if request.user.role.name != "Student" %}
+            <p class="menu-label">
+                Zarządzanie wnioskami
+            </p>
+            <ul class="menu-list">
+                <li><a href="{% url 'edziekanat_app:invoices_list' %}">Weryfikacja</a></li>
+                <li><a href="{% url 'edziekanat_app:invoices' %}">Nowa kategoria</a></li>
+            </ul>
+        {% endif %}
 
         {% if request.user.is_staff %}
             <p class="menu-label">

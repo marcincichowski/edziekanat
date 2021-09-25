@@ -19,7 +19,7 @@ class Employee(Model):
                          on_delete=CASCADE)
 
     def __str__(self):
-        return f"{self.user.__str__()} (stanowisko: {self.job.__str__()})"
+        return self.user.__str__()
 
     class Meta:
         db_table = "edziekanat_app_employees"

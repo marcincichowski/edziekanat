@@ -15,7 +15,10 @@
         color: $base-hover
     }
 }
-
+.notification.is-primary {
+  position: absolute;
+  z-index: 1;
+}
 .icon-button{
     text-align: center;
     i{
@@ -41,6 +44,11 @@
         border-bottom-color: invert($base-color, 10%);
     }
 }
+
+.badge-light {
+    margin-top: 2.5em;
+}
+
 .footer {
     position: fixed;
     background-color: $footer-background-color;

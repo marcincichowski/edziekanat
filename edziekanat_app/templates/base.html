@@ -2,7 +2,7 @@
 <html lang="pl">
 {% load static %}
 <head>
-    <meta name="viewport" content= "width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'css/style.min.css' %}">
     <link href="https://use.fontawesome.com/releases/v5.0.4/css/all.css" rel="stylesheet">
     <link rel="icon" type="image/png" href="{% static "images/put_logo_text.png" %}"/>
@@ -22,8 +22,53 @@
         {% block content %}{% endblock %}
     </div>
 </div>
+{% block messages %}
+    <ul class="messages" id="messages-list">
+        {% if messages %}
+            {% for message in messages %}
+                <li>
+                    {% if message.tags %}
+                        <div class="alert alert-{{ message.tags }} msg fade show" role="alert">{{ message }}</div>
+                    {% else %}
+                        <div class="alert alert-info msg fade show" role="alert">{{ message }}</div>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        {% endif %}
+    </ul>
+    <script>
+        document.body.addEventListener('click', function (event) {
+            if (event.target.className === 'unique_class_name') {
+                const form = event.target.form;
+                const data = new FormData(form);
+
+                const request = new XMLHttpRequest();
+                request.open(form.method, form.action, true);
+                request.send(data);
+
+                // logFormData(data);
+
+                request.addEventListener("load", function () {
+                    if (this.readyState === 4 && this.status === 200) {
+
+                        // catch JsonResponse from Django
+                        const response = JSON.parse(this.responseText);
+
+                        // display message
+                        const messages = document.getElementById("messages-list");
+                        messages.innerHTML += response.msg;
+                        fade_alerts();
+                    }
+                });
+            }
+
+        });
+    </script>
+{% endblock %}
 <!--{% block footer %}-->
-<!--    {% include 'components/footer.html' %}-->
-<!--{% endblock %}-->
+    <!--    {% include 'components/footer.html' %}-->
+    <!--{% endblock %}-->
+
 </body>
+
 </html>

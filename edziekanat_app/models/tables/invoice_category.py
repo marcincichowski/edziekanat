@@ -26,8 +26,11 @@ def match_field_type(item: str):
         'are': 'areatext',
         'dat': 'text',
         'pho': 'text',
-        'val': 'text',
+        'val': 'value',
+        'rad': 'radio',
         'che': 'check',
+        'sel': 'select',
+        'res': 'result',
         'fil': 'file',
         'que': 'query'
     }[item]
@@ -102,9 +105,9 @@ class InvoiceCategory(Model):
 def replace_document_tags(doc: Document, dictionary: dict, init: bool = True):
     for i in dictionary:
         for p in doc.paragraphs:
-            match = '{{' + i + '}}'
+            match = '{{' + str(dictionary[i]) + '}}'
             matches = p.text.find(match)
             if matches >= 0:
-                to_replace = "{{" + dictionary[i] + "}}" if init else dictionary[i]
+                to_replace = "{{" + i + "}}" if init else str(i)
                 p.text = p.text.replace(match, to_replace)
     return doc
