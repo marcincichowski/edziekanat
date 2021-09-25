@@ -45,4 +45,3 @@ class Invoice(Model):
         db_table = "edziekanat_app_invoices"
         verbose_name = "Wniosek"
         verbose_name_plural = "Wnioski"
-        unique_together = ['created_by_id', 'category_id', 'created_date']
