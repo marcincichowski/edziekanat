@@ -24,7 +24,7 @@ def match_field_type(item: str):
     return {
         'tex': 'text',
         'are': 'areatext',
-        'dat': 'text',
+        'dat': 'date',
         'pho': 'text',
         'val': 'value',
         'rad': 'radio',

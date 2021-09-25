@@ -57,6 +57,13 @@
                                 <div class="control">
                                     {{ field }}
                                 </div>
+                            {% elif field.field.widget.input_type == 'date' %}
+                                 <label for="{{ field.id_for_label }}">
+                                 {{ field.field.widget.attrs.label }}
+                                </label>
+                                <div class="calendar mb-2">
+                                    {{ field }}
+                                </div>
                             {% else %}
                                 <label for="{{ field.id_for_label }}">
                                     {{ field.field.widget.attrs.label }}

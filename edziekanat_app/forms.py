@@ -2,17 +2,17 @@ import datetime
 import json
 
 from braces.forms import UserKwargModelFormMixin
-from ckeditor.fields import RichTextField
 from ckeditor.widgets import CKEditorWidget
 from django.forms import *
 
 from edziekanat_app.models.tables.course import Course
-from edziekanat_app.models.tables.university_structure import *
 from edziekanat_app.models.tables.invoice_category import InvoiceCategory
 from edziekanat_app.models.tables.invoice_field import InvoiceField
 from edziekanat_app.models.tables.job import Job
+from edziekanat_app.models.tables.mode import Mode
 from edziekanat_app.models.tables.specialization import Specialization
 from edziekanat_app.models.tables.subject import Subject
+from edziekanat_app.models.tables.university_structure.faculty import Faculty
 from edziekanat_app.models.tables.users.employee import Employee
 from edziekanat_app.models.tables.users.role import Role
 from edziekanat_app.models.tables.users.student import Student
@@ -85,8 +85,8 @@ class InvoiceFillForm(UserKwargModelFormMixin, Form):
                 self.fields[key] = CharField(
                     widget=Textarea(attrs={'class': 'textarea', 'label': value[3:]}))
             elif key.startswith('date'):
-                self.fields[key] = CharField(
-                    widget=TextInput(attrs={'class': 'input is-medium', 'label': value[3:]}))
+                self.fields[key] = DateField(
+                    widget=DateInput(attrs={'type': 'date', 'label': value[3:]}))
             elif key.startswith('phone'):
                 self.fields[key] = CharField(
                     widget=TextInput(attrs={'class': 'input is-medium', 'label': value[3:]}))
@@ -223,61 +223,61 @@ class AddInvoiceCategory(Form):
 
 
 class SystemTools(Form):
-    smtp_address = CharField(widget=TextInput(attrs={'class': 'input', 'placeholder': '10.124.14.1:25', 'label': 'Adres IP serwera SMTP'}), initial='')
-    broadcast = CharField(widget=Textarea(attrs={'class': 'textarea', 'label': 'Wyślij komunikat do wszystkich użytkowników'}))
-
+    smtp_address = CharField(
+        widget=TextInput(attrs={'class': 'input', 'placeholder': '10.124.14.1:25', 'label': 'Adres IP serwera SMTP'}),
+        initial='')
+    broadcast = CharField(
+        widget=Textarea(attrs={'class': 'textarea', 'label': 'Wyślij komunikat do wszystkich użytkowników'}))
 
 
 class AddChair(Form):
     name = CharField(widget=TextInput(attrs={'class': 'input', 'label': 'Nazwa katedry'}))
-    location = models.CharField(widget=TextInput(attrs={'class': 'input', 'label': 'Adres katedry'}))
+    location = CharField(widget=TextInput(attrs={'class': 'input', 'label': 'Adres katedry'}))
 
     head = ModelChoiceField(queryset=Employee.objects.all(),
                             widget=Select(attrs={'class': 'select', 'label': "Kierownik katedry"}),
                             required=True)
 
     contact_user = ModelChoiceField(queryset=Employee.objects.all(),
-                            widget=Select(attrs={'class': 'select', 'label': "Osoba kontaktowa"}),
-                            required=True)
+                                    widget=Select(attrs={'class': 'select', 'label': "Osoba kontaktowa"}),
+                                    required=True)
+
 
 class AddDepartment(Form):
     name = CharField(widget=TextInput(attrs={'class': 'input', 'label': 'Nazwa instytutu'}))
-    location = models.CharField(widget=TextInput(attrs={'class': 'input', 'label': 'Adres instytutu'}))
+    location = CharField(widget=TextInput(attrs={'class': 'input', 'label': 'Adres instytutu'}))
 
     head = ModelChoiceField(queryset=Employee.objects.all(),
                             widget=Select(attrs={'class': 'select', 'label': "Dyrektor instytutu"}),
                             required=True)
 
     contact_user = ModelChoiceField(queryset=Employee.objects.all(),
-                            widget=Select(attrs={'class': 'select', 'label': "Osoba kontaktowa"}),
-                            required=True)
+                                    widget=Select(attrs={'class': 'select', 'label': "Osoba kontaktowa"}),
+                                    required=True)
 
 
 class AddFaculty(Form):
     name = CharField(widget=TextInput(attrs={'class': 'input', 'label': 'Nazwa wydziału'}))
-    location = models.CharField(widget=TextInput(attrs={'class': 'input', 'label': 'Adres wydziału'}))
+    location = CharField(widget=TextInput(attrs={'class': 'input', 'label': 'Adres wydziału'}))
 
     head = ModelChoiceField(queryset=Employee.objects.all(),
                             widget=Select(attrs={'class': 'select', 'label': "Dziekan"}),
                             required=True)
 
     contact_user = ModelChoiceField(queryset=Employee.objects.all(),
-                            widget=Select(attrs={'class': 'select', 'label': "Osoba kontaktowa"}),
-                            required=True)
+                                    widget=Select(attrs={'class': 'select', 'label': "Osoba kontaktowa"}),
+                                    required=True)
+
 
 class AddCourse(Form):
     name = CharField(widget=TextInput(attrs={'class': 'input', 'label': 'Nazwa kierunku'}))
 
     department = ModelChoiceField(queryset=Faculty.objects.all(),
-                            widget=Select(attrs={'class': 'select', 'label': "Wydział"}),
+                                  widget=Select(attrs={'class': 'select', 'label': "Wydział"}),
+                                  required=True)
+
+    degree = IntegerField(widget=NumberInput(attrs={'class': 'input is-medium', 'label': 'Stopień studiów'}))
+
+    mode = ModelChoiceField(queryset=Mode.objects.all(),
+                            widget=Select(attrs={'class': 'select', 'label': "Tryb studiów"}),
                             required=True)
-
-    location = models.CharField(widget=TextInput(attrs={'class': 'input', 'label': 'Adres wydziału'}))
-
-    head = ModelChoiceField(queryset=Faculty.objects.all(),
-                            widget=Select(attrs={'class': 'select', 'label': "Dziekan"}),
-                            required=True)
-
-    contact_user = ModelChoiceField(queryset=Employee.objects.all(),
-                            widget=Select(attrs={'class': 'select', 'label': "Osoba kontaktowa"}),
-                            required=False)

@@ -24,17 +24,13 @@ class Invoice(Model):
                        default="W trakcie")
 
     decision_author = ForeignKey(to='edziekanat_app.User',
-                                 verbose_name=_('Osoba wyznaczona do dokonania decyzji'),
+                                 verbose_name=_('Autor decyzji'),
                                  on_delete=PROTECT,
                                  related_name="decision_authors")
 
     decision = CharField(verbose_name=_('Decyzja'),
                          max_length=200,
                          blank=True)
-
-    decision_file = FileField(verbose_name=_('Plik decyzji'),
-                              upload_to="edziekanat_app/docs",
-                              blank=True)
 
     def __str__(self):
         return f"{self.category} Wnioskodawca: {self.created_by} Status: {self.status}"

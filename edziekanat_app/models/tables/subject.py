@@ -6,6 +6,14 @@ from edziekanat_app.models.tables.users.employee import Employee
 
 
 class Subject(models.Model):
+    TYPES = (
+        ('project', 'Projekt'),
+        ('lecture', 'Wykład'),
+        ('excercises', 'Ćwiczenia'),
+        ('labs', 'Laboratorium')
+    )
+    type = models.CharField(max_length=50, choices=TYPES, default=None, null=True)
+
     def user_validator(user_id):
         user = Employee.objects.filter(id=user_id).first()
         if user.job.name not in ["Wykładowca", "Dyrektor instytutu"]:
@@ -14,6 +22,8 @@ class Subject(models.Model):
     course = models.ForeignKey('edziekanat_app.Course',
                                    verbose_name=_('Kierunek'),
                                    on_delete=models.CASCADE, default=None, null=True)
+
+
 
     teacher = models.ForeignKey('edziekanat_app.Employee',
                                 verbose_name=_('Prowadzący'),
