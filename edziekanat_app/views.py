@@ -12,7 +12,7 @@ from django.shortcuts import render, redirect
 from docx import Document
 from formtools.wizard.views import SessionWizardView
 
-from edziekanat_app.forms import get_query
+from edziekanat_app.forms import get_query, AddChair, AddDepartment, AddFaculty, AddCourse, SystemTools
 from edziekanat_app.models.tables.invoice import Invoice
 from edziekanat_app.models.tables.invoice_category import replace_document_tags
 from edziekanat_app.models.tables.users.employee import Employee
@@ -64,7 +64,8 @@ def account(request, *args, **kwargs):
 
 
 def config(request, *args, **kwargs):
-    return render(request, 'admin/config.html')
+    form = SystemTools()
+    return render(request, 'admin/config.html', context={'form': form})
 
 
 def settings(request, *args, **kwargs):
@@ -75,15 +76,17 @@ def create_invoice(request, *args, **kwargs):
     return render(request, 'user/create_invoice.html')
 
 
-def dictionaries(request, *args, **kwargs):
+def database(request, *args, **kwargs):
     if request.method == 'GET':
-        form = AddDictionaryValueCathedral()
-        return render(request, 'admin/dictionaries.html', {'form': form})
+        form_chair = AddChair()
+        form_department = AddDepartment()
+        form_faculty = AddFaculty()
+        form_course = AddCourse()
+        return render(request, 'admin/database.html', {'form_chair': form_chair, 'form_department': form_department, 'form_faculty': form_faculty, 'form_course': form_course})
     elif request.method == 'POST':
         raise Exception("Not implemented")
-        # check csrf !!!!
         return
-    return render(request, 'admin/dictionaries.html')
+    return render(request, 'admin/database.html')
 
 
 def user_login(request):

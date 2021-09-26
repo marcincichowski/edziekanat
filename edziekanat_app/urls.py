@@ -24,5 +24,5 @@ urlpatterns = [
     url(r'^create_invoice/$', InvoiceCreator.as_view([InvoiceFieldPickForm, InvoiceCategoryPickForm, InvoiceFillForm]), name='create_invoice'),
     url(r'^administrators/$', views.administrators, name='administrators'),
     url(r'^config/$', views.config, name='config'),
-    url(r'^dictionaries/$', views.dictionaries, name='dictionaries'),
+    url(r'^database/$', views.database, name='database'),
 ]

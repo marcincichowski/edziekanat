@@ -19,5 +19,30 @@
                 </div>
             </div>
         </section>
+        <div class="card">
+            <header class="card-header">
+                <p class="card-header-title">
+                    Ustawienia systemu
+                </p>
+            </header>
+            <div class="card-content">
+                <form method="post">
+                    {% csrf_token %}
+                    {% for field in form %}
+                        {% if field.field.widget.input_type == 'select' %}
+                            <label for="{{ field.id_for_label }}"> {{ field.field.widget.attrs.label }} </label>
+                            <div class="control">
+                                <div class="select is-fullwidth">{{ field }}</div>
+                            </div>
+                            <span class="help is-error">{{ field.errors }}</span>
+                        {% else %}
+                            <label for="{{ field.id_for_label }}"> {{ field.field.widget.attrs.label }} </label>
+                            <div class="control">{{ field }}</div>
+                        {% endif %}
+                    {% endfor %}
+                    <button type="submit" class="button is-primary mt-2">Zapisz</button>
+                </form>
+            </div>
+        </div>
     </div>
 {% endblock %}
