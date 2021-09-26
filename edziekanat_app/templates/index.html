@@ -29,14 +29,14 @@
                 </div>
                 <div class="tile is-parent">
                     <article class="tile is-child box">
-                        <p class="title">{{ new_invoices.count }}</p>
+                        <p class="title">{{ closed_invoices.count }}</p>
                         <p class="subtitle">Nowe decyzje</p>
                     </article>
                 </div>
                 <div class="tile is-parent">
                     <article class="tile is-child box">
-                        <p class="title">{{ closed_invoices.count }}</p>
-                        <p class="subtitle">Zamknięte wnioski</p>
+                        <p class="title">{{ new_mesages.count }}</p>
+                        <p class="subtitle">Nowe wiadomości</p>
                     </article>
                 </div>
                 <div class="tile is-parent">
@@ -59,7 +59,7 @@
                 <div class="card events-card">
                     <header class="card-header">
                         <p class="card-header-title">
-                            Wszystkie wnioski
+                            Rozpatrzone wnioski
                         </p>
                         {% if all_invoices %}
                             <div class="panel-block">

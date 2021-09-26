@@ -1,6 +1,6 @@
 import datetime
 import os
-
+from django.db.models import Q
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.views import auth_logout
@@ -25,8 +25,8 @@ from .models.tables.invoice_category import InvoiceCategory
 def index(request, *args, **kwargs):
     context = {
         'open_invoices': get_open_invoices(request.user),
-        'closed_invoices': get_closed_invoices(request.user),
-        'new_invoices': get_new_invoices(request.user),
+        'closed_invoices': get_decision_invoices(request.user),
+        'new_mesages': Invoice.objects.none(),  # get_new_messages(request.user)
         'all_invoices': get_user_invoices(request.user)
     }
     return render(request, 'index.html', context=context)
@@ -277,7 +277,7 @@ def get_open_invoices(user: User): return Invoice.objects.filter(status="W trakc
 def get_closed_invoices(user: User): return Invoice.objects.filter(status="Zamknięte", created_by=user)
 
 
-def get_new_invoices(user: User): return Invoice.objects.filter(status="Nowy", created_by=user)
+def get_decision_invoices(user: User): return Invoice.objects.filter(Q(status="Odrzucony") | Q(status="Zaakceptowany"), created_by=user)
 
 
 def get_user_invoices(user: User): return Invoice.objects.filter(created_by=user)

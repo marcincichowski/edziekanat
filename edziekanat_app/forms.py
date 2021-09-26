@@ -252,6 +252,8 @@ class SystemTools(Form):
         widget=Textarea(attrs={'class': 'textarea', 'label': 'Wyślij komunikat do wszystkich użytkowników'}))
 
 
+# -------------------------------------------- DATABASE FORMS -------------------------------------------- #
+
 class AddChair(Form):
     name = CharField(widget=TextInput(attrs={'class': 'input', 'label': 'Nazwa katedry'}))
     location = CharField(widget=TextInput(attrs={'class': 'input', 'label': 'Adres katedry'}))
