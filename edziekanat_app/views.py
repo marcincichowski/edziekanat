@@ -81,7 +81,7 @@ def account(request, *args, **kwargs):
 
 def config(request, *args, **kwargs):
     form = SystemTools()
-    return render(request, 'admin/config.html', context={'form': form})
+    return render(request, 'admin/tools.html', context={'form': form, 'toolname': 'Wiadomość broadcast'})
 
 
 def settings(request, *args, **kwargs):
