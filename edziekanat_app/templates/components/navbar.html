@@ -34,7 +34,7 @@
             {% if request.user.is_staff %}
                 <a class="navbar-item is-tab is-hidden-tablet" href="{% url 'edziekanat_app:config' %}">Konfiguracja</a>
                 <a class="navbar-item is-tab is-hidden-tablet" href='/admin'>Panel administracyjny</a>
-                <a class="navbar-item is-tab is-hidden-tablet" href="{% url 'edziekanat_app:dictionaries' %}">Słowniki</a>
+                <a class="navbar-item is-tab is-hidden-tablet" href="{% url 'edziekanat_app:database' %}">Baza danych</a>
                 <a class="navbar-item is-tab is-hidden-tablet" href="{% url 'edziekanat_app:administrators' %}">Administratorzy</a>
             {% endif %}
             <a class="navbar-item is-tab is-active has-text-centered" style="white-space: nowrap; min-width: 150px;">
