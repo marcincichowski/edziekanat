@@ -12,7 +12,7 @@ from django.shortcuts import render, redirect
 from docx import Document
 from formtools.wizard.views import SessionWizardView
 from collections import defaultdict
-from edziekanat_app.forms import get_query, bind
+from edziekanat_app.forms import get_query, bind, RejectInvoiceForm, AcceptInvoiceForm
 from edziekanat_app.models.tables.invoice import Invoice
 from edziekanat_app.models.tables.invoice_category import replace_document_tags
 from edziekanat_app.models.tables.users.employee import Employee
@@ -37,7 +37,7 @@ def invoices(request, *args, **kwargs):
     return render(request, 'user/invoices.html', context={'invoices': invoices})
 
 
-def invoices_list_details(request, *args, **kwargs):
+def invoice_download(request, *args, **kwargs):
     if request.method == 'GET' and request.is_ajax():
         id = request.GET.get('id', None)
         if Invoice.objects.filter(id=id).exists():
@@ -47,10 +47,26 @@ def invoices_list_details(request, *args, **kwargs):
 
     return JsonResponse({}, status=400)
 
+def get_reject_info(request, *args, **kwargs):
+    if request.method == 'GET' and request.is_ajax():
+        id = request.GET.get('id', None)
+        if Invoice.objects.filter(id=id).exists():
+            return JsonResponse({'Valid': True, 'data': serialize('json', Invoice.objects.filter(id=id))}, status=200)
+        else:
+            return JsonResponse({'Valid': False}, status=200)
+
+    return JsonResponse({}, status=400)
 
 def invoices_list(request, *args, **kwargs):
     invoices = Invoice.objects.filter(created_by=request.user)
     return render(request, 'user/invoices_list.html', context={'invoices': invoices})
+
+
+def manage_invoices(request, *args, **kwargs):
+    invoices = Invoice.objects.all()
+    form_reject = RejectInvoiceForm()
+    form_accept = AcceptInvoiceForm()
+    return render(request, 'employer/manage_invoices.html', context={'invoices': invoices, 'form_reject': form_reject, 'form_accept': form_accept})
 
 
 def administrators(request, *args, **kwargs):
@@ -179,7 +195,6 @@ class InvoiceCreator(SessionWizardView):
             raise e
         messages.success(self.request, f"Pomyślnie utworzono {category.name.lower()}")
         return redirect('edziekanat_app:home')
-
 
 
 def inbox(request):

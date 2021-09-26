@@ -184,6 +184,14 @@ class AddDictionaryValueCathedral(Form):
         super(AddDictionaryValueCathedral, self).__init__(*args, **kwargs)
         self.fields['value'].label = ""
 
+class RejectInvoiceForm(Form):
+    decision = CharField(widget=Textarea(attrs={'class': 'textarea', 'label': "Decyzja"}))
+    status = CharField(widget=HiddenInput(), initial='Odrzucony')
+    id = CharField(widget=HiddenInput())
+
+
+class AcceptInvoiceForm(Form):
+    id_accept = CharField(widget=HiddenInput())
 
 class RegisterForm(Form):
     first_name = CharField(widget=TextInput(attrs={'class': 'input is-medium', 'placeholder': 'Imię'}))
