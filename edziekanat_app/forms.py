@@ -184,6 +184,7 @@ class AddDictionaryValueCathedral(Form):
         super(AddDictionaryValueCathedral, self).__init__(*args, **kwargs)
         self.fields['value'].label = ""
 
+
 class RejectInvoiceForm(Form):
     decision = CharField(widget=Textarea(attrs={'class': 'textarea', 'label': "Decyzja"}))
     status = CharField(widget=HiddenInput(), initial='Odrzucony')
@@ -192,6 +193,7 @@ class RejectInvoiceForm(Form):
 
 class AcceptInvoiceForm(Form):
     id_accept = CharField(widget=HiddenInput())
+
 
 class RegisterForm(Form):
     first_name = CharField(widget=TextInput(attrs={'class': 'input is-medium', 'placeholder': 'Imię'}))
@@ -254,38 +256,17 @@ class SystemTools(Form):
 
 # -------------------------------------------- DATABASE FORMS -------------------------------------------- #
 
+class AddAdministrator(Form):
+    name = ModelChoiceField(queryset=User.objects.all(),
+                            widget=Select(attrs={'class': 'select', 'label': "Kierownik katedry"}),
+                            required=True)
+
 class AddChair(Form):
     name = CharField(widget=TextInput(attrs={'class': 'input', 'label': 'Nazwa katedry'}))
     location = CharField(widget=TextInput(attrs={'class': 'input', 'label': 'Adres katedry'}))
 
     head = ModelChoiceField(queryset=Employee.objects.all(),
                             widget=Select(attrs={'class': 'select', 'label': "Kierownik katedry"}),
-                            required=True)
-
-    contact_user = ModelChoiceField(queryset=Employee.objects.all(),
-                                    widget=Select(attrs={'class': 'select', 'label': "Osoba kontaktowa"}),
-                                    required=True)
-
-
-class AddDepartment(Form):
-    name = CharField(widget=TextInput(attrs={'class': 'input', 'label': 'Nazwa instytutu'}))
-    location = CharField(widget=TextInput(attrs={'class': 'input', 'label': 'Adres instytutu'}))
-
-    head = ModelChoiceField(queryset=Employee.objects.all(),
-                            widget=Select(attrs={'class': 'select', 'label': "Dyrektor instytutu"}),
-                            required=True)
-
-    contact_user = ModelChoiceField(queryset=Employee.objects.all(),
-                                    widget=Select(attrs={'class': 'select', 'label': "Osoba kontaktowa"}),
-                                    required=True)
-
-
-class AddFaculty(Form):
-    name = CharField(widget=TextInput(attrs={'class': 'input', 'label': 'Nazwa wydziału'}))
-    location = CharField(widget=TextInput(attrs={'class': 'input', 'label': 'Adres wydziału'}))
-
-    head = ModelChoiceField(queryset=Employee.objects.all(),
-                            widget=Select(attrs={'class': 'select', 'label': "Dziekan"}),
                             required=True)
 
     contact_user = ModelChoiceField(queryset=Employee.objects.all(),
@@ -305,3 +286,126 @@ class AddCourse(Form):
     mode = ModelChoiceField(queryset=Mode.objects.all(),
                             widget=Select(attrs={'class': 'select', 'label': "Tryb studiów"}),
                             required=True)
+
+
+class AddDepartment(Form):
+    name = CharField(widget=TextInput(attrs={'class': 'input', 'label': 'Nazwa instytutu'}))
+    location = CharField(widget=TextInput(attrs={'class': 'input', 'label': 'Adres instytutu'}))
+
+    head = ModelChoiceField(queryset=Employee.objects.all(),
+                            widget=Select(attrs={'class': 'select', 'label': "Dyrektor instytutu"}),
+                            required=True)
+
+    contact_user = ModelChoiceField(queryset=Employee.objects.all(),
+                                    widget=Select(attrs={'class': 'select', 'label': "Osoba kontaktowa"}),
+                                    required=True)
+
+
+class AddEmployee(Form):
+    job = ModelChoiceField(queryset=Job.objects.all(),
+                           widget=Select(attrs={'class': 'select', 'label': "Zawód"}),
+                           required=True)
+
+    user = ModelChoiceField(queryset=User.objects.all(),
+                            widget=Select(attrs={'class': 'select', 'label': "Użytkownik"}),
+                            required=True)
+
+    boss = ModelChoiceField(queryset=User.objects.all(),
+                            widget=Select(attrs={'class': 'select', 'label': "Szef"}),
+                            required=True)
+
+
+class AddFaculty(Form):
+    name = CharField(widget=TextInput(attrs={'class': 'input', 'label': 'Nazwa wydziału'}))
+    location = CharField(widget=TextInput(attrs={'class': 'input', 'label': 'Adres wydziału'}))
+
+    head = ModelChoiceField(queryset=Employee.objects.all(),
+                            widget=Select(attrs={'class': 'select', 'label': "Dziekan"}),
+                            required=True)
+
+    contact_user = ModelChoiceField(queryset=Employee.objects.all(),
+                                    widget=Select(attrs={'class': 'select', 'label': "Osoba kontaktowa"}),
+                                    required=True)
+
+
+class AddIncoiceCategories(Form):
+    name = CharField(widget=TextInput(attrs={'class': 'input', 'label': 'Nazwa wniosku'}))
+    faq_link = URLField(label='URL', required=False)
+    description = CharField(widget=TextInput(attrs={'class': 'input', 'label': 'Opis'}))
+    field_type = CharField(widget=TextInput(attrs={'class': 'input'}))
+    field = ModelChoiceField(queryset=InvoiceField.objects.all(),
+                             widget=Select(attrs={'class': 'select', 'label': "Dziedzina"}),
+                             required=True)
+    decision_query = CharField(widget=TextInput(attrs={'class': 'input', 'label': 'Decyzja'}))
+
+
+class AddInvoiceField(Form):
+    name = CharField(widget=TextInput(attrs={'class': 'input', 'label': 'Nazwa kategorii'}))
+    description = CharField(widget=TextInput(attrs={'class': 'input', 'label': 'Opis'}))
+
+
+class AddInvoice(Form):
+    invoice_file = FileField(
+        widget=FileInput(
+            attrs={'class': 'file-input', 'type': 'file', 'label': 'Wniosek', 'name': 'Plik'}),
+        required=True)
+    created_date = DateField(widget=DateInput(attrs={'type': 'date', 'label': 'Data utworzenia wniosku'}))
+    status = CharField(widget=TextInput(attrs={'class': 'input', 'label': 'Status'}))
+    decision = CharField(widget=TextInput(attrs={'class': 'input', 'label': 'Decyzja'}))
+    category = ModelChoiceField(queryset=InvoiceCategory.objects.all(),
+                                widget=Select(attrs={'class': 'select', 'label': "Kategoria"}),
+                                required=True)
+    created_by = ModelChoiceField(queryset=User.objects.all(),
+                                  widget=Select(attrs={'class': 'select', 'label': "Twórca wniosku"}),
+                                  required=True)
+    decision_author = ModelChoiceField(queryset=User.objects.all(),
+                                       widget=Select(attrs={'class': 'select', 'label': "Autor decyzji"}),
+                                       required=True)
+
+
+class AddJob(Form):
+    name = CharField(widget=TextInput(attrs={'class': 'input', 'label': 'Nazwa stanowiska'}))
+
+
+class AddRole(Form):
+    name = CharField(widget=TextInput(attrs={'class': 'input', 'label': 'Nazwa roli'}))
+
+
+class AddSpectialization(Form):
+    name = CharField(widget=TextInput(attrs={'class': 'input', 'label': 'Nazwa specjalizacji'}))
+    course = ModelChoiceField(queryset=Course.objects.all(),
+                              widget=Select(attrs={'class': 'select', 'label': "Kierunek"}),
+                              required=True)
+
+
+class AddStudent(Form):
+    index = CharField(widget=TextInput(attrs={'class': 'input', 'label': 'Numer indexu'}))
+    sem = IntegerField(widget=NumberInput(attrs={'class': 'input is-medium', 'label': 'Semestr'}))
+    course = ModelChoiceField(queryset=Course.objects.all(),
+                              widget=Select(attrs={'class': 'select', 'label': "Kierunek"}),
+                              required=True)
+    spectialization = ModelChoiceField(queryset=Specialization.objects.all(),
+                                       widget=Select(attrs={'class': 'select', 'label': "Specjalizacja"}),
+                                       required=True)
+    user = ModelChoiceField(queryset=User.objects.all(),
+                            widget=Select(attrs={'class': 'select', 'label': "Użytkownik"}),
+                            required=True)
+    academic_year = CharField(widget=TextInput(attrs={'class': 'input', 'label': 'Rok akademicki'}))
+
+
+class AddStudyMode(Form):
+    name = CharField(widget=TextInput(attrs={'class': 'input', 'label': 'Nazwa'}))
+
+
+class AddSubject(Form):
+    name = CharField(widget=TextInput(attrs={'class': 'input', 'label': 'Nazwa'}))
+    ects = IntegerField(widget=NumberInput(attrs={'class': 'input is-medium', 'label': 'ECTS'}))
+    sem = IntegerField(widget=NumberInput(attrs={'class': 'input is-medium', 'label': 'Semestr'}))
+    teacher = ModelChoiceField(queryset=Employee.objects.all(),
+                               widget=Select(attrs={'class': 'select', 'label': "Prowadzący"}),
+                               required=True)
+    course = ModelChoiceField(queryset=Course.objects.all(),
+                              widget=Select(attrs={'class': 'select', 'label': "Kierunek"}),
+                              required=True)
+    type = CharField(widget=TextInput(attrs={'class': 'input', 'label': 'Rodzaj zajęć'}))
+
