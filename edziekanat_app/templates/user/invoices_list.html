@@ -126,7 +126,7 @@ $(document).ready(function() {
 function getInvoiceDetails(id){
 console.log(id);
         $.ajax({
-            url: {% url 'edziekanat_app:invoices_list_detail' %},
+            url: {% url 'edziekanat_app:invoices_list' %},
             type: "get",
             data:{
                 "id": id,
