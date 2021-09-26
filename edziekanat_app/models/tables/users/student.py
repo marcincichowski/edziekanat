@@ -12,8 +12,6 @@ class Student(Model):
                          on_delete=CASCADE,
                          related_name="students")
 
-
-
     index = CharField(null=True, max_length=6)
 
     sem = IntegerField(verbose_name=_('Semestr'),
@@ -36,6 +34,9 @@ class Student(Model):
     academic_year = CharField(_('Rok akademicki'),
                             max_length=30,
                               default=f"{datetime.datetime.today().year}/{datetime.datetime.today().year}")
+
+    def study_info(self):
+        return f"{self.sem}, {self.year}, {self.course.name} {self.specialization.name if self.specialization is not None else ''}"
 
     class Meta:
         db_table = "edziekanat_app_students"

@@ -11,8 +11,8 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from docx import Document
 from formtools.wizard.views import SessionWizardView
-
-from edziekanat_app.forms import get_query
+from collections import defaultdict
+from edziekanat_app.forms import get_query, bind
 from edziekanat_app.models.tables.invoice import Invoice
 from edziekanat_app.models.tables.invoice_category import replace_document_tags
 from edziekanat_app.models.tables.users.employee import Employee
@@ -158,7 +158,7 @@ class InvoiceCreator(SessionWizardView):
             if key.startswith('result'):
                 result[key] = get_query(result[key], self.request.user, base=last_result_field)
 
-        result = result.__class__(map(reversed, result.items()))
+        results = bind(result)
 
         inv = Invoice.objects.create(category=category,
                                      created_by=self.request.user,
@@ -168,7 +168,7 @@ class InvoiceCreator(SessionWizardView):
             doc = Document(category.docx_template.path)
             new_invoice_file_name = f"{category.name.replace(' ', '_')}_ID_{inv.id}.docx"
             new_invoice_file_path = f"edziekanat_app/invoices/{new_invoice_file_name}"
-            replace_document_tags(doc, result, init=False).save(new_invoice_file_path)
+            replace_document_tags(doc, results, False).save(new_invoice_file_path)
             file = File(open(new_invoice_file_path, 'rb'))
             inv.invoice_file.save(name=new_invoice_file_name, content=file)
             file.close()
@@ -179,6 +179,7 @@ class InvoiceCreator(SessionWizardView):
             raise e
         messages.success(self.request, f"Pomyślnie utworzono {category.name.lower()}")
         return redirect('edziekanat_app:home')
+
 
 
 def inbox(request):

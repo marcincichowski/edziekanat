@@ -80,34 +80,34 @@ class InvoiceFillForm(UserKwargModelFormMixin, Form):
         for key, value in dynamic_fields.items():
             if key.startswith('text'):
                 self.fields[key] = CharField(
-                    widget=TextInput(attrs={'class': 'textarea is-hovered', 'label': value[3:]}))
+                    widget=TextInput(attrs={'class': 'textarea is-hovered', 'label': value[0][3:]}))
             elif key.startswith('areatext'):
                 self.fields[key] = CharField(
-                    widget=Textarea(attrs={'class': 'textarea', 'label': value[3:]}))
+                    widget=Textarea(attrs={'class': 'textarea', 'label': value[0][3:]}))
             elif key.startswith('date'):
                 self.fields[key] = DateField(
-                    widget=DateInput(attrs={'type': 'date', 'label': value[3:]}))
+                    widget=DateInput(attrs={'type': 'date', 'label': value[0][3:]}))
             elif key.startswith('phone'):
                 self.fields[key] = CharField(
-                    widget=TextInput(attrs={'class': 'input is-medium', 'label': value[3:]}))
+                    widget=TextInput(attrs={'class': 'input is-medium', 'label': value[0][3:]}))
             elif key.startswith('value'):
                 self.fields[key] = IntegerField(
-                    widget=NumberInput(attrs={'class': 'input is-medium', 'label': value[3:]}))
+                    widget=NumberInput(attrs={'class': 'input is-medium', 'label': value[0][3:]}))
             elif key.startswith('check'):
                 self.fields[key] = CharField(
-                    widget=TextInput(attrs={'class': 'input is-medium', 'label': value[3:]}))
+                    widget=TextInput(attrs={'class': 'input is-medium', 'label': value[0][3:]}))
             elif key.startswith('radio'):
                 if len(checkboxes) == 0:
-                    splitted = value[3:].split('|')
+                    splitted = value[0][3:].split('|')
                     label = splitted[0]
                     checkboxes[key] = splitted[1]
                     self.fields[key] = ChoiceField(choices=checkboxes,
                                                    label=label,
                                                    widget=RadioSelect())
                 else:
-                    checkboxes[key] = value[3:]
+                    checkboxes[key] = value[0][3:]
             elif key.startswith('select'):
-                splitted = value[3:].split(',')
+                splitted = value[0][3:].split(',')
                 method = splitted[0]
                 context = {}
                 self.select_field = key
@@ -125,17 +125,24 @@ class InvoiceFillForm(UserKwargModelFormMixin, Form):
             elif key.startswith('file'):
                 self.fields[key] = FileField(
                     widget=FileInput(
-                        attrs={'class': 'file-input', 'type': 'file', 'label': value[3:], 'name': 'resume'}),
+                        attrs={'class': 'file-input', 'type': 'file', 'label': value[0][3:], 'name': 'resume'}),
                     required=True)
             elif key.startswith('result'):
-                value = f"{self.last_select_field}.{value[3:]}"
+                value = f"{self.last_select_field}.{value[0][3:]}"
                 self.fields[key] = CharField(widget=HiddenInput(), initial=value)
             elif key.startswith('query'):
-                value = get_query(value[3:], user)
+                value = get_query(value[0][3:], user)
                 self.fields[key] = CharField(widget=HiddenInput(), initial=value)
 
 
-def get_query(queries: str, user: User, base=None):
+def bind(init):
+    results = {}
+    for k in init:
+        results.setdefault(k, []).append(init[k])
+    return results
+
+
+def get_query(queries, user: User, base=None):
     single_queries = queries.split('.')
     result = []
 
@@ -147,6 +154,13 @@ def get_query(queries: str, user: User, base=None):
         elif single_queries[0] == 'system':
             if single_queries[1] == 'today':
                 return datetime.datetime.today().strftime('%d.%m.%Y') + " r."
+            if single_queries[1] == 'study_session':
+                start = (3, 1)
+                end = (9, 3)
+                if start < (datetime.date.today().month, datetime.date.today().day) < end:
+                    return "letniej"
+                else:
+                    return "zimowej"
         else:
             raise Exception(f"Invalid base_object request: {single_queries[0]}")
     else:

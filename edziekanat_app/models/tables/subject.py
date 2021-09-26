@@ -7,10 +7,10 @@ from edziekanat_app.models.tables.users.employee import Employee
 
 class Subject(models.Model):
     TYPES = (
-        ('project', 'Projekt'),
-        ('lecture', 'Wykład'),
-        ('excercises', 'Ćwiczenia'),
-        ('labs', 'Laboratorium')
+        ('Projekt', 'Projekt'),
+        ('Wykład', 'Wykład'),
+        ('Ćwiczenia', 'Ćwiczenia'),
+        ('Laboratorium', 'Laboratorium')
     )
     type = models.CharField(max_length=50, choices=TYPES, default=None, null=True)
 

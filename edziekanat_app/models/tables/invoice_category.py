@@ -6,6 +6,7 @@ from django.core.exceptions import ValidationError
 from django.db.models import *
 from django.utils.translation import gettext as _
 from docx import Document
+#from edziekanat_app.forms import bind
 
 BASE_PATTERN = r'(?s)(?<={{).*?(?=}})'
 
@@ -94,20 +95,47 @@ class InvoiceCategory(Model):
         text = []
         for para in doc.paragraphs:
             text.append(para.text)
+        for table in doc.tables:
+            for row in table.rows:
+                for cell in row.cells:
+                    text.append(cell.text)
         concatted_text = '\n'.join(text)
 
         matches = find_pattern(concatted_text, BASE_PATTERN)
+
         result = regex_result_to_dict(matches)
+        result = bind(result)
         self.set_field_types(result)
         replace_document_tags(doc, result, self.docx_template.path).save(self.docx_template.path)
 
+def bind(init):
+    results = {}
+    for k in init:
+        results.setdefault(k, []).append(init[k])
+    return results
 
-def replace_document_tags(doc: Document, dictionary: dict, init: bool = True):
+def replace_document_tags(doc: Document, dictionary: dict, final: bool = True):
     for i in dictionary:
+        if final:
+            to_replace = '{{' + i + '}}'
+            match = "{{" + dictionary[i][0] + "}}"
+        else:
+            to_replace = str(dictionary[i][0])
+            match = '{{' + i + '}}'
         for p in doc.paragraphs:
-            match = '{{' + str(dictionary[i]) + '}}'
             matches = p.text.find(match)
             if matches >= 0:
-                to_replace = "{{" + i + "}}" if init else str(i)
                 p.text = p.text.replace(match, to_replace)
+        for table in doc.tables:
+            found = False
+            for row in table.rows:
+                if found: break
+                for cell in row.cells:
+                    matches = cell.text.find(match)
+                    if matches >= 0:
+                        cell.text = cell.text.replace(match, to_replace)
+                        found = True
+
     return doc
+
+
