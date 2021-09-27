@@ -28,7 +28,12 @@
                         <li class="applications is-active"><a onclick="changeTab('faculty')">Wydziały</a></li>
                         <li class="cathedral"><a onclick="changeTab('cathedral')">Katedry</a></li>
                         <li class="cathedral"><a onclick="changeTab('department')">Instytuty</a></li>
-                        <li class="subjects"><a onclick="changeTab('subjects')">Przedmioty</a></li>
+                        <li class="subjects"><a onclick="changeTab('subjects')">Kierunki</a></li>
+                        <li class="subjects"><a onclick="changeTab('message')">Wiadomosci</a></li>
+                        <li class="subjects"><a onclick="changeTab('subject')">Przedmioty</a></li>
+                        <li class="subjects"><a onclick="changeTab('employee')">Pracownik</a></li>
+                        <li class="subjects"><a onclick="changeTab('invoice_category')">Kategoria wniosku</a></li>
+                        <li class="subjects"><a onclick="changeTab('invoice_field')">Pole wniosku ?</a></li>
                     </ul>
                 </div>
             </header>
@@ -92,6 +97,204 @@
                         <form method="post">
                             {% csrf_token %}
                             {% for field in form_course %}
+                                {% if field.field.widget.input_type == 'select' %}
+                                    <label for="{{ field.id_for_label }}"> {{ field.field.widget.attrs.label }} </label>
+                                    <div class="control">
+                                        <div class="select is-fullwidth">{{ field }}</div>
+                                    </div>
+                                    <span class="help is-error">{{ field.errors }}</span>
+                                {% else %}
+                                    <label for="{{ field.id_for_label }}"> {{ field.field.widget.attrs.label }} </label>
+                                    <div class="control">{{ field }}</div>
+                                {% endif %}
+                            {% endfor %}
+                            <button type="submit" class="button is-primary mt-2">Zapisz</button>
+                        </form>
+                    </div>
+                    <div id="employee" class="tab-pane fade">
+                        <form method="post">
+                            {% csrf_token %}
+                            {% for field in form_employee %}
+                                {% if field.field.widget.input_type == 'select' %}
+                                    <label for="{{ field.id_for_label }}"> {{ field.field.widget.attrs.label }} </label>
+                                    <div class="control">
+                                        <div class="select is-fullwidth">{{ field }}</div>
+                                    </div>
+                                    <span class="help is-error">{{ field.errors }}</span>
+                                {% else %}
+                                    <label for="{{ field.id_for_label }}"> {{ field.field.widget.attrs.label }} </label>
+                                    <div class="control">{{ field }}</div>
+                                {% endif %}
+                            {% endfor %}
+                            <button type="submit" class="button is-primary mt-2">Zapisz</button>
+                        </form>
+                    </div>
+                    <div id="invoice_category" class="tab-pane fade">
+                        <form method="post">
+                            {% csrf_token %}
+                            {% for field in form_invoice_categorie %}
+                                {% if field.field.widget.input_type == 'select' %}
+                                    <label for="{{ field.id_for_label }}"> {{ field.field.widget.attrs.label }} </label>
+                                    <div class="control">
+                                        <div class="select is-fullwidth">{{ field }}</div>
+                                    </div>
+                                    <span class="help is-error">{{ field.errors }}</span>
+                                {% else %}
+                                    <label for="{{ field.id_for_label }}"> {{ field.field.widget.attrs.label }} </label>
+                                    <div class="control">{{ field }}</div>
+                                {% endif %}
+                            {% endfor %}
+                            <button type="submit" class="button is-primary mt-2">Zapisz</button>
+                        </form>
+                    </div>
+                    <div id="invoice_field" class="tab-pane fade">
+                        <form method="post">
+                            {% csrf_token %}
+                            {% for field in form_invoice_field %}
+                                {% if field.field.widget.input_type == 'select' %}
+                                    <label for="{{ field.id_for_label }}"> {{ field.field.widget.attrs.label }} </label>
+                                    <div class="control">
+                                        <div class="select is-fullwidth">{{ field }}</div>
+                                    </div>
+                                    <span class="help is-error">{{ field.errors }}</span>
+                                {% else %}
+                                    <label for="{{ field.id_for_label }}"> {{ field.field.widget.attrs.label }} </label>
+                                    <div class="control">{{ field }}</div>
+                                {% endif %}
+                            {% endfor %}
+                            <button type="submit" class="button is-primary mt-2">Zapisz</button>
+                        </form>
+                    </div>
+                    <div id="invoice" class="tab-pane fade">
+                        <form method="post">
+                            {% csrf_token %}
+                            {% for field in form_invoice %}
+                                {% if field.field.widget.input_type == 'select' %}
+                                    <label for="{{ field.id_for_label }}"> {{ field.field.widget.attrs.label }} </label>
+                                    <div class="control">
+                                        <div class="select is-fullwidth">{{ field }}</div>
+                                    </div>
+                                    <span class="help is-error">{{ field.errors }}</span>
+                                {% else %}
+                                    <label for="{{ field.id_for_label }}"> {{ field.field.widget.attrs.label }} </label>
+                                    <div class="control">{{ field }}</div>
+                                {% endif %}
+                            {% endfor %}
+                            <button type="submit" class="button is-primary mt-2">Zapisz</button>
+                        </form>
+                    </div>
+                    <div id="job" class="tab-pane fade">
+                        <form method="post">
+                            {% csrf_token %}
+                            {% for field in form_job %}
+                                {% if field.field.widget.input_type == 'select' %}
+                                    <label for="{{ field.id_for_label }}"> {{ field.field.widget.attrs.label }} </label>
+                                    <div class="control">
+                                        <div class="select is-fullwidth">{{ field }}</div>
+                                    </div>
+                                    <span class="help is-error">{{ field.errors }}</span>
+                                {% else %}
+                                    <label for="{{ field.id_for_label }}"> {{ field.field.widget.attrs.label }} </label>
+                                    <div class="control">{{ field }}</div>
+                                {% endif %}
+                            {% endfor %}
+                            <button type="submit" class="button is-primary mt-2">Zapisz</button>
+                        </form>
+                    </div>
+                    <div id="message" class="tab-pane fade">
+                        <form method="post">
+                            {% csrf_token %}
+                            {% for field in form_message %}
+                                {% if field.field.widget.input_type == 'select' %}
+                                    <label for="{{ field.id_for_label }}"> {{ field.field.widget.attrs.label }} </label>
+                                    <div class="control">
+                                        <div class="select is-fullwidth">{{ field }}</div>
+                                    </div>
+                                    <span class="help is-error">{{ field.errors }}</span>
+                                {% else %}
+                                    <label for="{{ field.id_for_label }}"> {{ field.field.widget.attrs.label }} </label>
+                                    <div class="control">{{ field }}</div>
+                                {% endif %}
+                            {% endfor %}
+                            <button type="submit" class="button is-primary mt-2">Zapisz</button>
+                        </form>
+                    </div>
+                    <div id="role" class="tab-pane fade">
+                        <form method="post">
+                            {% csrf_token %}
+                            {% for field in form_role %}
+                                {% if field.field.widget.input_type == 'select' %}
+                                    <label for="{{ field.id_for_label }}"> {{ field.field.widget.attrs.label }} </label>
+                                    <div class="control">
+                                        <div class="select is-fullwidth">{{ field }}</div>
+                                    </div>
+                                    <span class="help is-error">{{ field.errors }}</span>
+                                {% else %}
+                                    <label for="{{ field.id_for_label }}"> {{ field.field.widget.attrs.label }} </label>
+                                    <div class="control">{{ field }}</div>
+                                {% endif %}
+                            {% endfor %}
+                            <button type="submit" class="button is-primary mt-2">Zapisz</button>
+                        </form>
+                    </div>
+                    <div id="spectialization" class="tab-pane fade">
+                        <form method="post">
+                            {% csrf_token %}
+                            {% for field in form_spectialization %}
+                                {% if field.field.widget.input_type == 'select' %}
+                                    <label for="{{ field.id_for_label }}"> {{ field.field.widget.attrs.label }} </label>
+                                    <div class="control">
+                                        <div class="select is-fullwidth">{{ field }}</div>
+                                    </div>
+                                    <span class="help is-error">{{ field.errors }}</span>
+                                {% else %}
+                                    <label for="{{ field.id_for_label }}"> {{ field.field.widget.attrs.label }} </label>
+                                    <div class="control">{{ field }}</div>
+                                {% endif %}
+                            {% endfor %}
+                            <button type="submit" class="button is-primary mt-2">Zapisz</button>
+                        </form>
+                    </div>
+                    <div id="student" class="tab-pane fade">
+                        <form method="post">
+                            {% csrf_token %}
+                            {% for field in form_student %}
+                                {% if field.field.widget.input_type == 'select' %}
+                                    <label for="{{ field.id_for_label }}"> {{ field.field.widget.attrs.label }} </label>
+                                    <div class="control">
+                                        <div class="select is-fullwidth">{{ field }}</div>
+                                    </div>
+                                    <span class="help is-error">{{ field.errors }}</span>
+                                {% else %}
+                                    <label for="{{ field.id_for_label }}"> {{ field.field.widget.attrs.label }} </label>
+                                    <div class="control">{{ field }}</div>
+                                {% endif %}
+                            {% endfor %}
+                            <button type="submit" class="button is-primary mt-2">Zapisz</button>
+                        </form>
+                    </div>
+                    <div id="study_mode" class="tab-pane fade">
+                        <form method="post">
+                            {% csrf_token %}
+                            {% for field in form_study_mode %}
+                                {% if field.field.widget.input_type == 'select' %}
+                                    <label for="{{ field.id_for_label }}"> {{ field.field.widget.attrs.label }} </label>
+                                    <div class="control">
+                                        <div class="select is-fullwidth">{{ field }}</div>
+                                    </div>
+                                    <span class="help is-error">{{ field.errors }}</span>
+                                {% else %}
+                                    <label for="{{ field.id_for_label }}"> {{ field.field.widget.attrs.label }} </label>
+                                    <div class="control">{{ field }}</div>
+                                {% endif %}
+                            {% endfor %}
+                            <button type="submit" class="button is-primary mt-2">Zapisz</button>
+                        </form>
+                    </div>
+                    <div id="subject" class="tab-pane fade">
+                        <form method="post">
+                            {% csrf_token %}
+                            {% for field in form_subject %}
                                 {% if field.field.widget.input_type == 'select' %}
                                     <label for="{{ field.id_for_label }}"> {{ field.field.widget.attrs.label }} </label>
                                     <div class="control">

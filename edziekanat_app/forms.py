@@ -366,9 +366,20 @@ class AddInvoice(Form):
 class AddJob(Form):
     name = CharField(widget=TextInput(attrs={'class': 'input', 'label': 'Nazwa stanowiska'}))
 
+class AddMessage(Form):
+    sender = ModelChoiceField(queryset=User.objects.all(),
+                                       widget=Select(attrs={'class': 'select', 'label': "Nadawca"}),
+                                       required=True)
+    reciever = ModelChoiceField(queryset=User.objects.all(),
+                                       widget=Select(attrs={'class': 'select', 'label': "Odbiorca"}),
+                                       required=True)
+    message_text = CharField(widget=TextInput(attrs={'class': 'input', 'label': 'Wiadomość', 'cols': 80, 'rows': 20}))
+    message_title = CharField(widget=TextInput(attrs={'class': 'input', 'label': 'Tytuł'}))
+    created_date = DateField(widget=DateInput(attrs={'type': 'date', 'label': 'Data utworzenia wiadomości'}))
+
 
 class AddRole(Form):
-    name = CharField(widget=TextInput(attrs={'class': 'input', 'label': 'Nazwa roli'}))
+    name = CharField(widget=Textarea(attrs={'class': 'input', 'label': 'Nazwa roli'}))
 
 
 class AddSpectialization(Form):
