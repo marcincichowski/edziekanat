@@ -13,6 +13,7 @@ from edziekanat_app.models.tables.university_structure.department import Departm
 from edziekanat_app.models.tables.university_structure.faculty import Faculty
 from edziekanat_app.models.tables.users.user import User
 from edziekanat_app.models.tables.inbox.inbox import Inbox
+from edziekanat_app.models.tables.messages.message import Message
 from edziekanat_app.models.tables.users.student import Student
 from edziekanat_app.models.tables.users.employee import Employee
 from edziekanat_app.models.tables.users.admin import Admin
@@ -23,6 +24,7 @@ admin.site.register(Admin)
 admin.site.register(Student)
 admin.site.register(Employee)
 admin.site.register(Mode)
+admin.site.register(Message)
 
 # University Structure
 admin.site.register(Department)

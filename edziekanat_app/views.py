@@ -18,6 +18,7 @@ from edziekanat_app.models.tables.invoice_category import replace_document_tags
 from edziekanat_app.models.tables.users.employee import Employee
 from edziekanat_app.models.tables.users.student import Student
 from edziekanat_app.models.tables.users.user import User
+from edziekanat_app.models.tables.messages.message import Message
 from .forms import LoginForm, AddDictionaryValueCathedral, EditUserForm, AddInvoiceCategory
 from .models.tables.invoice_category import InvoiceCategory
 
@@ -27,7 +28,8 @@ def index(request, *args, **kwargs):
         'open_invoices': get_open_invoices(request.user),
         'closed_invoices': get_decision_invoices(request.user),
         'new_mesages': Invoice.objects.none(),  # get_new_messages(request.user)
-        'all_invoices': get_user_invoices(request.user)
+        'all_invoices': get_user_invoices(request.user),
+        'message': Message.objects.all()
     }
     return render(request, 'index.html', context=context)
 
@@ -200,7 +202,8 @@ class InvoiceCreator(SessionWizardView):
 
 
 def inbox(request):
-    return render(request, 'user/inbox.html')
+    mes = Message.objects.filter(reciever=request.user)
+    return render(request, 'user/inbox.html', context={'messages': mes})
 
 
 class UserCreator(SessionWizardView):
