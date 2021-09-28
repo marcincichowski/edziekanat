@@ -9,3 +9,4 @@ django-phonenumber-field[phonenumbers]
 jinja2
 docxtpl
 django-cleanup
+pyserde

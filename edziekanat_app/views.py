@@ -1,35 +1,33 @@
-import datetime
 import os
-from django.db.models import Q
+
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.views import auth_logout
 from django.core.files import File
 from django.core.files.storage import FileSystemStorage
 from django.core.serializers import serialize
+from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from docx import Document
 from formtools.wizard.views import SessionWizardView
-from collections import defaultdict
-from edziekanat_app.forms import get_query, bind, RejectInvoiceForm, AcceptInvoiceForm, AddChair, AddDepartment, \
-    AddFaculty, AddCourse, SystemTools
+
 from edziekanat_app.forms import *
-from edziekanat_app.models.tables.invoice import Invoice
-from edziekanat_app.models.tables.invoice_category import replace_document_tags
-from edziekanat_app.models.tables.users.employee import Employee
-from edziekanat_app.models.tables.users.student import Student
-from edziekanat_app.models.tables.users.user import User
-from edziekanat_app.models.tables.messages.message import Message
-from .forms import LoginForm, AddDictionaryValueCathedral, EditUserForm, AddInvoiceCategory
+from .forms import LoginForm, EditUserForm, AddInvoiceCategory
+from .models.tables.invoice import Invoice
 from .models.tables.invoice_category import InvoiceCategory
-from .models.crud.reject_invoice_info import RejectInvoiceInfo
+from .models.tables.invoice_category import replace_document_tags
+from .models.tables.messages.message import Message
+from .models.tables.users.employee import Employee
+from .models.tables.users.student import Student
+from .models.tables.users.user import User
+
 
 def index(request, *args, **kwargs):
     context = {
         'open_invoices': get_open_invoices(request.user),
         'closed_invoices': get_decision_invoices(request.user),
-        'new_mesages': Message.objects.filter(reciever=request.user),  # get_new_messages(request.user)
+        'new_mesages': Message.objects.filter(reciever=request.user, seen=False),
         'all_invoices': get_user_invoices(request.user),
         'message': Message.objects.all()
     }
@@ -72,18 +70,15 @@ def get_reject_info(request, *args, **kwargs):
     if request.method == 'GET' and request.is_ajax():
         id = request.GET.get('id', None)
         if Invoice.objects.filter(id=id).exists():
-            #reposnse_object = Invoice.objects.filter(id=id)
             invoice = Invoice.objects.filter(id=id).first()
-            reposnse_object = RejectInvoiceInfo(
-                category = invoice.category,
-                created_by = invoice.created_by,
-                invoice_file = invoice.invoice_file,
-                created_date = invoice.created_date,
-                status = invoice.status,
-                decision_author = invoice.decision_author,
-                decision = invoice.decision
-            )
-            response = JsonResponse({'Valid': True, 'data': serialize('json', reposnse_object)}, status=200)
+            reposnse_object = {
+                'category_name': invoice.category.name,
+                'status': invoice.status,
+                'decision_author': invoice.decision_author.__str__(),
+                'decision': invoice.decision
+            }
+            response = JsonResponse({'Valid': True,
+                                     'data': reposnse_object}, status=200)
             return response
         else:
             return JsonResponse({'Valid': False}, status=200)
@@ -116,7 +111,6 @@ def manage_invoices(request, *args, **kwargs):
                   context={'invoices': Invoice.objects.all(),
                            'form_reject': RejectInvoiceForm(),
                            'form_accept': AcceptInvoiceForm()})
-
 
 
 def administrators(request, *args, **kwargs):
@@ -161,10 +155,12 @@ def database(request, *args, **kwargs):
         form_subject = AddSubject()
         return render(request, 'admin/database.html',
                       {'form_chair': form_chair, 'form_department': form_department, 'form_faculty': form_faculty,
-                       'form_course': form_course, 'form_employee': form_employee, 'form_invoice_categorie':form_invoice_categorie,
-                       'form_invoice_field': form_invoice_field, 'form_invoice': form_invoice, 'form_job':form_job,
-                       'form_message':form_message, 'form_role':form_role, 'form_spectialization':form_spectialization,
-                       'form_student':form_student, 'form_study_mode':form_study_mode, 'form_subject':form_subject})
+                       'form_course': form_course, 'form_employee': form_employee,
+                       'form_invoice_categorie': form_invoice_categorie,
+                       'form_invoice_field': form_invoice_field, 'form_invoice': form_invoice, 'form_job': form_job,
+                       'form_message': form_message, 'form_role': form_role,
+                       'form_spectialization': form_spectialization,
+                       'form_student': form_student, 'form_study_mode': form_study_mode, 'form_subject': form_subject})
     elif request.method == 'POST':
         raise Exception("Not implemented")
     return render(request, 'admin/database.html')

@@ -136,10 +136,9 @@
             <header class="modal-card-head">
                 <p class="modal-card-title">Wniosek odrzucony</p>
                 <button class="delete" aria-label="close" onclick="closeModal()"></button>
-
             </header>
             <section class="modal-card-body">
-
+                <!-- TODO -->
             </section>
             <footer class="modal-card-foot">
                 <button class="button" onclick="closeModal()">Zamknij</button>
@@ -213,11 +212,10 @@
                 },
                 success: function (response) {
                     if (!response["valid"]) {
-                        let data = JSON.parse(response.data)
-                        data = data[0].fields
+                        let data = response.data
+                        data = data[0]
                         $(".modal-card-body").empty();
-                        console.log(data)
-                        let message = data;
+                        let message = '';
                         $(".modal-card-body").html(message);
                         $('#reject-modal.modal').addClass('is-active');
                     } else
