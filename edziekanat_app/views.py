@@ -23,7 +23,7 @@ from edziekanat_app.models.tables.users.user import User
 from edziekanat_app.models.tables.messages.message import Message
 from .forms import LoginForm, AddDictionaryValueCathedral, EditUserForm, AddInvoiceCategory
 from .models.tables.invoice_category import InvoiceCategory
-
+from .models.crud.reject_invoice_info import RejectInvoiceInfo
 
 def index(request, *args, **kwargs):
     context = {
@@ -72,7 +72,17 @@ def get_reject_info(request, *args, **kwargs):
     if request.method == 'GET' and request.is_ajax():
         id = request.GET.get('id', None)
         if Invoice.objects.filter(id=id).exists():
-            reposnse_object = Invoice.objects.filter(id=id)
+            #reposnse_object = Invoice.objects.filter(id=id)
+            invoice = Invoice.objects.filter(id=id).first()
+            reposnse_object = RejectInvoiceInfo(
+                category = invoice.category,
+                created_by = invoice.created_by,
+                invoice_file = invoice.invoice_file,
+                created_date = invoice.created_date,
+                status = invoice.status,
+                decision_author = invoice.decision_author,
+                decision = invoice.decision
+            )
             response = JsonResponse({'Valid': True, 'data': serialize('json', reposnse_object)}, status=200)
             return response
         else:
