@@ -5,6 +5,7 @@
 
 body{
     font-family: Roboto, sans-serif;
+    background: #ECF0F3;;
 }
 
 .navbar{
@@ -163,6 +164,8 @@ input:focus {
     border-color: var(--brandColor) !important;
     box-shadow: 0 0 0 1px var(--brandColor) !important;
 }
+
+
 
 .fab,
 .fas {

@@ -27,13 +27,13 @@
                     <ul>
                         <li class="applications is-active"><a onclick="changeTab('faculty')">Wydziały</a></li>
                         <li class="cathedral"><a onclick="changeTab('cathedral')">Katedry</a></li>
-                        <li class="cathedral"><a onclick="changeTab('department')">Instytuty</a></li>
+                        <li class="department"><a onclick="changeTab('department')">Instytuty</a></li>
                         <li class="subjects"><a onclick="changeTab('subjects')">Kierunki</a></li>
-                        <li class="subjects"><a onclick="changeTab('message')">Wiadomosci</a></li>
-                        <li class="subjects"><a onclick="changeTab('subject')">Przedmioty</a></li>
-                        <li class="subjects"><a onclick="changeTab('employee')">Pracownik</a></li>
-                        <li class="subjects"><a onclick="changeTab('invoice_category')">Kategoria wniosku</a></li>
-                        <li class="subjects"><a onclick="changeTab('invoice_field')">Pole wniosku ?</a></li>
+                        <li class="inbox_message"><a onclick="changeTab('inbox_message')">Wiadomości</a></li>
+                        <li class="subject"><a onclick="changeTab('subject')">Przedmioty</a></li>
+                        <li class="employee"><a onclick="changeTab('employee')">Pracownik</a></li>
+                        <li class="invoice_category"><a onclick="changeTab('invoice_category')">Kategoria wniosku</a></li>
+                        <li class="invoice_field"><a onclick="changeTab('invoice_field')">Dziedzina wniosku</a></li>
                     </ul>
                 </div>
             </header>
@@ -201,7 +201,7 @@
                             <button type="submit" class="button is-primary mt-2">Zapisz</button>
                         </form>
                     </div>
-                    <div id="message" class="tab-pane fade">
+                    <div id="inbox_message" class="tab-pane fade">
                         <form method="post">
                             {% csrf_token %}
                             {% for field in form_message %}
@@ -313,12 +313,12 @@
             </div>
         </div>
     </div>
-            <script>
+    <script>
         function changeTab(id) {
             $(".tabs ul li").removeClass("is-active");
             $("." + id).addClass("is-active");
             $(".tab-pane").removeClass("is-active");
             $("#" + id).addClass("is-active");
         }
-            </script>
+    </script>
 {% endblock %}

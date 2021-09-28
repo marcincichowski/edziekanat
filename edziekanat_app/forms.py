@@ -187,12 +187,12 @@ class AddDictionaryValueCathedral(Form):
 
 class RejectInvoiceForm(Form):
     decision = CharField(widget=Textarea(attrs={'class': 'textarea', 'label': "Decyzja"}))
-    status = CharField(widget=HiddenInput(), initial='Odrzucony')
     id = CharField(widget=HiddenInput())
 
 
 class AcceptInvoiceForm(Form):
-    id_accept = CharField(widget=HiddenInput())
+    id = CharField(widget=HiddenInput())
+
 
 
 class RegisterForm(Form):

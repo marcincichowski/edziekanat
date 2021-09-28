@@ -72,7 +72,9 @@ def get_reject_info(request, *args, **kwargs):
     if request.method == 'GET' and request.is_ajax():
         id = request.GET.get('id', None)
         if Invoice.objects.filter(id=id).exists():
-            return JsonResponse({'Valid': True, 'data': serialize('json', Invoice.objects.filter(id=id))}, status=200)
+            reposnse_object = Invoice.objects.filter(id=id)
+            response = JsonResponse({'Valid': True, 'data': serialize('json', reposnse_object)}, status=200)
+            return response
         else:
             return JsonResponse({'Valid': False}, status=200)
 
@@ -85,20 +87,26 @@ def invoices_list(request, *args, **kwargs):
 
 
 def manage_invoices(request, *args, **kwargs):
-    invoices = Invoice.objects.all()
-    form_reject = RejectInvoiceForm()
-    form_accept = AcceptInvoiceForm()
-
     if request.method == 'POST':
-        id_accept = request.POST.get('id_accept', None)
-        if id_accept is None:
-            messages.error("Wystąpił błąd podczas wysyłania żądania.")
+        action = request.POST.get('action')
+        if action is None:
+            messages.error(request, "Wystąpił błąd podczas wysyłania żądania.")
         else:
-            invoice = Invoice.objects.filter(id=id_accept).first()
-            invoice.status = 'Zaakceptowany'
+            invoice = Invoice.objects.filter(id=request.POST.get('id')).first()
+            if action == 'REJECT':
+                invoice.status = "Odrzucony"
+                invoice.decision = request.POST.get('decision')
+                invoice.decision_author = request.user
+            elif action == 'ACCEPT':
+                invoice.status = "Zaakceptowany"
+                invoice.decision_author = request.user
             invoice.save()
+
     return render(request, 'employer/manage_invoices.html',
-                  context={'invoices': invoices, 'form_reject': form_reject, 'form_accept': form_accept})
+                  context={'invoices': Invoice.objects.all(),
+                           'form_reject': RejectInvoiceForm(),
+                           'form_accept': AcceptInvoiceForm()})
+
 
 
 def administrators(request, *args, **kwargs):
