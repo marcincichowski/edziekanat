@@ -56,7 +56,7 @@
                                                 <span class="has-text-success">{{ invoice.status }}</span>
                                             {% elif invoice.status == "Odrzucony" %}
                                                 <span class="has-text-danger">{{ invoice.status }}</span>
-                                            {% elif invoice.status == "Odrzucony" %}
+                                            {% elif invoice.status == "Do podpisania" %}
                                                 <span class="has-text-warning">{{ invoice.status }}</span>
                                             {% else %}
                                                 <span>{{ invoice.status }}</span>
@@ -76,7 +76,7 @@
                                                         onclick="getRejectInfo({{ invoice.id }})"><i
                                                         class="fas fa-search"></i></button>
                                             {% endif %}
-                                            {% if invoice.status %}
+                                            {% if invoice.status == 'Do podpisania' and invoice.created_by_id == request.user.id %}
                                                 <button class="button is-small icon-button has-background-warning"
                                                         onclick="getFileUploadForm({{ invoice.id }})"><i
                                                         class="fas fa-pencil-alt"></i></button>
