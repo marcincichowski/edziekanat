@@ -235,7 +235,7 @@ class InvoiceCreator(SessionWizardView):
 
 def inbox(request):
     mes = Message.objects.filter(reciever=request.user)
-    return render(request, 'user/inbox.html', context={'messages': mes})
+    return render(request, 'user/inbox.html', context={'inbox_messages': mes})
 
 
 class UserCreator(SessionWizardView):
