@@ -11,6 +11,8 @@ class Message(Model):
                           verbose_name=_('Odbiorca'),
                           on_delete=CASCADE, related_name="reciever_user")
 
+    seen = BooleanField(verbose_name=_('Przeczytane'), default=False)
+
     message_text = CharField(_('Wiadomość'),
                              max_length=10)
 

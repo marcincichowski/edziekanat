@@ -29,7 +29,7 @@ def index(request, *args, **kwargs):
     context = {
         'open_invoices': get_open_invoices(request.user),
         'closed_invoices': get_decision_invoices(request.user),
-        'new_mesages': Invoice.objects.none(),  # get_new_messages(request.user)
+        'new_mesages': Message.objects.filter(reciever=request.user),  # get_new_messages(request.user)
         'all_invoices': get_user_invoices(request.user),
         'message': Message.objects.all()
     }
@@ -37,7 +37,12 @@ def index(request, *args, **kwargs):
 
 
 def invoices(request, *args, **kwargs):
-    invoices = InvoiceCategory.objects.all()
+    fields = InvoiceField.objects.all()
+    invoices = {}
+    for field in fields:
+        field_invoices = InvoiceCategory.objects.filter(field=field)
+        if field_invoices.count() > 0:
+            invoices[field] = field_invoices
     return render(request, 'user/invoices.html', context={'invoices': invoices})
 
 
@@ -83,6 +88,15 @@ def manage_invoices(request, *args, **kwargs):
     invoices = Invoice.objects.all()
     form_reject = RejectInvoiceForm()
     form_accept = AcceptInvoiceForm()
+
+    if request.method == 'POST':
+        id_accept = request.POST.get('id_accept', None)
+        if id_accept is None:
+            messages.error("Wystąpił błąd podczas wysyłania żądania.")
+        else:
+            invoice = Invoice.objects.filter(id=id_accept).first()
+            invoice.status = 'Zaakceptowany'
+            invoice.save()
     return render(request, 'employer/manage_invoices.html',
                   context={'invoices': invoices, 'form_reject': form_reject, 'form_accept': form_accept})
 
@@ -233,9 +247,17 @@ class InvoiceCreator(SessionWizardView):
         return redirect('edziekanat_app:home')
 
 
+def read_messages(request):
+    messages = Message.objects.filter(reciever=request.user)
+    for mess in messages:
+        mess.seen = True
+        mess.save()
+    return redirect('/inbox')
+
+
 def inbox(request):
-    mes = Message.objects.filter(reciever=request.user)
-    return render(request, 'user/inbox.html', context={'inbox_messages': mes})
+    messages = Message.objects.filter(reciever=request.user)
+    return render(request, 'user/inbox.html', context={'inbox_messages': messages})
 
 
 class UserCreator(SessionWizardView):

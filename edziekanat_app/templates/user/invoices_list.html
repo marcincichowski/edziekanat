@@ -53,11 +53,11 @@
                                         <td>{{ invoice.created_date }}</td>
                                         <td>
                                             {% if invoice.status == "Zaakceptowany" %}
-                                            <span class="has-text-success">{{ invoice.status }}</span>
+                                                <span class="has-text-success">{{ invoice.status }}</span>
                                             {% elif invoice.status == "Odrzucony" %}
-                                            <span class="has-text-danger">{{ invoice.status }}</span>
+                                                <span class="has-text-danger">{{ invoice.status }}</span>
                                             {% else %}
-                                            <span>{{ invoice.status }}</span>
+                                                <span>{{ invoice.status }}</span>
                                             {% endif %}
                                         </td>
                                         <td>
@@ -77,83 +77,84 @@
     </div>
 
     <div class="modal">
-      <div class="modal-background"></div>
-      <div class="modal-card">
-        <header class="modal-card-head">
-          <p class="modal-card-title">Właściwości wniosku</p>
-          <button class="delete" aria-label="close" onclick="closeModal()"></button>
-        </header>
-        <section class="modal-card-body">
-            {{ form_reject }}
-        </section>
-        <footer class="modal-card-foot">
-          <button class="button is-success">Zapisz</button>
-          <button class="button" onclick="closeModal()">Anuluj</button>
-        </footer>
-      </div>
+        <div class="modal-background"></div>
+        <div class="modal-card">
+            <header class="modal-card-head">
+                <p class="modal-card-title">Właściwości wniosku</p>
+                <button class="delete" aria-label="close" onclick="closeModal()"></button>
+            </header>
+            <section class="modal-card-body">
+                {{ form_reject }}
+            </section>
+            <footer class="modal-card-foot">
+                <button class="button is-success">Zapisz</button>
+                <button class="button" onclick="closeModal()">Anuluj</button>
+            </footer>
+        </div>
     </div>
     <script>
-$(document).ready(function() {
-        $('#invoice-datatable').DataTable({
-            responsive: true,
-            language:{
-                "decimal":        "",
-                "emptyTable":     "Brak dostępnych danych w tabeli",
-                "info":           "Pokazywanie _START_ do _END_ z _TOTAL_ wpisów",
-                "infoEmpty":      "Pokazywanie 0 do 0 z 0 wpisów",
-                "infoFiltered":   "(wszystkie wpisy odfiltrowane z _MAX_)",
-                "infoPostFix":    "",
-                "thousands":      ",",
-                "lengthMenu":     "Pokaż wpisy _MENU_",
-                "loadingRecords": "Ładowanie...",
-                "processing":     "Przetwarzanie...",
-                "search":         "Wyszukaj:",
-                "zeroRecords":    "Nie znaleziono odpowiadających dokumentów.",
-                "paginate": {
-                    "first":      "Pierwszy",
-                    "last":       "Ostatni",
-                    "next":       "Następny",
-                    "previous":   "Poprzedni"
+        $(document).ready(function () {
+                $('#invoice-datatable').DataTable({
+                    responsive: true,
+                    language: {
+                        "decimal": "",
+                        "emptyTable": "Brak dostępnych danych w tabeli",
+                        "info": "Pokazywanie _START_ do _END_ z _TOTAL_ wpisów",
+                        "infoEmpty": "Pokazywanie 0 do 0 z 0 wpisów",
+                        "infoFiltered": "(wszystkie wpisy odfiltrowane z _MAX_)",
+                        "infoPostFix": "",
+                        "thousands": ",",
+                        "lengthMenu": "Pokaż wpisy _MENU_",
+                        "loadingRecords": "Ładowanie...",
+                        "processing": "Przetwarzanie...",
+                        "search": "Wyszukaj:",
+                        "zeroRecords": "Nie znaleziono odpowiadających dokumentów.",
+                        "paginate": {
+                            "first": "Pierwszy",
+                            "last": "Ostatni",
+                            "next": "Następny",
+                            "previous": "Poprzedni"
+                        },
+                        "aria": {
+                            "sortAscending": ": Aktywuj aby posortować kolumnę rosnąco",
+                            "sortDescending": ": Aktywuj aby posortować kolumnę malejąco"
+                        }
+                    }
+                });
+            }
+        );
+
+        function getInvoiceDetails(id) {
+            console.log(id);
+            $.ajax({
+                url: {% url 'edziekanat_app:invoices_list' %},
+                type: "get",
+                data: {
+                    "id": id,
                 },
-                "aria": {
-                    "sortAscending":  ": Aktywuj aby posortować kolumnę rosnąco",
-                    "sortDescending": ": Aktywuj aby posortować kolumnę malejąco"
+                success: function (response) {
+                    if (!response["valid"]) {
+                        let data = JSON.parse(response.data)
+                        data = data[0].fields
+                        $(".modal-card-body").empty();
+                        let message = "<table class='table is-fullwidth is-hoverable is-stripped'>" +
+                            "<tr><td>Kategoria</td><td>" + data.category + "</td></tr>" +
+                            "<tr><td>Autor</td><td>" + data.created_by + "</td></tr>" +
+                            "<tr><td>Data złożenia</td><td>" + data.created_date + "</td></tr>" +
+                            "<tr><td>Status</td><td>" + data.status + "</td></tr></table>";
+                        $(".modal-card-body").html(message);
+                        $('.modal').addClass('is-active');
+                    } else
+                        alert("Brak podanego id wniosku");
+                },
+                error: function (response) {
+                    console.log(response)
                 }
-            }
-        });
-}
-);
-function getInvoiceDetails(id){
-console.log(id);
-        $.ajax({
-            url: {% url 'edziekanat_app:invoices_list' %},
-            type: "get",
-            data:{
-                "id": id,
-            },
-            success: function (response) {
-                if(!response["valid"]){
-                    let data = JSON.parse(response.data)
-                    data = data[0].fields
-                    $(".modal-card-body").empty();
-                    let message = "<table class='table is-fullwidth is-hoverable is-stripped'>"+
-                    "<tr><td>Kategoria</td><td>"+data.category+"</td></tr>"+
-                    "<tr><td>Autor</td><td>"+data.created_by+"</td></tr>"+
-                    "<tr><td>Data złożenia</td><td>"+data.created_date+"</td></tr>"+
-                    "<tr><td>Status</td><td>"+data.status+"</td></tr></table>";
-                    $(".modal-card-body").html(message);
-                    $('.modal').addClass('is-active');
-                }
-                else
-                    alert("Brak podanego id wniosku");
-            },
-            error: function (response) {
-                console.log(response)
-            }
-        });
-       }
-    function closeModal(){
-        $('.modal').removeClass('is-active');
-    }
+            });
+        }
+
+        function closeModal() {
+            $('.modal').removeClass('is-active');
+        }
     </script>
 {% endblock %}

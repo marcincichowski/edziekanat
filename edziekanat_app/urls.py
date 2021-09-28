@@ -18,6 +18,7 @@ urlpatterns = [
     url(r'^invoices/$', views.invoices, name='invoices'),
     url(r'^create_invoice_category/$', views.create_invoice_category, name='create_invoice_category'),
     url(r'^inbox/$', views.inbox, name='inbox'),
+    url(r'^read_messages/$', views.read_messages, name='read_messages'),
     url(r'^invoices_list/$', views.invoices_list, name='invoices_list'),
     url(r'^invoice_download/$', views.invoice_download, name='invoice_download'),
     url(r'^get_reject_info/$', views.get_reject_info, name='get_reject_info'),

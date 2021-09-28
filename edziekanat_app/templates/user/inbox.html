@@ -30,8 +30,8 @@
                         <button class="button is-success m-3">
                             Nowa wiadomość
                         </button>
-                        <button class="button is-info m-3">
-                            Odśwież
+                        <button class="button is-info m-3" onclick="location.href={% url 'edziekanat_app:read_messages'%}">
+                            Oznacz jako przeczytane
                         </button>
                     </div>
                     <div class="card-content">
@@ -42,7 +42,11 @@
                                         <p class="card-header-title">
                                             <span class="has-text-weight-light">Tytuł:&nbsp;</span>
                                             <span>{{ message.message_title }}&nbsp;</span>
-                                            <span class="has-text-weight-light"> od {{ message.sender }} </span>
+                                            <span class="has-text-weight-light"> od {{ message.sender }}
+                                            {% if not message.seen %}
+                                                <span class="has-text-weight-bold">(nowe)</span>
+                                            {% endif %}
+                                            </span>
                                         </p>
                                     </header>
                                     <div class="card-content">

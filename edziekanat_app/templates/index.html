@@ -45,69 +45,58 @@
                         <p class="subtitle">Wszystkie wnioski</p>
                     </article>
                 </div>
-                <div class="tile is-parent">
-                    <article class="tile is-child box is-vcentered">
+                {% if request.user.role.name == "Student" %}
+                    <div class="tile is-parent">
+                        <article class="tile is-child box is-vcentered">
                             <a href="{% url 'edziekanat_app:create_invoice' %}">
                                 <p class="title is-4"><strong>Wypełnij nowy wniosek</strong></p>
                             </a>
+                        </article>
+                    </div>
+                {% endif %}
+            </div>
+        </section>
+        <div class="tile is-ancestor">
+            <div class="tile is-vertical is-8">
+                <div class="tile">
+                    <div class="tile is-parent is-vertical">
+                        <article class="tile is-child box">
+                            <span class="has-text-weight-light">Ostatnio złożony wniosek:</span><br>
+                            {% if all_invoices.count > 0 %}
+                               <span class="has-text-weight-semibold">{{ all_invoices.last.category.name }}</span><br><br>
+                               <span class="has-text-weight-light">Status: <span class="has-text-weight-semibold">{{ all_invoices.last.status }}</span></span>
+                            {% else %}
+                                <span class="has-text-weight-semibold">Nie wypełniłeś jeszcze żadnego wniosku</span>
+                            {% endif %}
+                        </article>
+                        <article class="tile is-child box">
+                            <span class="has-text-weight-light">Ostatnio otrzymana decyzja:</span><br>
+                            {% if closed_invoices.count > 0 %}
+                               <span class="has-text-weight-semibold">{{ closed_invoices.last.category.name }}</span><br><br>
+                               <span class="has-text-weight-light">Status: <span class="has-text-weight-semibold">{{ closed_invoices.last.status }}</span></span>
+                            {% else %}
+                                <span class="has-text-weight-semibold">Nie otrzymałeś jeszcze żadnej decyzji</span>
+                            {% endif %}
+                        </article>
+                    </div>
+                    <div class="tile is-parent">
+                        <article class="tile is-child box">
+                           2
+                        </article>
+                    </div>
+                </div>
+                <div class="tile is-parent">
+                    <article class="tile is-child box">
+                       <span class="has-text-weight-light">Ostatnie poprawne logowanie: <span class="has-text-weight-semibold">{{ request.user.last_login|date:'h:m d.m.Y' }}</span>
+                       </span>
                     </article>
                 </div>
             </div>
-        </section>
-        <div class="columns">
-            <div class="column is-12">
-                <div class="card events-card">
-                    <header class="card-header">
-                        <p class="card-header-title">
-                            Rozpatrzone wnioski
-                        </p>
-                        {% if all_invoices %}
-                            <div class="panel-block">
-                                <p class="control has-icons-left">
-                                    <input class="input" type="text" placeholder="Filtruj wnioski">
-                                    <span class="icon is-left">
-                                    <i class="fas fa-search" aria-hidden="true"></i>
-                                </span>
-                                </p>
-                            </div>
-                        {% endif %}
-                    </header>
-                    <div class="card-table">
-                        <div class="content">
-                            <table class="table is-fullwidth is-striped">
-                                <tbody>
-                                {% if all_invoices %}
-                                    <thead>
-                                    <tr>
-                                        <th>ID</th>
-                                        <th>Kategoria</th>
-                                        <th>Data utworzenia</th>
-                                        <th>Status</th>
-                                        <th></th>
-                                    </tr>
-                                    </thead>
-                                {% endif %}
-                                {% for invoice in all_invoices %}
-                                    <tr>
-                                        <td>{{ invoice.id }}</td>
-                                        <td>{{ invoice.category.name }}</td>
-                                        <td>{{ invoice.created_date|date:'h:m d.m.Y' }}</td>
-                                        <td>{{ invoice.status }}</td>
-                                        <td class="level-right"><a class="button is-small icon-button" href="#"><i
-                                                class="fas fa-search"></i></a></td>
-                                    </tr>
-                                {% endfor %}
-                            </table>
-                        </div>
-                    </div>
-                    <footer class="card-footer-item">
-                        {% if not all_invoices %}
-                            Brak wniosków do wyświetlenia
-                        {% endif %}
-                    </footer>
-                </div>
+            <div class="tile is-parent">
+                <article class="tile is-child box">
+                    4
+                </article>
             </div>
-
         </div>
     </div>
 {% endblock %}
