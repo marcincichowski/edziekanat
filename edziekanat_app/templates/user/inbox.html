@@ -27,10 +27,11 @@
             <div class="column">
                 <div class="card">
                     <div class="card-header">
-                        <button class="button is-success m-3"onclick="getNewMessage()">
+                        <button class="button is-success m-3" onclick="getNewMessage()">
                             Nowa wiadomość
                         </button>
-                        <button class="button is-info m-3" onclick="location.href={% url 'edziekanat_app:read_messages'%}">
+                        <button class="button is-info m-3"
+                                onclick="location.href={% url 'edziekanat_app:read_messages' %}">
                             Oznacz jako przeczytane
                         </button>
                     </div>
@@ -43,9 +44,9 @@
                                             <span class="has-text-weight-light">Tytuł:&nbsp;</span>
                                             <span>{{ message.message_title }}&nbsp;</span>
                                             <span class="has-text-weight-light"> od {{ message.sender }}
-                                            {% if not message.seen %}
-                                                <span class="has-text-weight-bold">(nowe)</span>
-                                            {% endif %}
+                                                {% if not message.seen %}
+                                                    <span class="has-text-weight-bold">(nowe)</span>
+                                                {% endif %}
                                             </span>
                                         </p>
                                     </header>
@@ -74,10 +75,31 @@
                 <p class="modal-card-title">Nowa wiadomość</p>
                 <button class="delete" aria-label="close" onclick="closeModal()"></button>
             </header>
-             <form method="post">
+            <form method="post">
                 <section class="modal-card-body">
                     {% csrf_token %}
-                    {{ new_message_form }}
+                    {% for field in new_message_form %}
+                        {% if field.field.widget.input_type == 'select' %}
+                            <label for={{ field.id_for_label }}>
+                                {{ field.field.widget.attrs.label }}
+                            </label>
+                            <div class="control mb-2">
+                                <div class="select is-fullwidth">
+                                    {{ field }}
+                                </div>
+                            </div>
+                            <span class="help is-error">
+                                    {{ field.errors }}
+                                </span>
+                        {% else %}
+                            <label for={{ field.id_for_label }}>
+                                {{ field.field.widget.attrs.label }}
+                            </label>
+                            <div class="control mb-2">
+                                {{ field }}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
                     Czy chcesz wysłać wiadomość?
                 </section>
                 <footer class="modal-card-foot">
@@ -88,11 +110,11 @@
         </div>
     </div>
     <script>
-    function getNewMessage() {
-                $('#new_message_modal.modal').addClass('is-active');
-                $('#new_message_modal.modal #id_id').attr('value', id);
-            }
-    function closeModal() {
+        function getNewMessage() {
+            $('#new_message_modal.modal').addClass('is-active');
+        }
+
+        function closeModal() {
             $('.modal').removeClass('is-active');
         }
     </script>

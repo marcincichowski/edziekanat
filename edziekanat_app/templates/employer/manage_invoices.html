@@ -138,7 +138,7 @@
                 <button class="delete" aria-label="close" onclick="closeModal()"></button>
             </header>
             <section class="modal-card-body">
-                <!-- TODO -->
+
             </section>
             <footer class="modal-card-foot">
                 <button class="button" onclick="closeModal()">Zamknij</button>
@@ -213,10 +213,15 @@
                 success: function (response) {
                     if (!response["valid"]) {
                         let data = response.data
-                        data = data[0]
-                        $(".modal-card-body").empty();
-                        let message = '';
-                        $(".modal-card-body").html(message);
+                        $("#reject-modal .modal-card-body").empty();
+                        let message =
+                            '<table class="table is-fullwidth is-hoverable is-striped">' +
+                                '<tr>' +
+                                    '<th>Nazwa wniosku:</th>' +
+                                    '<td>' + data.category_name + '</td>' +
+                                '</tr>' +
+                            '</table>';
+                        $("#reject-modal .modal-card-body").html(message);
                         $('#reject-modal.modal').addClass('is-active');
                     } else
                         alert("Brak podanego id wniosku");
@@ -233,3 +238,4 @@
         }
     </script>
 {% endblock %}
+

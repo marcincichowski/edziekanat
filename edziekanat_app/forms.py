@@ -194,7 +194,6 @@ class AcceptInvoiceForm(Form):
     id = CharField(widget=HiddenInput())
 
 
-
 class RegisterForm(Form):
     first_name = CharField(widget=TextInput(attrs={'class': 'input is-medium', 'placeholder': 'Imię'}))
     last_name = CharField(widget=TextInput(attrs={'class': 'input is-medium', 'placeholder': 'Nazwisko'}))
@@ -253,15 +252,17 @@ class SystemTools(Form):
     broadcast = CharField(
         widget=Textarea(attrs={'class': 'textarea', 'label': 'Wyślij komunikat do wszystkich użytkowników'}))
 
+
 class CreateMessage(Form):
     reciever = ModelChoiceField(queryset=User.objects.all(),
-                            widget=Select(attrs={'class': 'select', 'label': "Kierownik katedry"}),
-                            required=True)
+                                widget=Select(attrs={'class': 'select', 'label': "Odbiorca"}),
+                                required=True)
     message_title = CharField(
         widget=TextInput(attrs={'class': 'input', 'label': 'Tytuł wiadomości'}),
-        initial='')
+        initial='', required=True)
     message_text = CharField(
-        widget=Textarea(attrs={'class': 'textarea', 'label': 'Treść wiadomości'}))
+        widget=Textarea(attrs={'class': 'textarea', 'label': 'Treść wiadomości'}), required=True)
+
 
 # -------------------------------------------- DATABASE FORMS -------------------------------------------- #
 
@@ -269,6 +270,7 @@ class AddAdministrator(Form):
     name = ModelChoiceField(queryset=User.objects.all(),
                             widget=Select(attrs={'class': 'select', 'label': "Kierownik katedry"}),
                             required=True)
+
 
 class AddChair(Form):
     name = CharField(widget=TextInput(attrs={'class': 'input', 'label': 'Nazwa katedry'}))
@@ -375,14 +377,15 @@ class AddInvoice(Form):
 class AddJob(Form):
     name = CharField(widget=TextInput(attrs={'class': 'input', 'label': 'Nazwa stanowiska'}))
 
+
 class AddMessage(Form):
     sender = ModelChoiceField(queryset=User.objects.all(),
-                                       widget=Select(attrs={'class': 'select', 'label': "Nadawca"}),
-                                       required=True)
+                              widget=Select(attrs={'class': 'select', 'label': "Nadawca"}),
+                              required=True)
     reciever = ModelChoiceField(queryset=User.objects.all(),
-                                       widget=Select(attrs={'class': 'select', 'label': "Odbiorca"}),
-                                       required=True)
-    message_text = CharField(widget=TextInput(attrs={'class': 'input', 'label': 'Wiadomość', 'cols': 80, 'rows': 20}))
+                                widget=Select(attrs={'class': 'select', 'label': "Odbiorca"}),
+                                required=True)
+    message_text = CharField(widget=Textarea(attrs={'class': 'input', 'label': 'Wiadomość', 'cols': 80, 'rows': 20}))
     message_title = CharField(widget=TextInput(attrs={'class': 'input', 'label': 'Tytuł'}))
     created_date = DateField(widget=DateInput(attrs={'type': 'date', 'label': 'Data utworzenia wiadomości'}))
 
@@ -428,4 +431,3 @@ class AddSubject(Form):
                               widget=Select(attrs={'class': 'select', 'label': "Kierunek"}),
                               required=True)
     type = CharField(widget=TextInput(attrs={'class': 'input', 'label': 'Rodzaj zajęć'}))
-

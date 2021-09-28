@@ -74,14 +74,14 @@ def get_reject_info(request, *args, **kwargs):
         id = request.GET.get('id', None)
         if Invoice.objects.filter(id=id).exists():
             invoice = Invoice.objects.filter(id=id).first()
-            reposnse_object = {
+            response_object = {
                 'category_name': invoice.category.name,
                 'status': invoice.status,
                 'decision_author': invoice.decision_author.__str__(),
                 'decision': invoice.decision
             }
             response = JsonResponse({'Valid': True,
-                                     'data': reposnse_object}, status=200)
+                                     'data': response_object}, status=200)
             return response
         else:
             return JsonResponse({'Valid': False}, status=200)
@@ -278,19 +278,20 @@ def inbox(request):
         text = request.POST.get('message_text')
         reciever = request.POST.get('reciever')
         if title is not None:
-            try:
-                Message.objects.create(message_text =text,
-                                       message_title = title,
-                                       created_date = datetime.datetime.now(),
-                                       reciever_id = reciever,
-                                       sender_id = request.user.id).save()
-                messages.success(request, 'Wysłano wiadomość')
-            except Exception as e:
-                messages.warning(request, f'Blad: {e.args[0]}')
+            if reciever == str(request.user.id):
+                messages.warning(request, 'Nie możesz wysłać wiadomości do siebie.')
+            else:
+                try:
+                    Message.objects.create(message_text =text,
+                                           message_title = title,
+                                           created_date = datetime.datetime.now(),
+                                           reciever_id = reciever,
+                                           sender_id = request.user.id).save()
+                    messages.success(request, 'Wysłano wiadomość')
+                except Exception as e:
+                    messages.warning(request, f'Blad: {e.args[0]}')
 
-
-
-    inbox_messages = Message.objects.filter(reciever=request.user)
+    inbox_messages = Message.objects.filter(reciever=request.user).order_by('-created_date')
     return render(request, 'user/inbox.html', context={'inbox_messages': inbox_messages,
                                                        'new_message_form': CreateMessage()})
 
