@@ -56,6 +56,8 @@
                                                 <span class="has-text-success">{{ invoice.status }}</span>
                                             {% elif invoice.status == "Odrzucony" %}
                                                 <span class="has-text-danger">{{ invoice.status }}</span>
+                                            {% elif invoice.status == "Odrzucony" %}
+                                                <span class="has-text-warning">{{ invoice.status }}</span>
                                             {% else %}
                                                 <span>{{ invoice.status }}</span>
                                             {% endif %}
@@ -73,6 +75,11 @@
                                                 <button class="button is-small icon-button"
                                                         onclick="getRejectInfo({{ invoice.id }})"><i
                                                         class="fas fa-search"></i></button>
+                                            {% endif %}
+                                            {% if invoice.status %}
+                                                <button class="button is-small icon-button has-background-warning"
+                                                        onclick="getFileUploadForm({{ invoice.id }})"><i
+                                                        class="fas fa-pencil-alt"></i></button>
                                             {% endif %}
                                             <button class="button is-small icon-button"
                                                     onclick="getInvoiceFile({{ invoice.id }})"><i
@@ -145,10 +152,50 @@
             </footer>
         </div>
     </div>
-
+    <div class="modal" id="file-form-modal">
+        <div class="modal-background"></div>
+        <div class="modal-card">
+            <header class="modal-card-head">
+                <p class="modal-card-title">Przesłanie podpisanego wniosku</p>
+                <button class="delete" aria-label="close" onclick="closeModal()"></button>
+            </header>
+            <form method="post">
+                <section class="modal-card-body">
+                    {% csrf_token %}
+                    <div id="file-input" class="file has-name">
+                        <label class="file-label">
+                            {{ form_file_upload.invoice_file }}
+                            <span class="file-cta">
+                                            <span class="file-icon">
+                                                <i class="fas fa-upload"></i>
+                                            </span>
+                                            <span class="file-label">
+                                                Wybierz plik...
+                                            </span>
+                                        </span>
+                            <span class="file-name">Brak wybranego pliku</span>
+                        </label>
+                    </div>
+                </section>
+                <footer class="modal-card-foot">
+                    <button type="submit" class="button is-success">Zapisz</button>
+                    <button class="button" onclick="closeModal()">Anuluj</button>
+                    <input type="hidden" name="action" value="UPLOAD">
+                </footer>
+            </form>
+        </div>
+    </div>
 
     <script>
+
         $(document).ready(function () {
+            const fileInput = document.querySelector('#file-input input[type=file]');
+            fileInput.onchange = () => {
+              if (fileInput.files.length > 0) {
+                const fileName = document.querySelector('#file-input .file-name');
+                fileName.textContent = fileInput.files[0].name;
+              }
+            }
                 $('#invoice-datatable').DataTable({
                     responsive: true,
                     "order": [[3, "desc"]],
@@ -184,7 +231,10 @@
             $('#reject-form-modal.modal').addClass('is-active');
             $('#reject-form-modal.modal #id_id').attr('value', id);
         }
-
+        function getFileUploadForm(id) {
+            $('#file-form-modal.modal').addClass('is-active');
+            $('#file-form-modal.modal #id_id').attr('value', id);
+        }
         function getAcceptModal(id) {
             $('#accept-form-modal.modal').addClass('is-active');
             $('#accept-form-modal.modal #id_id').attr('value', id);
@@ -248,6 +298,9 @@
         function closeModal() {
             $('.modal').removeClass('is-active');
         }
+
+
+
     </script>
 {% endblock %}
 

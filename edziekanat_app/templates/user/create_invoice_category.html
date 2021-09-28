@@ -36,7 +36,8 @@
                         {% csrf_token %}
                      {% for field in form %}
                             {% if field.field.widget.input_type == "file"%}
-                                <div id="file-input" class="file has-name mt-4">
+                                <div class="is-flex is-justify-content-space-between is-flex-wrap-wrap">
+                                <div id="file-input" class="file has-name mt-1">
                                     <label class="file-label">
                                         {{ field }}
                                         <span class="file-cta">
@@ -52,6 +53,8 @@
                                         </span>
                                     </label>
                                 </div>
+                                <button type="submit" class="button is-primary mt-1">Zapisz</button>
+                                </div>
                                 <script>
                                   const fileInput = document.querySelector('#file-input input[type=file]');
                                   fileInput.onchange = () => {
@@ -66,6 +69,7 @@
                                 <div class="control mb-2">{{ field }}</div>
                             {% endif %}
                         {% endfor %}
+
                 </form>
                 </div>
             </div>
