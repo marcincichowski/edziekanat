@@ -374,6 +374,14 @@ class AddInvoice(Form):
                                        required=True)
 
 
+class FormFileUpload(Form):
+    invoice_file = FileField(
+        widget=FileInput(
+            attrs={'class': 'file-input', 'type': 'file', 'label': ' ', 'name': 'Plik'}),
+        required=True)
+    id = CharField(widget=HiddenInput())
+
+
 class AddJob(Form):
     name = CharField(widget=TextInput(attrs={'class': 'input', 'label': 'Nazwa stanowiska'}))
 

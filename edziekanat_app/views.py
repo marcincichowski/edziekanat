@@ -113,7 +113,8 @@ def manage_invoices(request, *args, **kwargs):
     return render(request, 'employer/manage_invoices.html',
                   context={'invoices': Invoice.objects.all(),
                            'form_reject': RejectInvoiceForm(),
-                           'form_accept': AcceptInvoiceForm()})
+                           'form_accept': AcceptInvoiceForm(),
+                           'form_file_upload': FormFileUpload()})
 
 
 def administrators(request, *args, **kwargs):
