@@ -50,7 +50,7 @@
                                     <tr>
                                         <td>{{ invoice.category }}</td>
                                         <td>{{ invoice.created_by }}</td>
-                                        <td>{{ invoice.created_date }}</td>
+                                        <td>{{ invoice.created_date|date:'d.m.Y H:i:s' }}</td>
                                         <td>
                                             {% if invoice.status == "Zaakceptowany" %}
                                                 <span class="has-text-success">{{ invoice.status }}</span>
@@ -225,14 +225,13 @@
                                     '<td>' + data.decision_author + '</td>' +
                                 '</tr>' +
                                 '<tr>' +
-                                    '<th>Decyzja:</th>' +
+                                    '<th>Uzasadnienie:</th>' +
                                     '<td>' + data.decision + '</td>' +
                                 '</tr>' +
                                 '<tr>' +
-                                    '<th>Status:</th>' +
-                                    '<td>' + data.status + '</td>' +
+                                    '<th>Data rozpatrzenia wniosku:</th>' +
+                                    '<td>' + data.decision_date + '</td>' +
                                 '</tr>' +
-
                             '</table>';
                         $("#reject-modal .modal-card-body").html(message);
                         $('#reject-modal.modal').addClass('is-active');

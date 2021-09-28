@@ -1,3 +1,4 @@
+import datetime
 import os
 from django.db.models import Q
 from django.contrib import messages
@@ -76,9 +77,9 @@ def get_reject_info(request, *args, **kwargs):
             invoice = Invoice.objects.filter(id=id).first()
             response_object = {
                 'category_name': invoice.category.name,
-                'status': invoice.status,
                 'decision_author': invoice.decision_author.__str__(),
-                'decision': invoice.decision
+                'decision': invoice.decision,
+                'decision_date': invoice.decision_date.strftime("%d.%m.%Y %H:%M:%S")
             }
             response = JsonResponse({'Valid': True,
                                      'data': response_object}, status=200)
@@ -104,10 +105,11 @@ def manage_invoices(request, *args, **kwargs):
             if action == 'REJECT':
                 invoice.status = "Odrzucony"
                 invoice.decision = request.POST.get('decision')
-                invoice.decision_author = request.user
             elif action == 'ACCEPT':
                 invoice.status = "Zaakceptowany"
-                invoice.decision_author = request.user
+
+            invoice.decision_author = request.user
+            invoice.decision_date = datetime.datetime.now()
             invoice.save()
 
     return render(request, 'employer/manage_invoices.html',
@@ -289,7 +291,7 @@ def inbox(request):
                                            sender_id = request.user.id).save()
                     messages.success(request, 'Wysłano wiadomość')
                 except Exception as e:
-                    messages.warning(request, f'Blad: {e.args[0]}')
+                    messages.warning(request, f'Bład: {e.args[0]}')
 
     inbox_messages = Message.objects.filter(reciever=request.user).order_by('-created_date')
     return render(request, 'user/inbox.html', context={'inbox_messages': inbox_messages,
@@ -379,4 +381,24 @@ def get_user_invoices(user: User): return Invoice.objects.filter(created_by=user
 
 def create_invoice_category(request):
     form = AddInvoiceCategory()
+
+    if request.method == "POST":
+        name = request.POST.get('name')
+        decision_query = request.POST.get('decision_query')
+        faq_link = request.POST.get('faq_link')
+        description = request.POST.get('description')
+        docx_template = request.POST.get('docx_template')
+
+        try:
+            InvoiceCategory.objects.create(
+                name=name,
+                decision_query=decision_query,
+                faq_link=faq_link,
+                description=description,
+                docx_template=docx_template
+            ).save()
+            messages.success(request, 'Wysłano wiadomość')
+        except Exception as e:
+            messages.warning(request, f'Bład: {e.args[0]}')
+
     return render(request, 'user/create_invoice_category.html', context={'form': form})

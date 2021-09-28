@@ -62,7 +62,7 @@
                                   }
                                 </script>
                             {% else %}
-                                <label for="{{ field.id_for_label }}"> {{ field.field.widget.attrs.placeholder }} </label>
+                                <label for="{{ field.id_for_label }}"> {{ field.field.widget.attrs.label }} </label>
                                 <div class="control mb-2">{{ field }}</div>
                             {% endif %}
                         {% endfor %}

@@ -49,7 +49,7 @@ class InvoiceCategory(Model):
 
     decision_query = CharField(max_length=100,
                                default="NONE",
-                               verbose_name=_('Query osoby wyznaczającej'))
+                               verbose_name=_('Query osoby do osoby decyzyjnej'))
 
     field = ForeignKey(to='edziekanat_app.InvoiceField',
                        verbose_name=_('Dziedzina'),

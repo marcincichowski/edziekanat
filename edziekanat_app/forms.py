@@ -239,10 +239,11 @@ class RegisterExtraForm(UserKwargModelFormMixin, Form):
 
 
 class AddInvoiceCategory(Form):
-    name = CharField(widget=TextInput(attrs={'class': 'input', 'placeholder': 'Nazwa kategorii'}))
-    faq_link = CharField(widget=TextInput(attrs={'class': 'input', 'placeholder': 'FAQ link'}))
-    description = CharField(widget=CKEditorWidget(attrs={'placeholder': 'Opis'}))
-    docx_template = FileField(widget=ClearableFileInput(attrs={'class': 'file-input'}))
+    name = CharField(widget=TextInput(attrs={'class': 'input', 'label': 'Nazwa kategorii'}), required=True)
+    decision_query = CharField(widget=TextInput(attrs={'class': 'input', 'label': 'Query do osoby decyzyjnej'}), required=True)
+    faq_link = CharField(widget=TextInput(attrs={'class': 'input', 'label': 'Link do regulaminu'}), required=True)
+    description = CharField(widget=CKEditorWidget(attrs={'label': 'Opis'}), required=True)
+    docx_template = FileField(widget=ClearableFileInput(attrs={'class': 'file-input'}), required=True)
 
 
 class SystemTools(Form):
