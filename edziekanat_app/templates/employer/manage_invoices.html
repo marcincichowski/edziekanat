@@ -220,6 +220,19 @@
                                     '<th>Nazwa wniosku:</th>' +
                                     '<td>' + data.category_name + '</td>' +
                                 '</tr>' +
+                                '<tr>' +
+                                    '<th>Osoba decyzyjna:</th>' +
+                                    '<td>' + data.decision_author + '</td>' +
+                                '</tr>' +
+                                '<tr>' +
+                                    '<th>Decyzja:</th>' +
+                                    '<td>' + data.decision + '</td>' +
+                                '</tr>' +
+                                '<tr>' +
+                                    '<th>Status:</th>' +
+                                    '<td>' + data.status + '</td>' +
+                                '</tr>' +
+
                             '</table>';
                         $("#reject-modal .modal-card-body").html(message);
                         $('#reject-modal.modal').addClass('is-active');
