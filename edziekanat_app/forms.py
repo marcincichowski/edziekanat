@@ -253,6 +253,15 @@ class SystemTools(Form):
     broadcast = CharField(
         widget=Textarea(attrs={'class': 'textarea', 'label': 'Wyślij komunikat do wszystkich użytkowników'}))
 
+class CreateMessage(Form):
+    reciever = ModelChoiceField(queryset=User.objects.all(),
+                            widget=Select(attrs={'class': 'select', 'label': "Kierownik katedry"}),
+                            required=True)
+    message_title = CharField(
+        widget=TextInput(attrs={'class': 'input', 'label': 'Tytuł wiadomości'}),
+        initial='')
+    message_text = CharField(
+        widget=Textarea(attrs={'class': 'textarea', 'label': 'Treść wiadomości'}))
 
 # -------------------------------------------- DATABASE FORMS -------------------------------------------- #
 

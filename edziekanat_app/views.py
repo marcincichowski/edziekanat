@@ -1,5 +1,5 @@
 import os
-
+from django.db.models import Q
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.views import auth_logout
@@ -16,6 +16,9 @@ from edziekanat_app.forms import *
 from .forms import LoginForm, EditUserForm, AddInvoiceCategory
 from .models.tables.invoice import Invoice
 from .models.tables.invoice_category import InvoiceCategory
+from .models.crud.reject_invoice_info import RejectInvoiceInfo
+from .forms import CreateMessage
+
 from .models.tables.invoice_category import replace_document_tags
 from .models.tables.messages.message import Message
 from .models.tables.users.employee import Employee
@@ -270,8 +273,26 @@ def read_messages(request):
 
 
 def inbox(request):
-    messages = Message.objects.filter(reciever=request.user)
-    return render(request, 'user/inbox.html', context={'inbox_messages': messages})
+    if request.method == 'POST':
+        title = request.POST.get('message_title')
+        text = request.POST.get('message_text')
+        reciever = request.POST.get('reciever')
+        if title is not None:
+            try:
+                Message.objects.create(message_text =text,
+                                       message_title = title,
+                                       created_date = datetime.datetime.now(),
+                                       reciever_id = reciever,
+                                       sender_id = request.user.id).save()
+                messages.success(request, 'Wysłano wiadomość')
+            except Exception as e:
+                messages.warning(request, f'Blad: {e.args[0]}')
+
+
+
+    inbox_messages = Message.objects.filter(reciever=request.user)
+    return render(request, 'user/inbox.html', context={'inbox_messages': inbox_messages,
+                                                       'new_message_form': CreateMessage()})
 
 
 class UserCreator(SessionWizardView):
