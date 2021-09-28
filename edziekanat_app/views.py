@@ -24,6 +24,8 @@ from edziekanat_app.models.tables.messages.message import Message
 from .forms import LoginForm, AddDictionaryValueCathedral, EditUserForm, AddInvoiceCategory
 from .models.tables.invoice_category import InvoiceCategory
 from .models.crud.reject_invoice_info import RejectInvoiceInfo
+from .forms import CreateMessage
+
 
 def index(request, *args, **kwargs):
     context = {
@@ -72,16 +74,16 @@ def get_reject_info(request, *args, **kwargs):
     if request.method == 'GET' and request.is_ajax():
         id = request.GET.get('id', None)
         if Invoice.objects.filter(id=id).exists():
-            #reposnse_object = Invoice.objects.filter(id=id)
+            # reposnse_object = Invoice.objects.filter(id=id)
             invoice = Invoice.objects.filter(id=id).first()
             reposnse_object = RejectInvoiceInfo(
-                category = invoice.category,
-                created_by = invoice.created_by,
-                invoice_file = invoice.invoice_file,
-                created_date = invoice.created_date,
-                status = invoice.status,
-                decision_author = invoice.decision_author,
-                decision = invoice.decision
+                category=invoice.category,
+                created_by=invoice.created_by,
+                invoice_file=invoice.invoice_file,
+                created_date=invoice.created_date,
+                status=invoice.status,
+                decision_author=invoice.decision_author,
+                decision=invoice.decision
             )
             response = JsonResponse({'Valid': True, 'data': serialize('json', reposnse_object)}, status=200)
             return response
@@ -116,7 +118,6 @@ def manage_invoices(request, *args, **kwargs):
                   context={'invoices': Invoice.objects.all(),
                            'form_reject': RejectInvoiceForm(),
                            'form_accept': AcceptInvoiceForm()})
-
 
 
 def administrators(request, *args, **kwargs):
@@ -161,10 +162,12 @@ def database(request, *args, **kwargs):
         form_subject = AddSubject()
         return render(request, 'admin/database.html',
                       {'form_chair': form_chair, 'form_department': form_department, 'form_faculty': form_faculty,
-                       'form_course': form_course, 'form_employee': form_employee, 'form_invoice_categorie':form_invoice_categorie,
-                       'form_invoice_field': form_invoice_field, 'form_invoice': form_invoice, 'form_job':form_job,
-                       'form_message':form_message, 'form_role':form_role, 'form_spectialization':form_spectialization,
-                       'form_student':form_student, 'form_study_mode':form_study_mode, 'form_subject':form_subject})
+                       'form_course': form_course, 'form_employee': form_employee,
+                       'form_invoice_categorie': form_invoice_categorie,
+                       'form_invoice_field': form_invoice_field, 'form_invoice': form_invoice, 'form_job': form_job,
+                       'form_message': form_message, 'form_role': form_role,
+                       'form_spectialization': form_spectialization,
+                       'form_student': form_student, 'form_study_mode': form_study_mode, 'form_subject': form_subject})
     elif request.method == 'POST':
         raise Exception("Not implemented")
     return render(request, 'admin/database.html')
@@ -274,8 +277,26 @@ def read_messages(request):
 
 
 def inbox(request):
-    messages = Message.objects.filter(reciever=request.user)
-    return render(request, 'user/inbox.html', context={'inbox_messages': messages})
+    if request.method == 'POST':
+        title = request.POST.get('message_title')
+        text = request.POST.get('message_text')
+        reciever = request.POST.get('reciever')
+        if title is not None:
+            try:
+                Message.objects.create(message_text =text,
+                                       message_title = title,
+                                       created_date = datetime.datetime.now(),
+                                       reciever_id = reciever,
+                                       sender_id = request.user.id).save()
+                messages.success(request, 'Wysłano wiadomość')
+            except Exception as e:
+                messages.warning(request, f'Blad: {e.args[0]}')
+
+
+
+    inbox_messages = Message.objects.filter(reciever=request.user)
+    return render(request, 'user/inbox.html', context={'inbox_messages': inbox_messages,
+                                                       'new_message_form': CreateMessage()})
 
 
 class UserCreator(SessionWizardView):

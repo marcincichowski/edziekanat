@@ -27,7 +27,7 @@
             <div class="column">
                 <div class="card">
                     <div class="card-header">
-                        <button class="button is-success m-3">
+                        <button class="button is-success m-3"onclick="getNewMessage()">
                             Nowa wiadomość
                         </button>
                         <button class="button is-info m-3" onclick="location.href={% url 'edziekanat_app:read_messages'%}">
@@ -67,20 +67,33 @@
         </div>
     </div>
 
-    <div class="modal">
+    <div class="modal" id="new_message_modal">
         <div class="modal-background"></div>
         <div class="modal-card">
             <header class="modal-card-head">
-                <p class="modal-card-title">Właściwości wniosku</p>
+                <p class="modal-card-title">Nowa wiadomość</p>
                 <button class="delete" aria-label="close" onclick="closeModal()"></button>
             </header>
-            <section class="modal-card-body">
-
-            </section>
-            <footer class="modal-card-foot">
-                <button class="button is-success">Zapisz</button>
-                <button class="button" onclick="closeModal()">Anuluj</button>
-            </footer>
+             <form method="post">
+                <section class="modal-card-body">
+                    {% csrf_token %}
+                    {{ new_message_form }}
+                    Czy chcesz wysłać wiadomość?
+                </section>
+                <footer class="modal-card-foot">
+                    <button type="submit" class="button is-success">Wyślij</button>
+                    <button class="button" onclick="closeModal()">Cofnij</button>
+                </footer>
+            </form>
         </div>
     </div>
+    <script>
+    function getNewMessage() {
+                $('#new_message_modal.modal').addClass('is-active');
+                $('#new_message_modal.modal #id_id').attr('value', id);
+            }
+    function closeModal() {
+            $('.modal').removeClass('is-active');
+        }
+    </script>
 {% endblock %}
