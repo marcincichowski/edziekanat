@@ -1,5 +1,6 @@
 import datetime
 import os
+from django.db.models import Count
 from django.db.models import Q
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
@@ -27,13 +28,53 @@ from .models.tables.users.student import Student
 from .models.tables.users.user import User
 
 
+def format_timedelta(delta):
+    days, rest = divmod(delta.total_seconds(), 86400)
+    hours, rest = divmod(rest, 3600)
+    minutes, seconds = divmod(rest, 60)
+    return '{:02} dni {:02}h {:02}min'.format(int(days), int(hours), int(minutes))
+
+def get_average_decision_time():
+    invoices = Invoice.objects.all()
+    if invoices.count() == 0:
+        return 'brak zakończonych wniosków'
+    sum_time = datetime.timedelta(days=3, hours=2, minutes=21)
+    counter = 0
+    for invoice in invoices:
+        if invoice.decision_date is None:
+            continue
+        start = invoice.created_date.replace(tzinfo=None)
+        end = invoice.decision_date.replace(tzinfo=None)
+        delta = end - start
+        sum_time += end - start
+        counter += 1
+    if counter == 0:
+        return '∞'
+
+    return format_timedelta(sum_time/counter)
+
+
+def get_top_invoices():
+    invoices = Invoice.objects.all().values('category').annotate(total=Count('category')).order_by('total')
+    top_five = []
+    for invoice in invoices[:5]:
+        top_five.append(InvoiceCategory.objects.filter(id=invoice['category']).first().name)
+    return top_five
+
+
 def index(request, *args, **kwargs):
+
+    average_time = get_average_decision_time()
+    top_invoices = get_top_invoices()
+
     context = {
         'open_invoices': get_open_invoices(request.user),
         'closed_invoices': get_decision_invoices(request.user),
         'new_mesages': Message.objects.filter(reciever=request.user, seen=False),
         'all_invoices': get_user_invoices(request.user),
-        'message': Message.objects.all()
+        'message': Message.objects.all(),
+        'average_decision_time': average_time,
+        'top_invoices': top_invoices
     }
     return render(request, 'index.html', context=context)
 
@@ -45,6 +86,7 @@ def invoices(request, *args, **kwargs):
         field_invoices = InvoiceCategory.objects.filter(field=field)
         if field_invoices.count() > 0:
             invoices[field] = field_invoices
+
     return render(request, 'user/invoices.html', context={'invoices': invoices})
 
 
@@ -131,6 +173,22 @@ def account(request, *args, **kwargs):
 
 def config(request, *args, **kwargs):
     form = SystemTools()
+    if request.method == "POST":
+        title = request.POST.get('title')
+        text = request.POST.get('broadcast')
+        if title is not None and text is not None:
+            users = User.objects.filter(~Q(id=request.user.id))
+            for user in users:
+                Message.objects.create(
+                    sender=request.user,
+                    reciever=user,
+                    seen=False,
+                    message_text=text,
+                    message_title=title,
+                    created_date=datetime.datetime.now()
+                ).save()
+            messages.success(request, f"Wysłano wiadomość do {users.count()} użytkowników.")
+
     return render(request, 'admin/tools.html', context={'form': form, 'toolname': 'Wiadomość broadcast'})
 
 
@@ -388,8 +446,8 @@ def create_invoice_category(request):
         decision_query = request.POST.get('decision_query')
         faq_link = request.POST.get('faq_link')
         description = request.POST.get('description')
-        docx_template = request.POST.get('docx_template')
-
+        docx_template = request.FILES['docx_template']
+        field = InvoiceField.objects.filter(id=int(request.POST.get('field'))).first()
         try:
             InvoiceCategory.objects.create(
                 name=name,

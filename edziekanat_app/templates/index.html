@@ -63,8 +63,10 @@
                         <article class="tile is-child box">
                             <span class="has-text-weight-light">Ostatnio złożony wniosek:</span><br>
                             {% if all_invoices.count > 0 %}
-                               <span class="has-text-weight-semibold">{{ all_invoices.last.category.name }}</span><br><br>
-                               <span class="has-text-weight-light">Status: <span class="has-text-weight-semibold">{{ all_invoices.last.status }}</span></span>
+                                <span class="has-text-weight-semibold">{{ all_invoices.last.category.name }}</span><br>
+                                <br>
+                                <span class="has-text-weight-light">Status: <span
+                                        class="has-text-weight-semibold">{{ all_invoices.last.status }}</span></span>
                             {% else %}
                                 <span class="has-text-weight-semibold">Nie wypełniłeś jeszcze żadnego wniosku</span>
                             {% endif %}
@@ -72,29 +74,46 @@
                         <article class="tile is-child box">
                             <span class="has-text-weight-light">Ostatnio otrzymana decyzja:</span><br>
                             {% if closed_invoices.count > 0 %}
-                               <span class="has-text-weight-semibold">{{ closed_invoices.last.category.name }}</span><br><br>
-                               <span class="has-text-weight-light">Status: <span class="has-text-weight-semibold">{{ closed_invoices.last.status }}</span></span>
+                                <span class="has-text-weight-semibold">{{ closed_invoices.last.category.name }}</span>
+                                <br><br>
+                                <span class="has-text-weight-light">Status: <span
+                                        class="has-text-weight-semibold">{{ closed_invoices.last.status }}</span></span>
                             {% else %}
                                 <span class="has-text-weight-semibold">Nie otrzymałeś jeszcze żadnej decyzji</span>
                             {% endif %}
                         </article>
                     </div>
                     <div class="tile is-parent">
-                        <article class="tile is-child box">
-                           2
+                        <article class="tile is-child box has-text-centered is-vcentered">
+                            <p class="title is-4">Przeciętny czas oczekiwania na decyzję</p>
+                            <hr>
+                            <p class="subtitle is-4">{{ average_decision_time }}</p>
                         </article>
                     </div>
                 </div>
                 <div class="tile is-parent">
                     <article class="tile is-child box">
-                       <span class="has-text-weight-light">Ostatnie poprawne logowanie: <span class="has-text-weight-semibold">{{ request.user.last_login|date:'d.m.Y H:i' }}</span>
+                       <span class="has-text-weight-light">Ostatnie poprawne logowanie: <span
+                               class="has-text-weight-semibold">{{ request.user.last_login|date:'d.m.Y H:i' }}</span>
                        </span>
                     </article>
                 </div>
             </div>
             <div class="tile is-parent">
-                <article class="tile is-child box">
-                    4
+                <article class="tile is-child box has-text-left">
+                    <div class="mb-4">
+                        <span class="subtitle">Najczęściej wypełniane wnioski</span>
+                    </div>
+                    {% if top_invoices %}
+                        {% for top_invoice in top_invoices %}
+                            <div class="mb-3">
+                                <span class="has-text-weight-semibold is-3">{{ forloop.counter }}. </span>
+                                <span class="has-text-weight-light is-3">{{ top_invoice }}</span>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <span class="has-text-weight-light">Brak wniosków w systemie eDziekanat</span>
+                    {% endif %}
                 </article>
             </div>
         </div>

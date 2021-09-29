@@ -240,6 +240,9 @@ class RegisterExtraForm(UserKwargModelFormMixin, Form):
 
 class AddInvoiceCategory(Form):
     name = CharField(widget=TextInput(attrs={'class': 'input', 'label': 'Nazwa kategorii'}), required=True)
+    field = ModelChoiceField(queryset=InvoiceField.objects.all(),
+                                widget=Select(attrs={'class': 'select', 'label': "Dziedzina wniosku"}),
+                                required=True)
     decision_query = CharField(widget=TextInput(attrs={'class': 'input', 'label': 'Query do osoby decyzyjnej'}), required=True)
     faq_link = CharField(widget=TextInput(attrs={'class': 'input', 'label': 'Link do regulaminu'}), required=True)
     description = CharField(widget=CKEditorWidget(attrs={'label': 'Opis'}), required=True)
@@ -247,11 +250,9 @@ class AddInvoiceCategory(Form):
 
 
 class SystemTools(Form):
-    smtp_address = CharField(
-        widget=TextInput(attrs={'class': 'input', 'placeholder': '10.124.14.1:25', 'label': 'Adres IP serwera SMTP'}),
-        initial='')
+    title = CharField(widget=TextInput(attrs={'class': 'input', 'label': 'Tytuł wiadomości'}))
     broadcast = CharField(
-        widget=Textarea(attrs={'class': 'textarea', 'label': 'Wyślij komunikat do wszystkich użytkowników'}))
+        widget=Textarea(attrs={'class': 'textarea', 'label': 'Treść wiadomości'}))
 
 
 class CreateMessage(Form):

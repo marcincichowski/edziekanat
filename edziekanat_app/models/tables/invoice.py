@@ -17,7 +17,7 @@ class Invoice(Model):
                              null=True,
                              blank=True)
 
-    created_date = DateTimeField(verbose_name=_('Data utworzenia'), auto_now=True)
+    created_date = DateTimeField(verbose_name=_('Data utworzenia'), auto_now_add=True)
 
     status = CharField(verbose_name=_('Status wniosku'),
                        max_length=20,
