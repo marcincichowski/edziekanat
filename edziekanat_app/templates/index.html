@@ -49,7 +49,11 @@
                     <article class="tile is-child box">
                         <a href="{% url 'edziekanat_app:inbox' %}">
                             <p class="title">{{ new_mesages.count }}</p>
-                            <p class="subtitle">Nowe wiadomości</p>
+                            {% if new_mesages.count > 0 %}
+                                <p class="subtitle has-text-danger has-text-weight-bold">Nowe wiadomości</p>
+                            {% else %}
+                                <p class="subtitle">Nowe wiadomości</p>
+                            {% endif %}
                         </a>
                     </article>
                 </div>
