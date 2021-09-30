@@ -81,9 +81,9 @@
                                                         onclick="getFileUploadForm({{ invoice.id }})"><i
                                                         class="fas fa-pencil-alt"></i></button>
                                             {% endif %}
-                                            <button class="button is-small icon-button"
+                                            <a class="button is-small icon-button" download href={{ invoice.invoice_file.url }}
                                                     onclick="getInvoiceFile({{ invoice.id }})"><i
-                                                    class="fas fa-download"></i></button>
+                                                    class="fas fa-download"></i></a>
                                         </td>
                                     </tr>
                                 {% endfor %}
@@ -118,7 +118,7 @@
                 <p class="modal-card-title">Przesłanie podpisanego wniosku</p>
                 <button class="delete" aria-label="close" onclick="closeModal()"></button>
             </header>
-            <form method="post">
+            <form method="post" enctype='multipart/form-data'>
                 <section class="modal-card-body">
                     {% csrf_token %}
                     <div id="file-input" class="file has-name">

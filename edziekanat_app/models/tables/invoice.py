@@ -35,7 +35,7 @@ class Invoice(Model):
     decision_date = DateTimeField(verbose_name=_('Data rozpatrzenia'),
                                   blank=True, null=True)
 
-
+    seen = BooleanField(verbose_name=_('Przeczytane'), default=False)
 
     def __str__(self):
         return f"{self.category} Wnioskodawca: {self.created_by} Status: {self.status}"

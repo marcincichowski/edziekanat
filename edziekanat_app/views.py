@@ -2,6 +2,7 @@ import datetime
 import os
 from django.db.models import Count
 from django.db.models import Q
+import mimetypes
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.views import auth_logout
@@ -9,7 +10,7 @@ from django.core.files import File
 from django.core.files.storage import FileSystemStorage
 from django.core.serializers import serialize
 from django.db.models import Q
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse, Http404
 from django.shortcuts import render, redirect
 from docx import Document
 from formtools.wizard.views import SessionWizardView
@@ -34,10 +35,11 @@ def format_timedelta(delta):
     minutes, seconds = divmod(rest, 60)
     return '{:02} dni {:02}h {:02}min'.format(int(days), int(hours), int(minutes))
 
+
 def get_average_decision_time():
     invoices = Invoice.objects.all()
     if invoices.count() == 0:
-        return 'brak zakończonych wniosków'
+        return 'brak podjętych decyzji'
     sum_time = datetime.timedelta(days=3, hours=2, minutes=21)
     counter = 0
     for invoice in invoices:
@@ -49,9 +51,9 @@ def get_average_decision_time():
         sum_time += end - start
         counter += 1
     if counter == 0:
-        return '∞'
+        return 'brak podjętych decyzji'
 
-    return format_timedelta(sum_time/counter)
+    return format_timedelta(sum_time / counter)
 
 
 def get_top_invoices():
@@ -63,7 +65,6 @@ def get_top_invoices():
 
 
 def index(request, *args, **kwargs):
-
     average_time = get_average_decision_time()
     top_invoices = get_top_invoices()
 
@@ -93,10 +94,15 @@ def invoices(request, *args, **kwargs):
 def invoice_download(request, *args, **kwargs):
     if request.method == 'GET' and request.is_ajax():
         id = request.GET.get('id', None)
-        if Invoice.objects.filter(id=id).exists():
-            return JsonResponse({'Valid': True, 'data': serialize('json', Invoice.objects.filter(id=id))}, status=200)
-        else:
-            return JsonResponse({'Valid': False}, status=200)
+        invoice = Invoice.objects.filter(id=id).first()
+        file_path = invoice.invoice_file.path
+        if os.path.exists(file_path):
+            with open(file_path, 'rb') as fh:
+                response = HttpResponse(fh.read(),
+                                        content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document')
+                response['Content-Disposition'] = 'attachment; filename=' + file_path
+                return response
+        raise Http404
 
     return JsonResponse({}, status=400)
 
@@ -134,6 +140,9 @@ def get_reject_info(request, *args, **kwargs):
 
 def invoices_list(request, *args, **kwargs):
     invoices = Invoice.objects.filter(created_by=request.user)
+    for invoice in invoices:
+        invoice.seen = True
+        invoice.save()
     return render(request, 'user/invoices_list.html', context={'invoices': invoices})
 
 
@@ -282,7 +291,7 @@ class InvoiceCreator(SessionWizardView):
         if step == '2':
             category = self.get_cleaned_data_for_step('1')['category']
             kwargs.update({'category': category, 'user': self.request.user})
-            self.extra_context.update({'title': "Wybrany wniosek", 'category_name': category.name})
+            self.extra_context.update({'title': "Uzupełnij wymagane informacje", 'category_name': category.name})
         return kwargs
 
     def done(self, form_list, **kwargs):
@@ -343,11 +352,11 @@ def inbox(request):
                 messages.warning(request, 'Nie możesz wysłać wiadomości do siebie.')
             else:
                 try:
-                    Message.objects.create(message_text =text,
-                                           message_title = title,
-                                           created_date = datetime.datetime.now(),
-                                           reciever_id = reciever,
-                                           sender_id = request.user.id).save()
+                    Message.objects.create(message_text=text,
+                                           message_title=title,
+                                           created_date=datetime.datetime.now(),
+                                           reciever_id=reciever,
+                                           sender_id=request.user.id).save()
                     messages.success(request, 'Wysłano wiadomość')
                 except Exception as e:
                     messages.warning(request, f'Bład: {e.args[0]}')
@@ -432,7 +441,7 @@ def get_closed_invoices(user: User): return Invoice.objects.filter(status="Zamkn
 
 
 def get_decision_invoices(user: User): return Invoice.objects.filter(Q(status="Odrzucony") | Q(status="Zaakceptowany"),
-                                                                     created_by=user)
+                                                                     created_by=user, seen=False)
 
 
 def get_user_invoices(user: User): return Invoice.objects.filter(created_by=user)

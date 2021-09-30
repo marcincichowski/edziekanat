@@ -23,26 +23,34 @@
             <div class="tile is-ancestor has-text-centered">
                 <div class="tile is-parent">
                     <article class="tile is-child box">
-                        <p class="title">{{ open_invoices.count }}</p>
-                        <p class="subtitle">Otwarte wnioski</p>
+                        <a href="{% url 'edziekanat_app:invoices_list' %}">
+                            <p class="title">{{ open_invoices.count }}</p>
+                            <p class="subtitle">Otwarte wnioski</p>
+                        </a>
                     </article>
                 </div>
                 <div class="tile is-parent">
                     <article class="tile is-child box">
-                        <p class="title">{{ closed_invoices.count }}</p>
-                        <p class="subtitle">Nowe decyzje</p>
+                        <a href="{% url 'edziekanat_app:invoices_list' %}">
+                            <p class="title">{{ closed_invoices.count }}</p>
+                            <p class="subtitle">Nowe decyzje</p>
+                        </a>
                     </article>
                 </div>
                 <div class="tile is-parent">
                     <article class="tile is-child box">
-                        <p class="title">{{ new_mesages.count }}</p>
-                        <p class="subtitle">Nowe wiadomości</p>
+                        <a href="{% url 'edziekanat_app:invoices_list' %}">
+                            <p class="title">{{ all_invoices.count }}</p>
+                            <p class="subtitle">Wszystkie wnioski</p>
+                        </a>
                     </article>
                 </div>
                 <div class="tile is-parent">
                     <article class="tile is-child box">
-                        <p class="title">{{ all_invoices.count }}</p>
-                        <p class="subtitle">Wszystkie wnioski</p>
+                        <a href="{% url 'edziekanat_app:inbox' %}">
+                            <p class="title">{{ new_mesages.count }}</p>
+                            <p class="subtitle">Nowe wiadomości</p>
+                        </a>
                     </article>
                 </div>
                 {% if request.user.role.name == "Student" %}

@@ -4,7 +4,7 @@ from django.urls import path
 
 from edziekanat_app.forms import *
 from . import views
-from edziekanat_app.views import InvoiceCreator, UserCreator
+from edziekanat_app.views import InvoiceCreator, UserCreator, settings
 
 app_name = 'edziekanat_app'
 
