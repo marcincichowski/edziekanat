@@ -6,9 +6,11 @@ from django.core.exceptions import ValidationError
 from django.db.models import *
 from django.utils.translation import gettext as _
 from docx import Document
-#from edziekanat_app.forms import bind
+
+from edziekanat_app.utils import replace_document_tags, bind
 
 BASE_PATTERN = r'(?s)(?<={{).*?(?=}})'
+
 
 def regex_result_to_dict(lst):
     result = dict()
@@ -107,35 +109,3 @@ class InvoiceCategory(Model):
         result = bind(result)
         self.set_field_types(result)
         replace_document_tags(doc, result, self.docx_template.path).save(self.docx_template.path)
-
-def bind(init):
-    results = {}
-    for k in init:
-        results.setdefault(k, []).append(init[k])
-    return results
-
-def replace_document_tags(doc: Document, dictionary: dict, final: bool = True):
-    for i in dictionary:
-        if final:
-            to_replace = '{{' + i + '}}'
-            match = "{{" + dictionary[i][0] + "}}"
-        else:
-            to_replace = str(dictionary[i][0])
-            match = '{{' + i + '}}'
-        for p in doc.paragraphs:
-            matches = p.text.find(match)
-            if matches >= 0:
-                p.text = p.text.replace(match, to_replace)
-        for table in doc.tables:
-            found = False
-            for row in table.rows:
-                if found: break
-                for cell in row.cells:
-                    matches = cell.text.find(match)
-                    if matches >= 0:
-                        cell.text = cell.text.replace(match, to_replace)
-                        found = True
-
-    return doc
-
-

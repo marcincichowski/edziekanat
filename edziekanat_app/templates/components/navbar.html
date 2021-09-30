@@ -1,13 +1,13 @@
 {% load static %}
 <nav class="navbar">
     <div class="navbar-brand">
-      <a class="navbar-item" href="{% url 'edziekanat_app:home' %}">
-        <img src="{% static 'images/put_logo_text.png' %}" class="image">
-      </a>
+        <a class="navbar-item" href="{% url 'edziekanat_app:home' %}">
+            <img src="{% static 'images/put_logo_text.png' %}" class="image">
+        </a>
         <div class="navbar-burger" data-target="navbar-data-toggle">
-          <span></span>
-          <span></span>
-          <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
         </div>
     </div>
 
@@ -16,13 +16,7 @@
             <a class="navbar-item is-tab is-hidden-tablet" href="{% url 'edziekanat_app:home' %}">
                 Strona główna
             </a>
-            <a class="navbar-item is-tab is-hidden-tablet" href="{% url 'edziekanat_app:account' %}">
-                Konto
-            </a>
-            <a class="navbar-item is-tab is-hidden-tablet" href="{% url 'edziekanat_app:settings' %}">
-                Ustawienia
-            </a>
-            <a class="navbar-item is-tab is-hidden-tablet"  href="{% url 'edziekanat_app:invoices' %}">
+            <a class="navbar-item is-tab is-hidden-tablet" href="{% url 'edziekanat_app:invoices' %}">
                 Spis wniosków
             </a>
             <a class="navbar-item is-tab is-hidden-tablet" href="{% url 'edziekanat_app:invoices_list' %}">
@@ -32,13 +26,15 @@
                 Stwórz wniosek
             </a>
             {% if request.user.is_staff %}
-                <a class="navbar-item is-tab is-hidden-tablet" href="{% url 'edziekanat_app:config' %}">Konfiguracja</a>
+                <a class="navbar-item is-tab is-hidden-tablet" href="{% url 'edziekanat_app:tools' %}">Narzędzia</a>
                 <a class="navbar-item is-tab is-hidden-tablet" href='/admin'>Panel administracyjny</a>
-                <a class="navbar-item is-tab is-hidden-tablet" href="{% url 'edziekanat_app:database' %}">Baza danych</a>
+                <a class="navbar-item is-tab is-hidden-tablet" href="{% url 'edziekanat_app:database' %}">Baza
+                    danych</a>
                 <a class="navbar-item is-tab is-hidden-tablet" href="{% url 'edziekanat_app:administrators' %}">Administratorzy</a>
             {% endif %}
             <a class="navbar-item is-tab is-active has-text-centered" style="white-space: nowrap; min-width: 150px;">
-                <span class="icon"><i class="fa fa-user"></i></span>&nbsp;{{request.user}} ({{ request.user.role.name }})
+                <span class="icon"><i class="fa fa-user"></i></span>&nbsp;{{ request.user }}
+                ({{ request.user.role.name }})
             </a>
             <a class="navbar-item is-tab has-text-centered" href="{% url 'edziekanat_app:logout' %}">
                 <i class="fa fa-sign-out"></i>Wyloguj
@@ -48,29 +44,29 @@
     </div>
 </nav>
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', () => {
 
-  // Get all "navbar-burger" elements
-  const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+        // Get all "navbar-burger" elements
+        const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
 
-  // Check if there are any navbar burgers
-  if ($navbarBurgers.length > 0) {
+        // Check if there are any navbar burgers
+        if ($navbarBurgers.length > 0) {
 
-    // Add a click event on each of them
-    $navbarBurgers.forEach( el => {
-      el.addEventListener('click', () => {
+            // Add a click event on each of them
+            $navbarBurgers.forEach(el => {
+                el.addEventListener('click', () => {
 
-        // Get the target from the "data-target" attribute
-        const target = el.dataset.target;
-        const $target = document.getElementById(target);
+                    // Get the target from the "data-target" attribute
+                    const target = el.dataset.target;
+                    const $target = document.getElementById(target);
 
-        // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
-        el.classList.toggle('is-active');
-        $target.classList.toggle('is-active');
+                    // Toggle the "is-active" class on both the "navbar-burger" and the "navbar-menu"
+                    el.classList.toggle('is-active');
+                    $target.classList.toggle('is-active');
 
-      });
+                });
+            });
+        }
+
     });
-  }
-
-});
 </script>

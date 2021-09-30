@@ -36,9 +36,9 @@ class User(AbstractUser):
     password = CharField(_('Hasło'),
                          max_length=128)
 
-    inbox = ForeignKey(to='edziekanat_app.Inbox',
-                       verbose_name=_('Skrzynka pocztowa'),
-                       on_delete=CASCADE, default=None, null=True)
+    #inbox = ForeignKey(to='edziekanat_app.Inbox',
+    #                   verbose_name=_('Skrzynka pocztowa'),
+    #                   on_delete=CASCADE, default=None, null=True)
 
     def __str__(self):
         return f"{self.first_name} {self.last_name}"

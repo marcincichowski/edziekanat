@@ -5,18 +5,19 @@ from braces.forms import UserKwargModelFormMixin
 from ckeditor.widgets import CKEditorWidget
 from django.forms import *
 
-from edziekanat_app.models.tables.course import Course
-from edziekanat_app.models.tables.invoice_category import InvoiceCategory
-from edziekanat_app.models.tables.invoice_field import InvoiceField
-from edziekanat_app.models.tables.job import Job
-from edziekanat_app.models.tables.mode import Mode
-from edziekanat_app.models.tables.specialization import Specialization
-from edziekanat_app.models.tables.subject import Subject
+from edziekanat_app.models.tables.studies.course import Course
+from edziekanat_app.models.tables.invoices.invoice_category import InvoiceCategory
+from edziekanat_app.models.tables.invoices.invoice_field import InvoiceField
+from edziekanat_app.models.tables.users.job import Job
+from edziekanat_app.models.tables.studies.mode import Mode
+from edziekanat_app.models.tables.studies.specialization import Specialization
+from edziekanat_app.models.tables.studies.subject import Subject
 from edziekanat_app.models.tables.university_structure.faculty import Faculty
 from edziekanat_app.models.tables.users.employee import Employee
 from edziekanat_app.models.tables.users.role import Role
 from edziekanat_app.models.tables.users.student import Student
 from edziekanat_app.models.tables.users.user import User
+from edziekanat_app.utils import get_query
 
 
 class EditUserForm(Form):
@@ -135,47 +136,6 @@ class InvoiceFillForm(UserKwargModelFormMixin, Form):
                 self.fields[key] = CharField(widget=HiddenInput(), initial=value)
 
 
-def bind(init):
-    results = {}
-    for k in init:
-        results.setdefault(k, []).append(init[k])
-    return results
-
-
-def get_query(queries, user: User, base=None):
-    single_queries = queries.split('.')
-    result = []
-
-    if base is None:
-        if single_queries[0] == 'user':
-            result.append(user)
-        elif single_queries[0] == 'student':
-            result.append(Student.objects.filter(user=user).first())
-        elif single_queries[0] == 'system':
-            if single_queries[1] == 'today':
-                return datetime.datetime.today().strftime('%d.%m.%Y') + " r."
-            if single_queries[1] == 'study_session':
-                start = (3, 1)
-                end = (9, 3)
-                if start < (datetime.date.today().month, datetime.date.today().day) < end:
-                    return "letniej"
-                else:
-                    return "zimowej"
-        else:
-            raise Exception(f"Invalid base_object request: {single_queries[0]}")
-    else:
-        result.append(base)
-
-    single_queries = single_queries[1:]
-    for request, i in zip(single_queries, range(len(single_queries))):
-        base_object = result[i]
-        response = getattr(base_object, request)
-        if response is None:
-            raise Exception(f"Unable to get response. Object: {base_object} Query: {request}")
-        result.append(response)
-    return result[-1]
-
-
 class AddDictionaryValueCathedral(Form):
     value = CharField(
         widget=TextInput(attrs={'class': 'input is-primary is-fullwidth', 'placeholder': 'Nazwa katedry'}))
@@ -241,9 +201,10 @@ class RegisterExtraForm(UserKwargModelFormMixin, Form):
 class AddInvoiceCategory(Form):
     name = CharField(widget=TextInput(attrs={'class': 'input', 'label': 'Nazwa kategorii'}), required=True)
     field = ModelChoiceField(queryset=InvoiceField.objects.all(),
-                                widget=Select(attrs={'class': 'select', 'label': "Dziedzina wniosku"}),
-                                required=True)
-    decision_query = CharField(widget=TextInput(attrs={'class': 'input', 'label': 'Query do osoby decyzyjnej'}), required=True)
+                             widget=Select(attrs={'class': 'select', 'label': "Dziedzina wniosku"}),
+                             required=True)
+    decision_query = CharField(widget=TextInput(attrs={'class': 'input', 'label': 'Query do osoby decyzyjnej'}),
+                               required=True)
     faq_link = CharField(widget=TextInput(attrs={'class': 'input', 'label': 'Link do regulaminu'}), required=True)
     description = CharField(widget=CKEditorWidget(attrs={'label': 'Opis'}), required=True)
     docx_template = FileField(widget=ClearableFileInput(attrs={'class': 'file-input'}), required=True)

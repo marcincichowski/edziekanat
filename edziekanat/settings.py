@@ -72,8 +72,7 @@ TEMPLATES = [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-                'edziekanat_app.views.session_context_processor'
+                'django.contrib.messages.context_processors.messages'
             ],
         },
     },
