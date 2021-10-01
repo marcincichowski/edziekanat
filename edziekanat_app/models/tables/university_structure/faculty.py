@@ -5,11 +5,11 @@ from edziekanat_app.models.tables.university_structure.structure_unit import Str
 
 
 class Faculty(StructureUnit):
-    dean = models.ForeignKey(to='edziekanat_app.User',
+    dean = models.ForeignKey(to='edziekanat_app.Employee',
                              verbose_name=_('Dziekan'),
                              on_delete=models.CASCADE)
 
-    contact_user = models.ForeignKey(to='edziekanat_app.User',
+    contact_user = models.ForeignKey(to='edziekanat_app.Employee',
                                      verbose_name=_('Osoba decyzyjna'),
                                      on_delete=models.PROTECT,
                                      related_name="faculty_decision_user")

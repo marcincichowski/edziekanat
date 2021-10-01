@@ -1,15 +1,25 @@
-from django.db import models
+from django.db.models import *
 from django.utils.translation import gettext as _
 
-from edziekanat_app.models.tables.users.role import Role
 
-
-class Employee(models.Model):
+class Employee(Model):
     base_role = 'Pracownik'
 
-    user = models.OneToOneField(to='edziekanat_app.User',
-                                verbose_name=_('Użytkownik'),
-                                on_delete=models.CASCADE)
+    job = ForeignKey(to='edziekanat_app.Job',
+                     verbose_name=_('Stanowisko'),
+                     on_delete=CASCADE, default=None, null=True)
+
+    boss = ForeignKey(to='edziekanat_app.User',
+                         verbose_name=_('Przełożony'),
+                         on_delete=CASCADE,
+                         related_name="bosses", default=None, null=True)
+
+    user = OneToOneField(to='edziekanat_app.User',
+                         verbose_name=_('Użytkownik'),
+                         on_delete=CASCADE)
+
+    def __str__(self):
+        return self.user.__str__()
 
     class Meta:
         db_table = "edziekanat_app_employees"

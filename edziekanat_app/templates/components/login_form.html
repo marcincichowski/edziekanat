@@ -2,11 +2,15 @@
     <div class="columns is-multiline">
         <div class="column is-8 is-offset-2 register">
             <div class="columns">
-                <div class="column left">
-                    <h1 class="title is-1">edziekanat</h1>
-                    <h2 class="subtitle colored is-4">Tutaj jakieś fajne motto</h2>
+                <div class="column left pb-6">
+                    <h1 class="title is-1">eDziekanat</h1>
+                    <h2 class="subtitle colored is-4">Bo najważniejszy dla nas jest uśmiech studenta</h2>
                     <p>Lorem, ipsum dolor sit amet consectetur adipisicing elit. Corporis ex deleniti aliquam tempora libero excepturi vero soluta odio optio
                         sed.</p>
+                    <a href="https://elogin.put.poznan.pl" class="button is-block  is-light is-fullwidth is-medium mt-5">
+                        <i class="fa fa-home">&emsp;</i>
+                        Zaloguj przez eKonto
+                    </a>
                 </div>
                 <div class="column right has-text-centered">
                     <h1 class="title is-4">Zaloguj się</h1>
@@ -22,6 +26,7 @@
                                 </div>
                             </div>
                         {% endfor %}
+                    {{ form.errors }}
                         <button class="button is-block is-primary is-fullwidth is-medium">Zaloguj</button>
                         <br/>
                         <small>Jeśli nie posiadasz konta - <a href="{% url 'edziekanat_app:user_register' %}">Rejestracja</a></small>
@@ -31,7 +36,6 @@
             </div>
         </div>
         <div class="column is-8 is-offset-2">
-            <br>
             <nav class="level">
                 <div class="level-left">
                     <div class="level-item">

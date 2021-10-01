@@ -1,4 +1,4 @@
-<div class="column is-3 ">
+<div class="column is-2 ">
     <aside class="menu is-hidden-mobile">
         <p class="menu-label">
             Menu
@@ -7,34 +7,39 @@
         <ul class="menu-list">
             <li><a href="{% url 'edziekanat_app:home' %}">Strona główna</a></li>
         </ul>
-
         <ul class="menu-list">
-            <li><a href="{% url 'edziekanat_app:account' %}">Konto</a></li>
+            <li><a href="{% url 'edziekanat_app:inbox' %}">Wiadomości</a></li>
         </ul>
+        {% if request.user.role.name == "Student" %}
+            <p class="menu-label">
+                Wnioski
+            </p>
+            <ul class="menu-list">
+                <li><a href="{% url 'edziekanat_app:invoices' %}">Spis wniosków</a></li>
+                <li><a href="{% url 'edziekanat_app:invoices_list' %}">Twoje wnioski</a></li>
+                <li><a href="{% url 'edziekanat_app:create_invoice' %}">Wypełnij nowy wniosek</a></li>
+            </ul>
+        {% endif %}
 
-        <ul class="menu-list">
-            <li><a href="{% url 'edziekanat_app:settings' %}">Ustawienia</a></li>
-        </ul>
-
-
-        <p class="menu-label">
-            Wnioski
-        </p>
-        <ul class="menu-list">
-            <li><a href="{% url 'edziekanat_app:invoices' %}">Spis wniosków</a></li>
-            <li><a href="{% url 'edziekanat_app:invoices' %}">Twoje wnioski</a></li>
-            <li><a href="{% url 'edziekanat_app:create_invoice' %}">Stwórz wniosek</a></li>
-        </ul>
+        {% if request.user.role.name != "Student" %}
+            <p class="menu-label">
+                Zarządzanie wnioskami
+            </p>
+            <ul class="menu-list">
+                <li><a href="{% url 'edziekanat_app:manage_invoices' %}">Weryfikacja</a></li>
+                <li><a href="{% url 'edziekanat_app:invoices' %}">Kategorie</a></li>
+            </ul>
+        {% endif %}
 
         {% if request.user.is_staff %}
             <p class="menu-label">
                 Panel systemu
             </p>
             <ul class="menu-list">
-                <li><a href="{% url 'edziekanat_app:config' %}">Konfiguracja</a></li>
+                <li><a href="{% url 'edziekanat_app:tools' %}">Narzędzia</a></li>
                 <li><a href='/admin'>Panel administracyjny</a></li>
-                <li><a href="{% url 'edziekanat_app:dictionaries' %}">Słowniki</a></li>
-                <li><a href="{% url 'edziekanat_app:administrators' %}">Administratorzy</a></li>
+                <li><a href="{% url 'edziekanat_app:database' %}">Baza danych</a></li>
+                <li><a href="{% url 'edziekanat_app:administrators' %}">Użytkownicy</a></li>
             </ul>
         {% endif %}
     </aside>

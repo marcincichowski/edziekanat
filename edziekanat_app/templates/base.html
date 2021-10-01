@@ -2,9 +2,10 @@
 <html lang="pl">
 {% load static %}
 <head>
-    <meta name="viewport" content= "width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'css/style.min.css' %}">
     <link href="https://use.fontawesome.com/releases/v5.0.4/css/all.css" rel="stylesheet">
+    <link rel="icon" type="image/png" href="{% static "images/favicon.ico" %}"/>
     <script
             src="https://code.jquery.com/jquery-3.6.0.min.js"
             integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
@@ -13,16 +14,19 @@
 </head>
 
 <body>
-{% block header %}Empty header{% endblock %}
-<div class="container container-main">
+{% block header %}{% endblock %}
+<div class="container container-main is-fluid">
     <div class="columns">
-        {% block sidebar %}Empty sidebar{% endblock %}
-        {% include 'components/notification.html' %}
-        {% block content %}Empty content{% endblock %}
+        {% block sidebar %}{% endblock %}
+        {% block content %}{% endblock %}
     </div>
+    {% block notification %}{% include 'components/notification.html' %}{% endblock %}
 </div>
+
 {% block footer %}
     {% include 'components/footer.html' %}
 {% endblock %}
+
 </body>
+
 </html>

@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    {% include 'components/navbar.html' %}
+{% endblock %}
+
+{% block sidebar %}
+    {% include 'components/sidebar.html' %}
+{% endblock %}
+
+
+{% block content %}
+    {% load static %}
+    <script type="text/javascript" src="{% static "ckeditor/ckeditor-init.js" %}"></script>
+    <script type="text/javascript" src="{% static "ckeditor/ckeditor/ckeditor.js" %}"></script>
+    <div class="column is-10">
+        <section class="hero is-info welcome is-small">
+            <div class="hero-body">
+                <div class="container">
+                    <h1 class="title">
+                        Stwórz kategorię wniosków
+                    </h1>
+                </div>
+            </div>
+        </section>
+        <div class="columns">
+            <div class="column">
+                <div class="card">
+                    <div class="card-header">
+                        <p class="card-header-title">
+                            Formularz tworzenia kategorii
+                        </p>
+                    </div>
+                    <div class="card-content">
+                        <form method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            {% for field in form %}
+                                {% if field.field.widget.input_type == "file" %}
+                                    <div class="is-flex is-justify-content-space-between is-flex-wrap-wrap">
+                                        <div id="file-input" class="file has-name mt-1">
+                                            <label class="file-label">
+                                                {{ field }}
+                                                <span class="file-cta">
+                                            <span class="file-icon">
+                                                <i class="fas fa-upload"></i>
+                                            </span>
+                                            <span class="file-label">
+                                                Wybierz plik...
+                                            </span>
+                                        </span>
+                                                <span class="file-name">
+                                            Brak wybranego pliku
+                                        </span>
+                                            </label>
+                                        </div>
+                                        <button type="submit" class="button is-primary mt-1">Zapisz</button>
+                                    </div>
+                                    <script>
+                                        const fileInput = document.querySelector('#file-input input[type=file]');
+                                        fileInput.onchange = () => {
+                                            if (fileInput.files.length > 0) {
+                                                const fileName = document.querySelector('#file-input .file-name');
+                                                fileName.textContent = fileInput.files[0].name;
+                                            }
+                                        }
+                                    </script>
+                                {% elif field.field.widget.input_type == "select" %}
+                                    <label for="{{ field.id_for_label }}"> {{ field.field.widget.attrs.label }} </label>
+                                    <div class="control">
+                                        <div class="select is-fullwidth">{{ field }}</div>
+                                    </div>
+                                    <span class="help is-error">{{ field.errors }}</span>
+                                {% else %}
+                                    <label for="{{ field.id_for_label }}"> {{ field.field.widget.attrs.label }} </label>
+                                    <div class="control mb-2">{{ field }}</div>
+                                {% endif %}
+                            {% endfor %}
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

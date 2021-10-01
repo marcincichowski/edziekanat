@@ -1,0 +1,102 @@
+<form method="post" action="." enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="card">
+        <div class="card-content">
+            <p class="title is-spaced is-4">{{ title }}</p>
+
+            {% if category_name %}
+                <p class="subtitle is-5 has-text-weight-semibold">
+                    Wypełniasz wniosek: <span class="has-text-weight-light">{{ category_name }}</span>
+                </p>
+            {% endif %}
+        </div>
+        <hr class="m-0">
+        <div class="card-content">
+            <div class="content">
+                <table>
+                    {{ wizard.management_form }}
+                    {% if wizard.form.forms %}
+                        {{ wizard.form.management_form }}
+                        {% for form in wizard.form.forms %}
+                            {{ form }}
+                        {% endfor %}
+                    {% else %}
+                        {{ wizard.form.media }}
+                        {% for field in wizard.form %}
+                            {% if field.field.widget.input_type == 'select' %}
+                                <label for={{ field.id_for_label }}>
+                                    {{ field.field.widget.attrs.label }}
+                                </label>
+                                <div class="control mb-2">
+                                    <div class="select">
+                                        {{ field }}
+                                    </div>
+                                </div>
+                                <span class="help is-error">
+                                    {{ field.errors }}
+                                </span>
+                            {% elif field.field.widget.input_type == 'file' %}
+                                <div class="control mt-2">
+                                    {{ field.field.widget.attrs.label }}
+                                    <div id="file-js-example" class="file has-name is-info">
+                                        <label class="file-label">
+                                            {{ field }}
+                                            <span class="file-cta">
+                                           <span class="file-icon">
+                                             <i class="fas fa-upload"></i>
+                                           </span>
+                                           <span class="file-label">
+                                             Wybierz plik
+                                           </span>
+                                         </span>
+                                            <span class="file-name">Brak</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            {% elif field.field.widget.input_type == 'textarea' %}
+                                <div class="control">
+                                    {{ field }}
+                                </div>
+                            {% elif field.field.widget.input_type == 'date' %}
+                                <label for="{{ field.id_for_label }}">
+                                    {{ field.field.widget.attrs.label }}
+                                </label>
+                                <div class="calendar mb-2">
+                                    {{ field }}
+                                </div>
+                            {% else %}
+                                <label for="{{ field.id_for_label }}">
+                                    {{ field.field.widget.attrs.label }}
+                                </label>
+                                <div class="control">
+                                    {{ field }}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                </table>
+            </div>
+        </div>
+        <footer class="card-footer buttons p-5 is-centered is-justify-content-space-around">
+            {% if wizard.steps.prev %}
+                <button formnovalidate="formnovalidate" name="wizard_goto_step" value="{{ wizard.steps.first }}"
+                        type="submit"
+                        class="button is-danger">Od nowa
+                </button>
+                <button formnovalidate="formnovalidate" name="wizard_goto_step" value="{{ wizard.steps.prev }}"
+                        class="button is-warning">Poprzedni krok
+                </button>
+            {% endif %}
+            <input type="submit" value="Dalej" class="button is-primary"/>
+        </footer>
+    </div>
+</form>
+<script>
+    const fileInput = document.querySelector('#file-js-example input[type=file]');
+    fileInput.onchange = () => {
+        if (fileInput.files.length > 0) {
+            const fileName = document.querySelector('#file-js-example .file-name');
+            fileName.textContent = fileInput.files[0].name;
+        }
+    }
+</script>

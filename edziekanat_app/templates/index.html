@@ -9,7 +9,7 @@
 {% endblock %}
 
 {% block content %}
-    <div class="column is-9">
+    <div class="column is-10">
         <section class="hero is-info welcome is-small">
             <div class="hero-body">
                 <div class="container">
@@ -23,91 +23,111 @@
             <div class="tile is-ancestor has-text-centered">
                 <div class="tile is-parent">
                     <article class="tile is-child box">
-                        <p class="title">{{ open_invoices.count }}</p>
-                        <p class="subtitle">Otwarte wnioski</p>
-                    </article>
-                </div>
-                <div class="tile is-parent">
-                    <article class="tile is-child box">
-                        <p class="title">{{ new_invoices.count }}</p>
-                        <p class="subtitle">Nowe decyzje</p>
-                    </article>
-                </div>
-                <div class="tile is-parent">
-                    <article class="tile is-child box">
-                        <p class="title">{{ closed_invoices.count }}</p>
-                        <p class="subtitle">Zamknięte wnioski</p>
-                    </article>
-                </div>
-                <div class="tile is-parent">
-                    <article class="tile is-child box">
-                        <p class="title">{{ all_invoices.count }}</p>
-                        <p class="subtitle">Wszystkie wnioski</p>
-                    </article>
-                </div>
-                <div class="tile is-parent">
-                    <article class="tile is-child box">
-                        <a href="{% url 'edziekanat_app:create_invoice' %}">
-                            <p class="subtitle is">Wypełnij nowy wniosek</p>
+                        <a href="{% url 'edziekanat_app:invoices_list' %}">
+                            <p class="title">{{ open_invoices.count }}</p>
+                            <p class="subtitle">Otwarte wnioski</p>
                         </a>
                     </article>
                 </div>
+                <div class="tile is-parent">
+                    <article class="tile is-child box">
+                        <a href="{% url 'edziekanat_app:invoices_list' %}">
+                            <p class="title">{{ closed_invoices.count }}</p>
+                            <p class="subtitle">Nowe decyzje</p>
+                        </a>
+                    </article>
+                </div>
+                <div class="tile is-parent">
+                    <article class="tile is-child box">
+                        <a href="{% url 'edziekanat_app:invoices_list' %}">
+                            <p class="title">{{ all_invoices.count }}</p>
+                            <p class="subtitle">Wszystkie wnioski</p>
+                        </a>
+                    </article>
+                </div>
+                <div class="tile is-parent">
+                    <article class="tile is-child box">
+                        <a href="{% url 'edziekanat_app:inbox' %}">
+                            <p class="title">{{ new_mesages.count }}</p>
+                            {% if new_mesages.count > 0 %}
+                                <p class="subtitle has-text-danger has-text-weight-bold">Nowe wiadomości</p>
+                            {% else %}
+                                <p class="subtitle">Nowe wiadomości</p>
+                            {% endif %}
+                        </a>
+                    </article>
+                </div>
+                {% if request.user.role.name == "Student" %}
+                    <div class="tile is-parent">
+                        <article class="tile is-child box is-vcentered">
+                            <a href="{% url 'edziekanat_app:create_invoice' %}">
+                                <p class="title is-4"><strong>Wypełnij nowy wniosek</strong></p>
+                            </a>
+                        </article>
+                    </div>
+                {% endif %}
             </div>
         </section>
-        <div class="columns">
-            <div class="column is-12">
-                <div class="card events-card">
-                    <header class="card-header">
-                        <p class="card-header-title">
-                            Wszystkie wnioski
-                        </p>
-                        {% if all_invoices %}
-                        <div class="panel-block">
-                            <p class="control has-icons-left">
-                                <input class="input" type="text" placeholder="Filtruj wnioski">
-                                <span class="icon is-left">
-                                    <i class="fas fa-search" aria-hidden="true"></i>
-                                </span>
-                            </p>
-                        </div>
-                        {% endif %} 
-                    </header>
-                    <div class="card-table">
-                        <div class="content">
-                            <table class="table is-fullwidth is-striped">
-                                <tbody>
-                                {% if all_invoices %}
-                                    <thead>
-                                    <tr>
-                                        <th>Tytuł</th>
-                                        <th>Data utworzenia</th>
-                                        <th>Kategoria</th>
-                                        <th>Status</th>
-                                        <th></th>
-                                    </tr>
-                                    </thead>
-                                {% endif %}
-                                {% for invoice in all_invoices %}
-                                    <tr>
-                                        <td>{{ invoice.name }}</td>
-                                        <td>{{ invoice.create_date }}</td>
-                                        <td>{{ invoice.category.name }}</td>
-                                        <td>{{ invoice.status }}</td>
-                                        <td class="level-right"><a class="button is-small is-primary"
-                                                                   href="#">Podgląd</a></td>
-                                    </tr>
-                                {% endfor %}
-                            </table>
-                        </div>
+        <div class="tile is-ancestor">
+            <div class="tile is-vertical is-8">
+                <div class="tile">
+                    <div class="tile is-parent is-vertical">
+                        <article class="tile is-child box">
+                            <span class="has-text-weight-light">Ostatnio złożony wniosek:</span><br>
+                            {% if all_invoices.count > 0 %}
+                                <span class="has-text-weight-semibold">{{ all_invoices.last.category.name }}</span><br>
+                                <br>
+                                <span class="has-text-weight-light">Status: <span
+                                        class="has-text-weight-semibold">{{ all_invoices.last.status }}</span></span>
+                            {% else %}
+                                <span class="has-text-weight-semibold">Nie wypełniłeś jeszcze żadnego wniosku</span>
+                            {% endif %}
+                        </article>
+                        <article class="tile is-child box">
+                            <span class="has-text-weight-light">Ostatnio otrzymana decyzja:</span><br>
+                            {% if closed_invoices.count > 0 %}
+                                <span class="has-text-weight-semibold">{{ closed_invoices.last.category.name }}</span>
+                                <br><br>
+                                <span class="has-text-weight-light">Status: <span
+                                        class="has-text-weight-semibold">{{ closed_invoices.last.status }}</span></span>
+                            {% else %}
+                                <span class="has-text-weight-semibold">Nie otrzymałeś jeszcze żadnej decyzji</span>
+                            {% endif %}
+                        </article>
                     </div>
-                    <footer class="card-footer-item">
-                        {% if not all_invoices %}
-                            Brak wniosków do wyświetlenia
-                        {% endif %}
-                    </footer>
+                    <div class="tile is-parent">
+                        <article class="tile is-child box has-text-centered is-vcentered">
+                            <p class="title is-4">Przeciętny czas oczekiwania na decyzję</p>
+                            <hr>
+                            <p class="subtitle is-4">{{ average_decision_time }}</p>
+                        </article>
+                    </div>
+                </div>
+                <div class="tile is-parent">
+                    <article class="tile is-child box">
+                       <span class="has-text-weight-light">Ostatnie poprawne logowanie: <span
+                               class="has-text-weight-semibold">{{ request.user.last_login|date:'d.m.Y H:i' }}</span>
+                       </span>
+                    </article>
                 </div>
             </div>
-
+            <div class="tile is-parent">
+                <article class="tile is-child box has-text-left">
+                    <div class="mb-4">
+                        <span class="subtitle">Najczęściej wypełniane wnioski</span>
+                    </div>
+                    {% if top_invoices %}
+                        {% for top_invoice in top_invoices %}
+                            <div class="mb-3">
+                                <span class="has-text-weight-semibold is-3">{{ forloop.counter }}. </span>
+                                <span class="has-text-weight-light is-3">{{ top_invoice }}</span>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <span class="has-text-weight-light">Brak wniosków w systemie eDziekanat</span>
+                    {% endif %}
+                </article>
+            </div>
         </div>
     </div>
 {% endblock %}

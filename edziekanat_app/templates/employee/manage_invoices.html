@@ -1,0 +1,306 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    {% include 'components/navbar.html' %}
+{% endblock %}
+
+{% block sidebar %}
+    {% include 'components/sidebar.html' %}
+{% endblock %}
+
+{% block content %}
+    <link rel="stylesheet" type="text/css"
+          href="https://cdn.datatables.net/v/bm/dt-1.11.2/r-2.2.9/sl-1.3.3/datatables.min.css"/>
+    <script type="text/javascript"
+            src="https://cdn.datatables.net/v/bm/dt-1.11.2/r-2.2.9/sl-1.3.3/datatables.min.js"></script>
+    <div class="column is-10">
+        <section class="hero is-info welcome is-small">
+            <div class="hero-body">
+                <div class="container">
+                    <h1 class="title">
+                        Utworzone wnioski
+                    </h1>
+                </div>
+            </div>
+        </section>
+        <div class="columns">
+            <div class="column">
+                <div class="card">
+                    <header class="card-header">
+                        <p class="card-header-title">
+                            Twoje wnioski do akceptacji
+                        </p>
+                    </header>
+                    <div class="card-content">
+                        <table id="invoice-datatable" class="table is-fullwidth is-striped is-hoverable"
+                               style="width: 100%;">
+                            <thead>
+                            <tr>
+                                <th>Kategoria</th>
+                                <th>Złożone przez</th>
+                                <th>Data złożenia</th>
+                                <th>Status</th>
+                                <th>Opcje</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% if invoices %}
+                                {{ invoices.id }}
+                                {% for invoice in invoices %}
+                                    <tr>
+                                        <td>{{ invoice.category }}</td>
+                                        <td>{{ invoice.created_by }}</td>
+                                        <td>{{ invoice.created_date|date:'d.m.Y H:i:s' }}</td>
+                                        <td>
+                                            {% if invoice.status == "Zaakceptowany" %}
+                                                <span class="has-text-success">{{ invoice.status }}</span>
+                                            {% elif invoice.status == "Odrzucony" %}
+                                                <span class="has-text-danger">{{ invoice.status }}</span>
+                                            {% elif invoice.status == "Do podpisania" %}
+                                                <span class="has-text-warning">{{ invoice.status }}</span>
+                                            {% else %}
+                                                <span>{{ invoice.status }}</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if invoice.status != 'Zaakceptowany' and invoice.status != 'Odrzucony' %}
+                                                <button class="button is-small icon-button"
+                                                        onclick="getRejectModal({{ invoice.id }})"><i
+                                                        class="fas fa-times"></i></button>
+                                                <button class="button is-small icon-button"
+                                                        onclick="getAcceptModal({{ invoice.id }})"><i
+                                                        class="fas fa-check"></i></button>
+                                            {% endif %}
+                                            {% if invoice.status == 'Odrzucony' %}
+                                                <button class="button is-small icon-button"
+                                                        onclick="getRejectInfo({{ invoice.id }})"><i
+                                                        class="fas fa-search"></i></button>
+                                            {% endif %}
+                                            {% if invoice.status == 'Do podpisania' and invoice.created_by_id == request.user.id %}
+                                                <button class="button is-small icon-button has-background-warning"
+                                                        onclick="getFileUploadForm({{ invoice.id }})"><i
+                                                        class="fas fa-pencil-alt"></i></button>
+                                            {% endif %}
+                                            <button class="button is-small icon-button"
+                                                    onclick="getInvoiceFile({{ invoice.id }})"><i
+                                                    class="fas fa-download"></i></button>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="reject-form-modal">
+        <div class="modal-background"></div>
+        <div class="modal-card">
+            <header class="modal-card-head">
+                <p class="modal-card-title">Odrzuć wniosek</p>
+                <button class="delete" aria-label="close" onclick="closeModal()"></button>
+            </header>
+            <form method="post">
+                <section class="modal-card-body">
+                    {% csrf_token %}
+                    {{ form_reject }}
+                </section>
+                <footer class="modal-card-foot">
+                    <button type="submit" class="button is-success">Zapisz</button>
+                    <button class="button" onclick="closeModal()">Anuluj</button>
+                    <input type="hidden" name="action" value="REJECT">
+                </footer>
+            </form>
+        </div>
+    </div>
+    <div class="modal" id="accept-form-modal">
+        <div class="modal-background"></div>
+        <div class="modal-card">
+            <header class="modal-card-head">
+                <p class="modal-card-title">Zaakceptuj wniosek</p>
+                <button class="delete" aria-label="close" onclick="closeModal()"></button>
+            </header>
+            <form method="post">
+                <section class="modal-card-body">
+                    {% csrf_token %}
+                    {{ form_accept }}
+                    Czy chcesz zaakceptować wniosek?
+                </section>
+                <footer class="modal-card-foot">
+                    <button type="submit" class="button is-success">Zapisz</button>
+                    <button class="button" onclick="closeModal()">Anuluj</button>
+                    <input type="hidden" name="action" value="ACCEPT">
+                </footer>
+            </form>
+        </div>
+    </div>
+    <div class="modal" id="reject-modal">
+        <div class="modal-background"></div>
+        <div class="modal-card">
+            <header class="modal-card-head">
+                <p class="modal-card-title">Wniosek odrzucony</p>
+                <button class="delete" aria-label="close" onclick="closeModal()"></button>
+            </header>
+            <section class="modal-card-body">
+
+            </section>
+            <footer class="modal-card-foot">
+                <button class="button" onclick="closeModal()">Zamknij</button>
+            </footer>
+        </div>
+    </div>
+    <div class="modal" id="file-form-modal">
+        <div class="modal-background"></div>
+        <div class="modal-card">
+            <header class="modal-card-head">
+                <p class="modal-card-title">Przesłanie podpisanego wniosku</p>
+                <button class="delete" aria-label="close" onclick="closeModal()"></button>
+            </header>
+            <form method="post">
+                <section class="modal-card-body">
+                    {% csrf_token %}
+                    <div id="file-input" class="file has-name">
+                        <label class="file-label">
+                            {{ form_file_upload.invoice_file }}
+                            <span class="file-cta">
+                                            <span class="file-icon">
+                                                <i class="fas fa-upload"></i>
+                                            </span>
+                                            <span class="file-label">
+                                                Wybierz plik...
+                                            </span>
+                                        </span>
+                            <span class="file-name">Brak wybranego pliku</span>
+                        </label>
+                    </div>
+                </section>
+                <footer class="modal-card-foot">
+                    <button type="submit" class="button is-success">Zapisz</button>
+                    <button class="button" onclick="closeModal()">Anuluj</button>
+                    <input type="hidden" name="action" value="UPLOAD">
+                </footer>
+            </form>
+        </div>
+    </div>
+
+    <script>
+
+        $(document).ready(function () {
+            const fileInput = document.querySelector('#file-input input[type=file]');
+            fileInput.onchange = () => {
+              if (fileInput.files.length > 0) {
+                const fileName = document.querySelector('#file-input .file-name');
+                fileName.textContent = fileInput.files[0].name;
+              }
+            }
+                $('#invoice-datatable').DataTable({
+                    responsive: true,
+                    "order": [[3, "desc"]],
+                    language: {
+                        "decimal": "",
+                        "emptyTable": "Brak dostępnych danych w tabeli",
+                        "info": "Pokazywanie _START_ do _END_ z _TOTAL_ wpisów",
+                        "infoEmpty": "Pokazywanie 0 do 0 z 0 wpisów",
+                        "infoFiltered": "(wszystkie wpisy odfiltrowane z _MAX_)",
+                        "infoPostFix": "",
+                        "thousands": ",",
+                        "lengthMenu": "Pokaż wpisy _MENU_",
+                        "loadingRecords": "Ładowanie...",
+                        "processing": "Przetwarzanie...",
+                        "search": "Wyszukaj:",
+                        "zeroRecords": "Nie znaleziono odpowiadających dokumentów.",
+                        "paginate": {
+                            "first": "Pierwszy",
+                            "last": "Ostatni",
+                            "next": "Następny",
+                            "previous": "Poprzedni"
+                        },
+                        "aria": {
+                            "sortAscending": ": Aktywuj aby posortować kolumnę rosnąco",
+                            "sortDescending": ": Aktywuj aby posortować kolumnę malejąco"
+                        }
+                    }
+                });
+            }
+        );
+
+        function getRejectModal(id) {
+            $('#reject-form-modal.modal').addClass('is-active');
+            $('#reject-form-modal.modal #id_id').attr('value', id);
+        }
+        function getFileUploadForm(id) {
+            $('#file-form-modal.modal').addClass('is-active');
+            $('#file-form-modal.modal #id_id').attr('value', id);
+        }
+        function getAcceptModal(id) {
+            $('#accept-form-modal.modal').addClass('is-active');
+            $('#accept-form-modal.modal #id_id').attr('value', id);
+        }
+
+        function getInvoiceFile(id) {
+            $.ajax({
+                url: {% url 'edziekanat_app:invoice_download' %},
+                type: "get",
+                data: {
+                    "id": id,
+                },
+                error: function (response) {
+                    console.log(response)
+                }
+            });
+        }
+
+        function getRejectInfo(id) {
+            $.ajax({
+                url: {% url 'edziekanat_app:get_reject_info' %},
+                type: "get",
+                data: {
+                    "id": id,
+                },
+                success: function (response) {
+                    if (!response["valid"]) {
+                        let data = response.data
+                        $("#reject-modal .modal-card-body").empty();
+                        let message =
+                            '<table class="table is-fullwidth is-hoverable is-striped">' +
+                                '<tr>' +
+                                    '<th>Nazwa wniosku:</th>' +
+                                    '<td>' + data.category_name + '</td>' +
+                                '</tr>' +
+                                '<tr>' +
+                                    '<th>Osoba decyzyjna:</th>' +
+                                    '<td>' + data.decision_author + '</td>' +
+                                '</tr>' +
+                                '<tr>' +
+                                    '<th>Uzasadnienie:</th>' +
+                                    '<td>' + data.decision + '</td>' +
+                                '</tr>' +
+                                '<tr>' +
+                                    '<th>Data rozpatrzenia wniosku:</th>' +
+                                    '<td>' + data.decision_date + '</td>' +
+                                '</tr>' +
+                            '</table>';
+                        $("#reject-modal .modal-card-body").html(message);
+                        $('#reject-modal.modal').addClass('is-active');
+                    } else
+                        alert("Brak podanego id wniosku");
+                },
+                error: function (response) {
+                    console.log(response)
+                }
+            });
+        }
+
+
+        function closeModal() {
+            $('.modal').removeClass('is-active');
+        }
+
+
+
+    </script>
+{% endblock %}
+
